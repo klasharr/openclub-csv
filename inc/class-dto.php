@@ -60,4 +60,8 @@ class DTO {
 		return $this->has_validation_error;
 	}
 
+	public function get_line_number(){
+		return $this->line_number;
+	}
+
 }

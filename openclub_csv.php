@@ -70,7 +70,6 @@ function openclub_importer_disable_wysiwyg( $default ) {
 add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
 
 
-
 /**
  * A very rough P.O.C.
  *
@@ -93,20 +92,25 @@ function openclub_csv_display_shortcode_callback( $atts ) {
 
 		if( !empty( $a[ 'data' ] ) ) {
 
-			echo "<h3>Data</h3>";
+			if(!empty( $a['errors'] ) ) {
+				echo "<h3 class='openclub_csv_error'>Errors</h3><p>";
 
-			/** @var DTO $line */
-			foreach($a[ 'data' ] as $line ){
-				if( !$line->has_validation_error() ) {
-					echo $line;
+				foreach($a['errors'] as $line => $message ){
+					echo \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
 				}
+				echo '</p>';
 			}
 
-			echo "<h3>Errors</h3>";
+			echo "<table>";
+			echo \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
 
-			foreach($a['errors'] as $line => $error ){
-				echo $error;
+			/** @var DTO $line_data */
+			foreach($a[ 'data' ] as $line_data ){
+				//if( !$line_data->has_validation_error() ) {
+					echo \OpenClub\CSV_Util::get_csv_table_row( $line_data );
+				//}
 			}
+			echo "</table>";
 		} else {
 			echo 'No data';
 		}
@@ -117,3 +121,18 @@ function openclub_csv_display_shortcode_callback( $atts ) {
 
 }
 add_shortcode( 'openclub_display_csv', 'openclub_csv_display_shortcode_callback' );
+
+
+function openclub_csv_add_inline_css() {
+	?>
+	<style>
+		.openclub_csv_error {
+			color: red;
+		}
+	</style>
+	<?php
+}
+add_action('wp_head', 'openclub_csv_add_inline_css');
+
+
+

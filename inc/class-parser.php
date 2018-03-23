@@ -74,9 +74,9 @@ class Parser {
 	/**
 	 * @return array
 	 */
-	private function get_header_fields( $return_array = true ) {
+	private function get_header_fields( $return_as_array = true ) {
 
-		return $return_array ? implode( ',', $this->header_fields ) : $this->header_fields;
+		return $return_as_array ? $this->header_fields : implode( ',', $this->header_fields );
 	}
 
 	/**
@@ -172,6 +172,7 @@ class Parser {
 		}
 
 		$out['errors'] = $this->line_errors;
+		$out['header_fields' ] = $this->get_header_fields();
 
 		return $out;
 	}
