@@ -39,19 +39,7 @@ Class File_Runner {
 			WP_CLI::error( $e->getMessage() );
 		}
 
-		//if ( empty( $this->flattenedEvents ) ) {
-		////	WP_CLI::error( '$this->flattenedEvents is empty, most likely ->execute wasn\'t called' );
-		//}
-
-		/**
-		 * @var $event EventDTO
-		 */
-		//foreach ( $this->flattenedEvents as $event ) {
-
-		//	WP_CLI::log( $event );
-
-		//}
-		WP_CLI::success( 'Success!!' );
+		WP_CLI::success( 'Success!' );
 	}
 
 
