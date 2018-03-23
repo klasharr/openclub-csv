@@ -120,7 +120,7 @@ class Parser {
 
 			if ( count( $data_array ) != $this->header_fields_count ) {
 				throw new \Exception(
-					sprint( 'Line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
+					sprintf( 'Line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
 						$this->get_line_number($line_number),
 						$this->get_header_fields_count(),
 						$this->get_header_fields( false ),

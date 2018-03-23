@@ -30,13 +30,13 @@ function openclub_importer_post_types_init() {
 
 	$args = array(
 		'label'               => esc_html__( 'CSV' ),
-		'public'              => false,
+		'public'              => true,
 		'show_ui'             => true,
 		'has_archive'         => false,
 		'exclude_from_search' => true,
 		'capability_type'     => 'post',
 		'hierarchical'        => false,
-		'rewrite'             => false,
+		'rewrite'             => true,
 		'query_var'           => true,
 		'menu_icon'           => 'dashicons-admin-page',
 		'show_in_nav_menus'   => false,
@@ -101,7 +101,7 @@ function openclub_csv_display_shortcode_callback( $atts ) {
 				echo '</p>';
 			}
 
-			echo "<table>";
+			echo "<table class='openclub_csv'>";
 			echo \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
 
 			/** @var DTO $line_data */
@@ -129,10 +129,63 @@ function openclub_csv_add_inline_css() {
 		.openclub_csv_error {
 			color: red;
 		}
+		table.openclub_csv th {
+			background-color: #EFEFEF;
+		}
 	</style>
 	<?php
 }
 add_action('wp_head', 'openclub_csv_add_inline_css');
 
+
+
+function openclub_csv_view_content_page( $content ) {
+
+	/**
+	 * @post WP_Post
+	 */
+	global $post;
+
+	if ( is_singular() && in_array( get_post_type( $post ), array( 'openclub-csv' ) ) ) {
+
+		try{
+			$a = \OpenClub\CSV_Util::get_csv_content( $post->ID );
+			$out = '';
+
+			if( !empty( $a[ 'data' ] ) ) {
+
+				if(!empty( $a['errors'] ) ) {
+					$out .= "<h3 class='openclub_csv_error'>Errors</h3><p>";
+
+					foreach($a['errors'] as $line => $message ){
+						$out .= \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
+					}
+					$out .= '</p>';
+				}
+
+				$out .= "<table class='openclub_csv'>";
+				$out .= \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
+
+				/** @var DTO $line_data */
+				foreach($a[ 'data' ] as $line_data ){
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data );
+				}
+				$out .= "</table>";
+			} else {
+				$out .= 'No data';
+			}
+
+		} catch( \Exception $e ) {
+			$out .= 'Error: ' . $e->getMessage() . ' Check the value passed to the shortcode is a valid post_id.';
+		}
+
+		return $out;
+	}
+
+	return $content;
+
+}
+
+add_filter( 'the_content', 'openclub_csv_view_content_page' );
 
 
