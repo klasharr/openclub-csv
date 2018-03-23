@@ -2,10 +2,9 @@
 
 namespace OpenClub;
 
-Use \WP_CLI;
-Use \WP_Post;
-Use \Exception;
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class Field_Validator_Manager {
 
@@ -22,7 +21,7 @@ class Field_Validator_Manager {
 	/**
 	 * @param \WP_Post $post
 	 */
-	public function __construct( WP_Post $post ) {
+	public function __construct( \WP_Post $post ) {
 
 		$this->post = $post;
 

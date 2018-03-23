@@ -2,6 +2,10 @@
 
 namespace OpenClub;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 interface Filter {
 
 	/**
@@ -9,6 +13,6 @@ interface Filter {
 	 *
 	 * @return bool
 	 */
-	public function filter( DTO $dto );
+	public function is_filtered_out( DTO $dto );
 
 }

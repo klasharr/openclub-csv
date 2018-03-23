@@ -2,6 +2,10 @@
 
 namespace OpenClub\CLI;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use \OpenClub\Factory;
 use \WP_CLI;
 use \Exception;
@@ -59,7 +63,11 @@ Class File_Runner {
 			$this->get_post()
 		);
 
-		$parser->get_data( Factory::get_null_filter() );
+		$parsed_lines = $parser->get_data( Factory::get_null_filter() );
+
+		foreach( $parsed_lines[ 'data' ] as $line ) {
+			WP_CLI::log( $line );
+		}
 
 		return true;
 	}

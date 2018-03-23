@@ -2,6 +2,10 @@
 
 namespace OpenClub;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once( 'interface-filter.php' );
 
 class Null_Filter implements Filter {
@@ -11,9 +15,9 @@ class Null_Filter implements Filter {
 	 *
 	 * @return bool
 	 */
-	public function filter( DTO $dto ) {
+	public function is_filtered_out( DTO $dto ) {
 
-		return true;
+		return false;
 
 	}
 

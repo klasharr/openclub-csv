@@ -2,9 +2,10 @@
 
 namespace OpenClub;
 
-use WP_CLI;
-use Exception;
-use WP_Post;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use OpenClub\Fields\Validator_Field_Exception;
 
 require_once( 'class-factory.php' );
@@ -44,22 +45,20 @@ class Parser {
 	private $validators = array();
 
 
-	public function __construct() {
-	}
+	public function __construct() {}
 
 	/**
 	 * @param WP_Post $post
 	 *
 	 * @throws Exception
 	 */
-	public function init( WP_Post $post ) {
+	public function init( \WP_Post $post ) {
 
 		if ( empty( trim( $post->post_content ) ) ) {
-			throw new Exception( '$post->post_content is empty' );
+			throw new \Exception( '$post->post_content is empty' );
 		}
 
 		$this->field_validator_manager = Factory::get_field_validator_manager( $post );
-
 		$this->content = $post->post_content;
 	}
 
@@ -67,7 +66,7 @@ class Parser {
 	/**
 	 * @param $csv_line string
 	 */
-	private function set_header( $csv_line ) {
+	private function set_header_from_csv( $csv_line ) {
 		$this->header_fields       = explode( ",", $csv_line );
 		$this->header_fields_count = count( $this->header_fields );
 	}
@@ -103,25 +102,26 @@ class Parser {
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
 
-			$error_message = '';
+			$error_message = false;
+			$has_validation_error = false;
 
 			if ( $line_number == 0 ) {
-				$this->set_header( $data_line );
+				$this->set_header_from_csv( $data_line );
 				$this->get_header_fields_count();
 				$line_number ++;
 				continue;
 			}
 
 			if ( empty( trim( $data_line ) ) ) {
-				break;
+				continue;
 			}
 
 			$data_array = explode( ",", $data_line );
 
 			if ( count( $data_array ) != $this->header_fields_count ) {
-				throw new Exception(
+				throw new \Exception(
 					sprint( 'Line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
-						$line_number,
+						$this->get_line_number($line_number),
 						$this->get_header_fields_count(),
 						$this->get_header_fields( false ),
 						$data_line
@@ -140,44 +140,34 @@ class Parser {
 
 			} catch ( Validator_Field_Exception $e ) {
 
-				$error_message = sprintf( 'Field validation error line: %d %s', $line_number, $e->getMessage() );
+				$error_message = sprintf( 'Field validation error line: %d %s', $this->get_line_number($line_number), $e->getMessage() );
+				$this->line_errors[ $this->get_line_number($line_number) ] = $error_message;
 				if ( class_exists( 'WP_CLI' ) ) {
-					WP_CLI::log( $error_message );
-				} else {
-					$this->line_errors[ $line_number ] = array(
-						'line'  => $line_number,
-						'error' => $error_message
-					);
-
+					\WP_CLI::log( $error_message );
 				}
-				continue;
+				$has_validation_error = true;
 			}
+
+
 
 			try {
 
-				//print_r( $data );
 				/** @var $dto DTO */
-				//$dto = new DTO( $line_number, $data );
+				$dto = Factory::get_dto( $this->get_line_number($line_number), $data, $has_validation_error );
 
-			} catch ( Exception $e ) {
-				if ( class_exists( 'WP_CLI' ) ) {
-					WP_CLI::log( $error_message );
-				} else {
-					$this->line_errors[ $line ] = array(
-						'line'  => $line_number,
-						'error' => $error_message
-					);
+				if ( $filter->is_filtered_out( $dto ) ) {
+					continue;
 				}
+				$out['data'][] = $dto;
+
+			} catch ( \Exception $e ) {
+				if ( class_exists( 'WP_CLI' ) ) {
+					\WP_CLI::log( $e->getMessage() );
+				}
+				$this->line_errors[ $this->get_line_number($line_number) ] = $e->getMessage();
 				continue;
 			}
 
-			/**
-			 * if ( ! $filter->filter( $dto ) ) {
-			 * continue;
-			 * }
-			 *
-			 * $out['data'][ $dto->getDate() ][] = $dto;
-			 */
 			$line_number ++;
 		}
 
@@ -187,16 +177,7 @@ class Parser {
 	}
 
 	/**
-	 *
 	 * @param $data array
-	 *
-	 * For example where Day will map to a validator object.
-	 *
-	 * array(
-	 *   Day => Sun
-	 *   Date => 12/09/18
-	 *   Team => A
-	 * )
 	 */
 	private function validate_data( $data ) {
 
@@ -221,12 +202,16 @@ class Parser {
 		}
 
 		if ( ! $field_validator = $this->field_validator_manager->get_validator( $field_name ) ) {
-			throw new Exception( 'A validator for ' . $field_name . ' does not exist, check the field name and field settings to see that they match.' );
+			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the field name and field settings to see that they match.' );
 		}
 
 		$this->validators[ $field_name ] = $field_validator;
 
 		return $field_validator;
 
+	}
+
+	private function get_line_number( $line_number ){
+		return ( $line_number - 1 ) ;
 	}
 }

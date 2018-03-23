@@ -2,11 +2,13 @@
 
 namespace OpenClub;
 
-use \WP_Post;
-use \Exception;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 require_once( 'class-field-validator-manager.php' );
 require_once( 'class-null-filter.php' );
+require_once( 'class-dto.php' );
 
 class Factory {
 
@@ -14,7 +16,7 @@ class Factory {
 		return new Parser;
 	}
 
-	public static function get_field_validator_manager( WP_Post $post ) {
+	public static function get_field_validator_manager( \WP_Post $post ) {
 		return new Field_Validator_Manager( $post );
 	}
 
@@ -22,12 +24,16 @@ class Factory {
 		return new Null_Filter();
 	}
 
+	public static function get_dto( int $line_number, array $data, $has_validation_error ) {
+		return new DTO( $line_number, $data, $has_validation_error );
+	}
+
 	public static function get_field( $class_name, $rules ) {
 
 		$file = OPENCLUB_IMPORTER_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $rules['type'] ) . '.php';
 
 		if ( ! file_exists( $file ) ) {
-			throw new Exception( $file . ' does not exist' );
+			throw new \Exception( $file . ' does not exist' );
 		}
 
 		require_once( $file );

@@ -1,6 +1,6 @@
 <?php
 /*
- Plugin Name: OpenClub importer
+ Plugin Name: OpenClub CSV
  Plugin URI: TBD
  Description:
  Author: Klaus Harris
