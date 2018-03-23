@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once( 'class-field-validator-manager.php' );
 require_once( 'class-null-filter.php' );
 require_once( 'class-dto.php' );
+require_once( 'class-parser.php' );
 
 class Factory {
 
@@ -30,7 +31,7 @@ class Factory {
 
 	public static function get_field( $class_name, $rules ) {
 
-		$file = OPENCLUB_IMPORTER_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $rules['type'] ) . '.php';
+		$file = OPENCLUB_CSV_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $rules['type'] ) . '.php';
 
 		if ( ! file_exists( $file ) ) {
 			throw new \Exception( $file . ' does not exist' );

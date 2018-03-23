@@ -56,4 +56,8 @@ class DTO {
 		return $validation_error_flag . implode( ',', $this->data ) ;
 	}
 
+	public function has_validation_error(){
+		return $this->has_validation_error;
+	}
+
 }

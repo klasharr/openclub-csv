@@ -13,15 +13,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'OPENCLUB_IMPORTER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'OPENCLUB_CSV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
 
 if ( class_exists( 'WP_CLI' ) ) {
 
-	require_once( OPENCLUB_IMPORTER_PLUGIN_DIR . '/cli/class-file-runner.php' );
+	require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-file-runner.php' );
 	$runner = new OpenClub\CLI\File_Runner();
 	WP_CLI::add_command( 'file-runner', $runner );
 
 }
+
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 
 function openclub_importer_post_types_init() {
 
@@ -65,3 +68,52 @@ function openclub_importer_disable_wysiwyg( $default ) {
 }
 
 add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
+
+
+
+/**
+ * A very rough P.O.C.
+ *
+ * [openclub_display_csv post_id="102"]
+ *
+ * @param $atts
+ */
+function openclub_csv_display_shortcode_callback( $atts ) {
+
+	$atts = shortcode_atts(
+		array(
+			'post_id' => null,
+		),
+		$atts
+	);
+
+	try{
+
+		$a = \OpenClub\CSV_Util::get_csv_content( $atts['post_id'] );
+
+		if( !empty( $a[ 'data' ] ) ) {
+
+			echo "<h3>Data</h3>";
+
+			/** @var DTO $line */
+			foreach($a[ 'data' ] as $line ){
+				if( !$line->has_validation_error() ) {
+					echo $line;
+				}
+			}
+
+			echo "<h3>Errors</h3>";
+
+			foreach($a['errors'] as $line => $error ){
+				echo $error;
+			}
+		} else {
+			echo 'No data';
+		}
+
+	} catch( \Exception $e ) {
+		echo 'Error: ' . $e->getMessage() . ' Check the value passed to the shortcode is a valid post_id.';
+	}
+
+}
+add_shortcode( 'openclub_display_csv', 'openclub_csv_display_shortcode_callback' );

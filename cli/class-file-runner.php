@@ -7,49 +7,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use \OpenClub\Factory;
+use \OpenClub\CSV_Util;
 use \WP_CLI;
-use \Exception;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit();
-}
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-file-runner-base.php' );
 
-require_once( OPENCLUB_IMPORTER_PLUGIN_DIR . '/inc/class-parser.php' );
-
-Class File_Runner {
+Class File_Runner extends  File_Runner_Base{
 
 	/**
-	 * @var $post_id int
+	 * @param $args
 	 */
-	private $post_id;
-
 	public function __invoke( $args ) {
-
-		try {
-
-			if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
-				throw new Exception( 'The first argument must be a non zero integer value.' );
-			}
-
-			$this->post_id = $args[0];
-
-			$this->execute();
-
-		} catch ( Exception $e ) {
-			WP_CLI::error( $e->getMessage() );
-		}
-
-		WP_CLI::success( 'Success!' );
+		parent::__invoke( $args );
 	}
 
-
+	/**
+	 * @throws \Exception
+	 * @throws \OpenClub\Exception
+	 */
 	public function execute() {
 
 		$parser = Factory::get_parser();
 
-		$parser->init(
-			$this->get_post()
-		);
+		$parser->init( CSV_Util::get_csv_post( $this->post_id ) );
 
 		$parsed_lines = $parser->get_data( Factory::get_null_filter() );
 
@@ -57,35 +37,9 @@ Class File_Runner {
 			WP_CLI::log( $line );
 		}
 
-		return true;
+		WP_CLI::success( 'Success!' );
 	}
 
-	private function get_post() {
-
-		$post = get_post( $this->post_id );
-
-		if ( empty( $post ) || ! is_a( $post, 'WP_Post' ) ) {
-			throw new Exception (
-				sprintf( '$this->post_id %d does not return a post object.', $this->post_id )
-			);
-		}
-
-		if ( $post->post_type != 'openclub-csv' || $post->status == 'auto-draft' ) {
-			throw new Exception (
-				sprintf( '$this->post_id %d does not return a post object of type CSV.', $this->post_id )
-			);
-		}
-
-		if ( $fields = get_post_meta( $this->post_id, 'fields', true ) ) {
-			$post->field_settings = parse_ini_string( $fields, true );
-		} else {
-			throw new Exception (
-				sprintf( '$this->post_id %d does not have a fields post meta set.', $this->post_id )
-			);
-		}
-
-		return $post;
-	}
 }
 
 

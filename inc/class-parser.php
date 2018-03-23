@@ -158,7 +158,7 @@ class Parser {
 				if ( $filter->is_filtered_out( $dto ) ) {
 					continue;
 				}
-				$out['data'][] = $dto;
+				$out['data'][$this->get_line_number($line_number)] = $dto;
 
 			} catch ( \Exception $e ) {
 				if ( class_exists( 'WP_CLI' ) ) {
