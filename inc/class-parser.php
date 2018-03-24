@@ -67,7 +67,10 @@ class Parser {
 	 * @param $csv_line string
 	 */
 	private function set_header_from_csv( $csv_line ) {
-		$this->header_fields       = explode( ",", $csv_line );
+		
+		$fields = explode( ",", $csv_line );
+
+		$this->header_fields       = $fields;
 		$this->header_fields_count = count( $this->header_fields );
 	}
 
@@ -97,7 +100,7 @@ class Parser {
 			'errors' => array(),
 		);
 
-		$data_file = explode( "\n", $this->content );
+		$data_file = explode( "\n", esc_html( $this->content ) );
 
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
@@ -148,8 +151,6 @@ class Parser {
 				$has_validation_error = true;
 			}
 
-
-
 			try {
 
 				/** @var $dto DTO */
@@ -162,7 +163,7 @@ class Parser {
 
 			} catch ( \Exception $e ) {
 				if ( class_exists( 'WP_CLI' ) ) {
-					\WP_CLI::log( $e->getMessage() );
+					\WP_CLI::log(  $e->getMessage() );
 				}
 				$this->line_errors[ $this->get_line_number($line_number) ] = $e->getMessage();
 				continue;

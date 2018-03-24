@@ -77,47 +77,18 @@ add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
  *
  * @param $atts
  */
-function openclub_csv_display_shortcode_callback( $atts ) {
+function openclub_csv_display_shortcode_callback( $config ) {
 
-	$atts = shortcode_atts(
+	$config = shortcode_atts(
 		array(
 			'post_id' => null,
+			'error_messages' => "yes",
+			'error_lines' => "yes",
 		),
-		$atts
+		$config
 	);
 
-	try{
-
-		$a = \OpenClub\CSV_Util::get_csv_content( $atts['post_id'] );
-
-		if( !empty( $a[ 'data' ] ) ) {
-
-			if(!empty( $a['errors'] ) ) {
-				echo "<h3 class='openclub_csv_error'>Errors</h3><p>";
-
-				foreach($a['errors'] as $line => $message ){
-					echo \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
-				}
-				echo '</p>';
-			}
-
-			echo "<table class='openclub_csv'>";
-			echo \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
-
-			/** @var DTO $line_data */
-			foreach($a[ 'data' ] as $line_data ){
-				//if( !$line_data->has_validation_error() ) {
-					echo \OpenClub\CSV_Util::get_csv_table_row( $line_data );
-				//}
-			}
-			echo "</table>";
-		} else {
-			echo 'No data';
-		}
-
-	} catch( \Exception $e ) {
-		echo 'Error: ' . $e->getMessage() . ' Check the value passed to the shortcode is a valid post_id.';
-	}
+	echo openclub_csv_get_display_table( $config );
 
 }
 add_shortcode( 'openclub_display_csv', 'openclub_csv_display_shortcode_callback' );
@@ -148,38 +119,16 @@ function openclub_csv_view_content_page( $content ) {
 
 	if ( is_singular() && in_array( get_post_type( $post ), array( 'openclub-csv' ) ) ) {
 
-		try{
-			$a = \OpenClub\CSV_Util::get_csv_content( $post->ID );
-			$out = '';
+		$config = array(
+			'post_id' => $post->ID,
+			'error_messages' => "yes",
+			'error_lines' => "yes",
+		);
 
-			if( !empty( $a[ 'data' ] ) ) {
+		return 's';
 
-				if(!empty( $a['errors'] ) ) {
-					$out .= "<h3 class='openclub_csv_error'>Errors</h3><p>";
+		return openclub_csv_get_display_table( $config );
 
-					foreach($a['errors'] as $line => $message ){
-						$out .= \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
-					}
-					$out .= '</p>';
-				}
-
-				$out .= "<table class='openclub_csv'>";
-				$out .= \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
-
-				/** @var DTO $line_data */
-				foreach($a[ 'data' ] as $line_data ){
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data );
-				}
-				$out .= "</table>";
-			} else {
-				$out .= 'No data';
-			}
-
-		} catch( \Exception $e ) {
-			$out .= 'Error: ' . $e->getMessage() . ' Check the value passed to the shortcode is a valid post_id.';
-		}
-
-		return $out;
 	}
 
 	return $content;
@@ -189,3 +138,53 @@ function openclub_csv_view_content_page( $content ) {
 add_filter( 'the_content', 'openclub_csv_view_content_page' );
 
 
+function openclub_csv_get_display_table( $config ) {
+
+	$out = '';
+
+	try{
+		$a = \OpenClub\CSV_Util::get_csv_content( $config[ 'post_id'] );
+
+		if( !empty( $a[ 'data' ] ) ) {
+
+			if(!empty( $a['errors'] ) && $config['error_messages' ] == "yes"  ) {
+				$out .= "<h3 class='openclub_csv_error'>Errors</h3><p>";
+
+				foreach($a['errors'] as $line => $message ){
+					$out .= \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
+				}
+				$out .= '</p>';
+			}
+
+			$out .= "<table class='openclub_csv'>\n";
+			$out .= \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
+
+			/** @var DTO $line_data */
+			foreach($a[ 'data' ] as $line_data ){
+				if( !$line_data->has_validation_error() ) {
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data );
+					continue;
+				}
+				if( $config['error_lines'] == "yes" ) {
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data );
+				}
+			}
+			$out .= "</table>\n";
+		} else {
+			$out .= 'No data';
+		}
+
+	} catch( \Exception $e ) {
+		$out .= 'Error: ' . $e->getMessage() . ' Check the value passed to the shortcode is a valid post_id.';
+	}
+
+	return $out;
+}
+
+function openclub_csv_robots_override( $output ) {
+
+	$output .= "Disallow: /openclub_csv/\n";
+	return $output;
+}
+
+add_filter( 'robots_txt', 'openclub_csv_robots_override', 0, 2 );

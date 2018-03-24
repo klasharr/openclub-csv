@@ -29,16 +29,16 @@ class Field_Validator_Manager {
 			return;
 		}
 
-		foreach ( $this->post->field_settings as $field => $rules ) {
+		foreach ( $this->post->field_settings as $field => $config ) {
 
-			if ( empty( $rules['type'] ) ) {
+			if ( empty( $config['type'] ) ) {
 				throw new Exception( 'Field has no type' );
 			}
 
-			$rules['field_name'] = $field;
+			$config['field_name'] = $field;
 
-			$className              = ucwords( $rules['type'] ) . 'Field';
-			$this->fields[ $field ] = Factory::get_field( $className, $rules );
+			$className              = ucwords( $config['type'] ) . 'Field';
+			$this->fields[ $field ] = Factory::get_field( $className, $config );
 		}
 
 

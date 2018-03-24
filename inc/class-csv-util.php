@@ -81,13 +81,13 @@ class CSV_Util {
 
 		return '<tr class="'.$class.'"><td>' .
 	           implode('</td><td>', $line_data->get_data() ) .
-	           '</tr>';
+	           "</tr>\n";
 	}
 
 	public static function get_csv_table_header( $csv_fields ) {
 		return '<tr><th>' .
 		       implode('</th><th>', $csv_fields ) .
-		       '</tr>';
+		       "</tr>\n";
 	}
 
 	public static function get_formatted_csv_line_error_message( $error_message ){

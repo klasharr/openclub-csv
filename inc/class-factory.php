@@ -29,9 +29,9 @@ class Factory {
 		return new DTO( $line_number, $data, $has_validation_error );
 	}
 
-	public static function get_field( $class_name, $rules ) {
+	public static function get_field( $class_name, $config ) {
 
-		$file = OPENCLUB_CSV_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $rules['type'] ) . '.php';
+		$file = OPENCLUB_CSV_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $config['type'] ) . '.php';
 
 		if ( ! file_exists( $file ) ) {
 			throw new \Exception( $file . ' does not exist' );
@@ -41,6 +41,6 @@ class Factory {
 
 		$namespaced_class_name = '\OpenClub\\Fields\\' . $class_name;
 
-		return new $namespaced_class_name( $rules );
+		return new $namespaced_class_name( $config );
 	}
 }
