@@ -125,8 +125,6 @@ function openclub_csv_view_content_page( $content ) {
 			'error_lines' => "yes",
 		);
 
-		return 's';
-
 		return openclub_csv_get_display_table( $config );
 
 	}
