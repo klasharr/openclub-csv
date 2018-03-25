@@ -20,6 +20,12 @@ class DTO {
 
 
 	/**
+	 * @var $num_fields int
+	 */
+	private $num_fields;
+
+
+	/**
 	 * @var $has_validation_error bool
 	 */
 	private $has_validation_error = false;
@@ -41,6 +47,7 @@ class DTO {
 		$this->line_number = $line_number;
 		$this->data        = $data;
 		$this->has_validation_error = $has_validation_error;
+		$this->num_fields = count( $data );
 
 	}
 
@@ -62,6 +69,10 @@ class DTO {
 
 	public function get_line_number(){
 		return $this->line_number;
+	}
+
+	public function get_fields_count() {
+		return $this->num_fields;
 	}
 
 }

@@ -10,7 +10,7 @@ require_once( 'class-base.php' );
 require_once( 'interface-field-validator.php' );
 require_once( 'exception-field-validator.php' );
 
-abstract class Base_Field {
+abstract class Base_Field implements Field_Validator {
 
 	/**
 	 * @var $data array
@@ -26,6 +26,11 @@ abstract class Base_Field {
 	 * @var $error_message string|bool
 	 */
 	private $error_message = false;
+
+	/**
+	 * @var $display_field bool
+	 */
+	private $display_field = true;
 
 	/**
 	 * @var bool
@@ -49,6 +54,10 @@ abstract class Base_Field {
 
 		if ( ! empty( $this->data['required'] ) ) {
 			$this->required = true;
+		}
+
+		if( isset( $this->data[ 'display' ] ) && !$this->data[ 'display' ] ){
+			$this->display_field = false;
 		}
 	}
 
@@ -139,6 +148,11 @@ abstract class Base_Field {
 
 	public function isRequired() {
 		return $this->required;
+	}
+	
+	
+	public function displayField(){
+		return $this->display_field;
 	}
 
 	protected function stringHasValidLength( $value ) {

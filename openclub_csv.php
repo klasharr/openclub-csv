@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'OPENCLUB_CSV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-
+define( 'OPENCLUB_DEFAULT_FILTER_PRIORITY', 10 );
 
 if ( class_exists( 'WP_CLI' ) ) {
 
@@ -155,16 +155,16 @@ function openclub_csv_get_display_table( $config ) {
 			}
 
 			$out .= "<table class='openclub_csv'>\n";
-			$out .= \OpenClub\CSV_Util::get_csv_table_header( $a[ 'header_fields' ] );
+			$out .= \OpenClub\CSV_Util::get_csv_table_header( $a[ 'field_validator_manager' ] );
 
 			/** @var DTO $line_data */
 			foreach($a[ 'data' ] as $line_data ){
 				if( !$line_data->has_validation_error() ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data );
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $a[ 'field_validator_manager' ] );
 					continue;
 				}
 				if( $config['error_lines'] == "yes" ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data );
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $a[ 'field_validator_manager' ] );
 				}
 			}
 			$out .= "</table>\n";
@@ -186,3 +186,11 @@ function openclub_csv_robots_override( $output ) {
 }
 
 add_filter( 'robots_txt', 'openclub_csv_robots_override', 0, 2 );
+
+
+
+function openclub_csv_example_data_filter( $data, $post ){
+	return $data;
+}
+
+add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );

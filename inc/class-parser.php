@@ -14,9 +14,9 @@ require_once( 'class-factory.php' );
 class Parser {
 
 	/**
-	 * @var string
+	 * @var $post \WP_Post
 	 */
-	private $content;
+	public $post;
 
 	/**
 	 * @var $line_errors array
@@ -59,7 +59,7 @@ class Parser {
 		}
 
 		$this->field_validator_manager = Factory::get_field_validator_manager( $post );
-		$this->content = $post->post_content;
+		$this->post = $post;
 	}
 
 
@@ -100,7 +100,7 @@ class Parser {
 			'errors' => array(),
 		);
 
-		$data_file = explode( "\n", esc_html( $this->content ) );
+		$data_file = explode( "\n", esc_html( $this->post->post_content ) );
 
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
@@ -174,6 +174,9 @@ class Parser {
 
 		$out['errors'] = $this->line_errors;
 		$out['header_fields' ] = $this->get_header_fields();
+		$out['field_validator_manager'] = $this->field_validator_manager;
+
+		$out = apply_filters( 'openclub_csv_filter_data', $out, $this->post );
 
 		return $out;
 	}
@@ -203,8 +206,12 @@ class Parser {
 			return $this->validators[ $field_name ];
 		}
 
+		if(empty($field_name)){
+			throw new \Exception( 'There\'s an empty column, please remove from the CSV.' );
+		}
+
 		if ( ! $field_validator = $this->field_validator_manager->get_validator( $field_name ) ) {
-			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the field name and field settings to see that they match.' );
+			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the column name against the field setting in \'fields\' to see that they match.' );
 		}
 
 		$this->validators[ $field_name ] = $field_validator;

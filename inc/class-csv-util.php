@@ -64,29 +64,39 @@ class CSV_Util {
 		$parser->init( CSV_Util::get_csv_post( $post_id ) );
 
 		if( $filter == null ) {
-			return $parser->get_data( Factory::get_null_filter() );
+			$data = $parser->get_data( Factory::get_null_filter() );
 		} else {
-			return $parser->get_data( $filter );
+			$data =  $parser->get_data( $filter );
 		}
+        return $data;
 
 	}
 
 
-	public static function get_csv_table_row( DTO $line_data ) {
+	public static function get_csv_table_row( DTO $line_data, Field_Validator_Manager $field_Validator_Manager ) {
 
 		$class = '';
 		if( $line_data->has_validation_error()){
 			$class = 'openclub_csv_error';
 		}
 
-		return '<tr class="'.$class.'"><td>' .
-	           implode('</td><td>', $line_data->get_data() ) .
-	           "</tr>\n";
+		$out = '<tr class="'.$class.'">';
+
+		foreach( $line_data->get_data() as $key => $value ) {
+
+			if( $field_Validator_Manager->get_validator( $key )->displayField() ) {
+				$out .= '<td>'.$value.'</td>';
+			}
+		}
+		$out .= "</tr>\n";
+
+		return $out;
+
 	}
 
-	public static function get_csv_table_header( $csv_fields ) {
+	public static function get_csv_table_header( Field_Validator_Manager $field_Validator_Manager )  {
 		return '<tr><th>' .
-		       implode('</th><th>', $csv_fields ) .
+		       implode('</th><th>', $field_Validator_Manager->getDisplayFields() ) .
 		       "</tr>\n";
 	}
 

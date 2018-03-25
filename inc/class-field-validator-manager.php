@@ -32,7 +32,7 @@ class Field_Validator_Manager {
 		foreach ( $this->post->field_settings as $field => $config ) {
 
 			if ( empty( $config['type'] ) ) {
-				throw new Exception( 'Field has no type' );
+				throw new \Exception( 'Field ' . $field . ' has no defined type, check fields setting.' );
 			}
 
 			$config['field_name'] = $field;
@@ -44,6 +44,7 @@ class Field_Validator_Manager {
 
 	}
 
+
 	public function has_validators() {
 		return ! empty( $this->fields ) ? true : false;
 	}
@@ -52,6 +53,19 @@ class Field_Validator_Manager {
 
 		return isset( $this->fields[ $key ] ) ? $this->fields[ $key ] : false;
 
+	}
+
+	public function getDisplayFields() {
+
+		$out = array();
+		foreach( $this->fields as $fieldName => $validator ){
+
+			/** @var $validator Field_Validator */
+			if( $validator->displayField()){
+				$out[] = $fieldName;
+			}
+		}
+		return $out;
 	}
 
 
