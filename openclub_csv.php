@@ -141,30 +141,34 @@ function openclub_csv_get_display_table( $config ) {
 	$out = '';
 
 	try{
-		$a = \OpenClub\CSV_Util::get_csv_content( $config[ 'post_id'] );
+		
+		/**
+		 * @var \OpenClub\Data_Set $data_set
+		 */
+		$data_set = \OpenClub\CSV_Util::get_data_set( $config[ 'post_id'] );
 
-		if( !empty( $a[ 'data' ] ) ) {
+		if( $data_set->has_data() ) {
 
-			if(!empty( $a['errors'] ) && $config['error_messages' ] == "yes"  ) {
+			if( $data_set->has_errors() && $config['error_messages' ] == "yes"  ) {
 				$out .= "<h3 class='openclub_csv_error'>Errors</h3><p>";
 
-				foreach($a['errors'] as $line => $message ){
+				foreach($data_set->get_errors() as $line_number => $message ){
 					$out .= \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
 				}
 				$out .= '</p>';
 			}
 
 			$out .= "<table class='openclub_csv'>\n";
-			$out .= \OpenClub\CSV_Util::get_csv_table_header( $a[ 'field_validator_manager' ] );
+			$out .= \OpenClub\CSV_Util::get_csv_table_header( $data_set->get_field_validator_manager() );
 
 			/** @var DTO $line_data */
-			foreach($a[ 'data' ] as $line_data ){
+			foreach($data_set->get_data() as $line_data ){
 				if( !$line_data->has_validation_error() ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $a[ 'field_validator_manager' ] );
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_validator_manager() );
 					continue;
 				}
 				if( $config['error_lines'] == "yes" ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $a[ 'field_validator_manager' ] );
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_validator_manager() );
 				}
 			}
 			$out .= "</table>\n";
@@ -173,7 +177,7 @@ function openclub_csv_get_display_table( $config ) {
 		}
 
 	} catch( \Exception $e ) {
-		$out .= 'Error: ' . $e->getMessage() . ' Check the value passed to the shortcode is a valid post_id.';
+		$out .= 'Error: ' . $e->getMessage();
 	}
 
 	return $out;
@@ -188,9 +192,13 @@ function openclub_csv_robots_override( $output ) {
 add_filter( 'robots_txt', 'openclub_csv_robots_override', 0, 2 );
 
 
-
-function openclub_csv_example_data_filter( $data, $post ){
-	return $data;
+/**
+ * @param \OpenClub\Data_Set $data_set
+ * @param $post
+ *
+ * @return \OpenClub\Data_Set
+ */
+function openclub_csv_example_data_set_filter( \OpenClub\Data_Set $data_set, $post ){
+	return $data_set;
 }
-
-add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );
+add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_set_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );

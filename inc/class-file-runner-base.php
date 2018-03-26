@@ -2,7 +2,10 @@
 
 namespace OpenClub\CLI;
 
-require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-parser.php' );
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 
 abstract class File_Runner_Base {

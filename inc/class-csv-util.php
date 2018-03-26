@@ -2,6 +2,10 @@
 
 namespace OpenClub;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once( 'class-factory.php' );
 
 class CSV_Util {
@@ -23,15 +27,15 @@ class CSV_Util {
 			);
 		}
 
-		if ( $post->post_type != 'openclub-csv' || $post->status == 'auto-draft' ) {
+		if ( $post->post_type != 'openclub-csv' ) {
 			throw new \Exception (
-				sprintf( '$post_id %d does not return a post object of type CSV.', $post_id )
+				sprintf( '$post_id %d does not return a post object of post type openclub-csv.', $post_id )
 			);
 		}
 
 		if ( $post->status == 'auto-draft' ) {
 			throw new \Exception (
-				sprintf( '$post_id %d returns a openclub-csv post type auto-draft.', $post_id )
+				sprintf( '$post_id %d returns an openclub-csv post type auto-draft.', $post_id )
 			);
 		}
 
@@ -42,33 +46,27 @@ class CSV_Util {
 				sprintf( '$post_id %d does not have a fields post meta set.', $post_id )
 			);
 		}
-
 		return $post;
 
 	}
 
 
 	/**
-	 * @todo check correctness of filter.
-	 *
 	 * @param $post_id
 	 * @param null $filter
 	 *
-	 * @return mixed
-	 * @throws Exception
+	 * @return Data_Set
+	 * @throws \Exception
 	 */
-	public static function get_csv_content( $post_id, $filter = null ) {
+	public static function get_data_set( $post_id, $filter = null, $group_on = null ) {
 
 		$parser = Factory::get_parser();
 
 		$parser->init( CSV_Util::get_csv_post( $post_id ) );
 
-		if( $filter == null ) {
-			$data = $parser->get_data( Factory::get_null_filter() );
-		} else {
-			$data =  $parser->get_data( $filter );
-		}
-        return $data;
+		$filter = ( $filter == null ) ? Factory::get_null_filter() : $filter;
+
+		return  $parser->get_data( $filter );
 
 	}
 

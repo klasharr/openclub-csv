@@ -10,8 +10,14 @@ require_once( 'class-field-validator-manager.php' );
 require_once( 'class-null-filter.php' );
 require_once( 'class-dto.php' );
 require_once( 'class-parser.php' );
+require_once( 'class-data-set.php' );
 
 class Factory {
+
+	/**
+	 * @var array $data_sets
+	 */
+	private static $data_sets = array();
 
 	public static function get_parser() {
 		return new Parser;
@@ -42,5 +48,21 @@ class Factory {
 		$namespaced_class_name = '\OpenClub\\Fields\\' . $class_name;
 
 		return new $namespaced_class_name( $config );
+	}
+
+	/**
+	 * @param \WP_Post $post
+	 *
+	 * @return Data_Set
+	 */
+	public static function get_data_set( \WP_Post $post ){
+
+		if( isset( self::$data_sets[ $post->ID] ) ) {
+			return self::$data_sets[ $post->ID];
+		}
+
+		$data_set = new Data_Set( $post );
+		self::$data_sets[ $post->ID] = $data_set;
+		return $data_set;
 	}
 }

@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once( 'class-dto.php' );
+
 class DTO {
 
 	/**
@@ -33,15 +35,15 @@ class DTO {
 	public function __construct( $line_number, array $data, $has_validation_error ) {
 
 		if ( !is_numeric( $line_number ) ) {
-			throw new \Exception( 'Invalid line number passed: ' . $line_number );
+			throw new \DTO_Exception( 'Invalid line number passed: ' . $line_number );
 		}
 
 		if ( !is_bool( $has_validation_error )) {
-			throw new \Exception( '$has_validation_error must be a boolean.' );
+			throw new \DTO_Exception( '$has_validation_error must be a boolean.' );
 		}
 
 		if ( empty( $data ) ) {
-			throw new \Exception( '$data cannot be empty' );
+			throw new \DTO_Exception( '$data cannot be empty' );
 		}
 
 		$this->line_number = $line_number;
@@ -58,7 +60,7 @@ class DTO {
 
 	public function __toString() {
 
-		$validation_error_flag = $this->has_validation_error ? '[ERROR]' : '';
+		$validation_error_flag = $this->has_validation_error ? '[Validation ERROR]' : '';
 
 		return $validation_error_flag . implode( ',', $this->data ) ;
 	}

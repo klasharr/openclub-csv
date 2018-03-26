@@ -42,7 +42,7 @@ abstract class Base_Field implements Field_Validator {
 		$this->data = $data;
 
 		if ( isset( $this->data['options'] ) && ! array( $this->data['options'] ) ) {
-			throw new Validator_Exception( 'options is not an array' );
+			throw new Validator_Field_Exception( 'options is not an array' );
 		}
 
 
@@ -63,11 +63,11 @@ abstract class Base_Field implements Field_Validator {
 
 	protected function _validate( $value ) {
 
-		if ( $this->isRequired() && empty( $value ) ) {
+		if ( $this->is_required() && empty( $value ) ) {
 			throw new Validator_Field_Exception( 'Data error in field ' . $this->data['field_name'] . ' requires value' );
 		}
 
-		$this->stringHasValidLength( $value );
+		$this->string_has_valid_length( $value );
 		$this->hasValidOption( $value );
 	}
 
@@ -139,14 +139,10 @@ abstract class Base_Field implements Field_Validator {
 		return $this->errorMessage;
 	}
 
-	protected function isValidInt( $value ) {
-
-		return is_numeric( $value ) ? true : false;
-
-	}
+	
 
 
-	public function isRequired() {
+	public function is_required() {
 		return $this->required;
 	}
 	
@@ -155,7 +151,7 @@ abstract class Base_Field implements Field_Validator {
 		return $this->display_field;
 	}
 
-	protected function stringHasValidLength( $value ) {
+	protected function string_has_valid_length( $value ) {
 		if ( isset( $this->data['max-length'] ) && ! empty( $value ) && strlen( $value ) > $this->data['max-length'] ) {
 			throw new Validator_Field_Exception( 'Data error in field ' . $this->data['field_name'] . ' value too long, a max length of  ' . $this->data['max-length'] . ' is expected. ' . strlen( $value ) . ' given. Value: "' . $value . '"' );
 		}

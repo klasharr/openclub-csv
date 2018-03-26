@@ -11,6 +11,7 @@ use \OpenClub\CSV_Util;
 use \WP_CLI;
 
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-file-runner-base.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 
 Class File_Runner extends  File_Runner_Base{
 
@@ -27,17 +28,25 @@ Class File_Runner extends  File_Runner_Base{
 	 */
 	public function execute() {
 
-		$parser = Factory::get_parser();
+		/**
+		 * @var Data_Set @data_set
+		 */
+		$data_set = \OpenClub\CSV_Util::get_data_set( $this->post_id );
 
-		$parser->init( CSV_Util::get_csv_post( $this->post_id ) );
+		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $this->post_id ) );
 
-		$parsed_lines = $parser->get_data( Factory::get_null_filter() );
-
-		foreach( $parsed_lines[ 'data' ] as $line ) {
-			WP_CLI::log( $line );
+		/** @var DTO $line_data */
+		foreach($data_set->get_data() as $line_data ){
+			WP_CLI::log( $line_data );
 		}
 
-		WP_CLI::success( 'Success!' );
+		if($data_set->has_errors()) {
+			WP_CLI::log( '====== Completed with errors! =======');
+			return;
+		}
+
+		WP_CLI::success( '====== Success! ====== ' );
+
 	}
 
 }

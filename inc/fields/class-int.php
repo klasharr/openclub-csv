@@ -17,6 +17,13 @@ class IntField extends Base_Field implements Field_Validator {
 
 	public function validate( $value ) {
 		parent::_validate( $value );
+
+		return $this->is_valid_int( $value );
+	}
+
+	private function is_valid_int( $value ) {
+
+		return is_numeric( $value ) ? true : false;
 	}
 
 }
