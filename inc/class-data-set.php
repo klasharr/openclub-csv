@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: klausharris
- * Date: 26/03/2018
- * Time: 08:55
- */
 
 namespace OpenClub;
 

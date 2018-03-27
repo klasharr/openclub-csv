@@ -28,12 +28,14 @@ Class File_Runner extends  File_Runner_Base{
 	 */
 	public function execute() {
 
+		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
+
 		/**
 		 * @var Data_Set @data_set
 		 */
-		$data_set = \OpenClub\CSV_Util::get_data_set( $this->post_id );
+		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
 
-		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $this->post_id ) );
+		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
 
 		/** @var DTO $line_data */
 		foreach($data_set->get_data() as $line_data ){

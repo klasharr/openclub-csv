@@ -56,23 +56,30 @@ class Parser {
 	private $group_by_field = null;
 
 
-	public function __construct() {}
+	/**
+	 * @var $input Data_Set_Input
+	 */
+	private $input;
+
 
 	/**
-	 * @param WP_Post $post
+	 * Parser constructor.
 	 *
-	 * @throws Exception
+	 * @param Data_Set_Input $input
 	 */
-	public function init( \WP_Post $post ) {
+	public function __construct( Data_Set_Input $input ) {
+		
+		$this->input = $input;
 
-		if ( empty( trim( $post->post_content ) ) ) {
-			throw new \Exception( 'Post ID '. $post->ID . ' has no content.' );
+		if ( empty( trim( $this->input->get_post()->post_content ) ) ) {
+			throw new \Exception( 'Post ID '. $this->input->get_post() . ' has no content.' );
 		}
 
-		$this->data_set = Factory::get_data_set( $post );
-		$this->field_validator_manager = Factory::get_field_validator_manager( $post );
-		$this->post = $post;
+		$this->data_set = Factory::get_data_set( $this->input->get_post() );
+		$this->field_validator_manager = Factory::get_field_validator_manager( $this->input->get_post() );
+
 	}
+
 
 	public function set_group_by_field( $field ) {
 
@@ -118,9 +125,9 @@ class Parser {
 	 * @return mixed|Data_Set|void
 	 * @throws \Exception
 	 */
-	public function get_data( Filter $filter ) {
+	public function get_data() {
 
-		$data_file = explode( "\n", esc_html( $this->post->post_content ) );
+		$data_file = explode( "\n", esc_html( $this->input->get_post()->post_content ) );
 
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
@@ -176,7 +183,7 @@ class Parser {
 				/** @var $dto DTO */
 				$dto = Factory::get_dto( $this->get_line_number($line_number), $field_value_pairs, $has_validation_error );
 
-				if ( $filter->is_filtered_out( $dto ) ) {
+				if ( $this->input->get_filter()->is_filtered_out( $dto ) ) {
 					$line_number ++;
 					continue;
 				}
@@ -194,7 +201,7 @@ class Parser {
 		$this->data_set->set_header_fields( $this->get_header_fields() );
 		$this->data_set->set_field_validator_manager( $this->field_validator_manager );
 
-		$this->data_set = apply_filters( 'openclub_csv_filter_data', $this->data_set, $this->post );
+		$this->data_set = apply_filters( 'openclub_csv_filter_data', $this->data_set, $this->input->get_post() );
 
 		return $this->data_set;
 	}
@@ -251,4 +258,5 @@ class Parser {
 			\WP_CLI::log( $error_message );
 		}
 	}
+
 }

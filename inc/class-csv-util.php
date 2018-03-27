@@ -52,21 +52,15 @@ class CSV_Util {
 
 
 	/**
-	 * @param $post_id
-	 * @param null $filter
+	 * @param Data_Set_Input $input
 	 *
-	 * @return Data_Set
+	 * @return mixed|Data_Set|void
 	 * @throws \Exception
 	 */
-	public static function get_data_set( $post_id, $filter = null, $group_on = null ) {
+	public static function get_data_set( Data_Set_Input $input ) {
 
-		$parser = Factory::get_parser();
-
-		$parser->init( CSV_Util::get_csv_post( $post_id ) );
-
-		$filter = ( $filter == null ) ? Factory::get_null_filter() : $filter;
-
-		return  $parser->get_data( $filter );
+		$parser = Factory::get_parser( $input );
+		return  $parser->get_data();
 
 	}
 

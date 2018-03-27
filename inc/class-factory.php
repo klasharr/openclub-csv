@@ -11,6 +11,7 @@ require_once( 'class-null-filter.php' );
 require_once( 'class-dto.php' );
 require_once( 'class-parser.php' );
 require_once( 'class-data-set.php' );
+require_once( 'class-data-set-input.php' );
 
 class Factory {
 
@@ -19,8 +20,13 @@ class Factory {
 	 */
 	private static $data_sets = array();
 
-	public static function get_parser() {
-		return new Parser;
+	/**
+	 * @param $input Data_Set_Input
+	 *
+	 * @return Parser
+	 */
+	public static function get_parser( $input ) {
+		return new Parser( $input );
 	}
 
 	public static function get_field_validator_manager( \WP_Post $post ) {
@@ -64,5 +70,13 @@ class Factory {
 		$data_set = new Data_Set( $post );
 		self::$data_sets[ $post->ID] = $data_set;
 		return $data_set;
+	}
+
+
+	/**
+	 * @return Data_Set_Input
+	 */
+	public static function get_data_input_object( $post_id ){
+		return new Data_Set_Input( $post_id );
 	}
 }

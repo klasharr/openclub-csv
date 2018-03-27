@@ -141,11 +141,16 @@ function openclub_csv_get_display_table( $config ) {
 	$out = '';
 
 	try{
+
+		/**
+		 * @var $input \OpenClub\Data_Set_Input
+		 */
+		$input = \OpenClub\Factory::get_data_input_object( $config[ 'post_id'] );
 		
 		/**
 		 * @var \OpenClub\Data_Set $data_set
 		 */
-		$data_set = \OpenClub\CSV_Util::get_data_set( $config[ 'post_id'] );
+		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
 
 		if( $data_set->has_data() ) {
 
