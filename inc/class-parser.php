@@ -72,7 +72,7 @@ class Parser {
 		$this->input = $input;
 
 		if ( empty( trim( $this->input->get_post()->post_content ) ) ) {
-			throw new \Exception( 'Post ID '. $this->input->get_post() . ' has no content.' );
+			throw new \Exception( 'Post ID '. $this->input->get_post()->ID . ' has no content.' );
 		}
 
 		$this->data_set = Factory::get_data_set( $this->input->get_post() );

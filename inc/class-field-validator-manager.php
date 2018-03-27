@@ -51,8 +51,12 @@ class Field_Validator_Manager {
 
 	public function get_validator( $key ) {
 
-		return isset( $this->fields[ $key ] ) ? $this->fields[ $key ] : false;
+        if(!isset( $this->fields[ $key ] ) ) {
+	        throw new \Exception( 'Validator '. $key . ' does not exist, check the column name.' );
+	        return;
+        }
 
+		return $this->fields[ $key ];
 	}
 
 	public function getDisplayFields() {
