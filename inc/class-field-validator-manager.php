@@ -53,7 +53,6 @@ class Field_Validator_Manager {
 
         if(!isset( $this->fields[ $key ] ) ) {
 	        throw new \Exception( 'Validator '. $key . ' does not exist, check the column name.' );
-	        return;
         }
 
 		return $this->fields[ $key ];
