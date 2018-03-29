@@ -2,6 +2,8 @@
 
 namespace OpenClub\Fields;
 
+use OpenClub\Data_Set_Input;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -11,8 +13,8 @@ require_once( 'interface-field-validator.php' );
 
 class StringField extends Base_Field implements Field_Validator {
 
-	public function __construct( $data ) {
-		parent::__construct( $data );
+	public function __construct( $data, Data_Set_Input $input ) {
+		parent::__construct( $data, $input );
 
 	}
 

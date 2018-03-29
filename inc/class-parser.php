@@ -76,8 +76,8 @@ class Parser {
 		}
 
 		$this->data_set = Factory::get_data_set( $this->input->get_post() );
-		$this->field_validator_manager = Factory::get_field_validator_manager( $this->input->get_post() );
-
+		$this->field_validator_manager = Factory::get_field_validator_manager( $this->input );
+		
 	}
 
 
@@ -179,6 +179,10 @@ class Parser {
 			}
 
 			try {
+
+				if( $this->input->has_limit() && $this->get_line_number($line_number)  > $this->input->get_limit())  {
+					break;
+				}
 
 				/** @var $dto DTO */
 				$dto = Factory::get_dto( $this->get_line_number($line_number), $field_value_pairs, $has_validation_error );

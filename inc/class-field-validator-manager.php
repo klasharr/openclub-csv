@@ -19,11 +19,17 @@ class Field_Validator_Manager {
 	private $fields = array();
 
 	/**
+	 * @var Data_Set_Input
+	 */
+	private $input;
+
+	/**
 	 * @param \WP_Post $post
 	 */
-	public function __construct( \WP_Post $post ) {
+	public function __construct( Data_Set_Input $input ) {
 
-		$this->post = $post;
+		$this->post = $input->get_post();
+		$this->input = $input;
 
 		if ( empty( $this->post->field_settings ) ) {
 			return;
@@ -38,7 +44,7 @@ class Field_Validator_Manager {
 			$config['field_name'] = $field;
 
 			$className              = ucwords( $config['type'] ) . 'Field';
-			$this->fields[ $field ] = Factory::get_field( $className, $config );
+			$this->fields[ $field ] = Factory::get_field( $className, $config, $this->input );
 		}
 
 
@@ -64,7 +70,9 @@ class Field_Validator_Manager {
 		foreach( $this->fields as $fieldName => $validator ){
 
 			/** @var $validator Field_Validator */
-			if( $validator->displayField()){
+			if( $this->input->has_reset_display_fields() ){
+				$out[] = $fieldName;
+			} elseif( $validator->displayField() ) {
 				$out[] = $fieldName;
 			}
 		}

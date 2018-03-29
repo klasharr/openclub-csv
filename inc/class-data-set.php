@@ -49,10 +49,13 @@ class Data_Set {
 	}
 
 	/**
-	 * @param int $line_number
+	 * @param $line_number
 	 * @param DTO $dto
+	 * @param Parser $parser
+	 *
+	 * @throws \Exception
 	 */
-	public function push_row( $line_number, DTO $dto ) {
+	public function push_row( $line_number, DTO $dto) {
 
 		$this->validate_number( $line_number );
 		$this->data_rows[ $line_number ] = $dto;

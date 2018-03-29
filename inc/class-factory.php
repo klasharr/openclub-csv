@@ -29,8 +29,13 @@ class Factory {
 		return new Parser( $input );
 	}
 
-	public static function get_field_validator_manager( \WP_Post $post ) {
-		return new Field_Validator_Manager( $post );
+	/**
+	 * @param Data_Set_Input $input
+	 *
+	 * @return Field_Validator_Manager
+	 */
+	public static function get_field_validator_manager( Data_Set_Input $input ) {
+		return new Field_Validator_Manager( $input );
 	}
 
 	public static function get_null_filter() {
@@ -41,7 +46,7 @@ class Factory {
 		return new DTO( $line_number, $data, $has_validation_error );
 	}
 
-	public static function get_field( $class_name, $config ) {
+	public static function get_field( $class_name, $config, Data_Set_Input $input ) {
 
 		$file = OPENCLUB_CSV_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $config['type'] ) . '.php';
 
@@ -53,7 +58,7 @@ class Factory {
 
 		$namespaced_class_name = '\OpenClub\\Fields\\' . $class_name;
 
-		return new $namespaced_class_name( $config );
+		return new $namespaced_class_name( $config, $input );
 	}
 
 	/**
@@ -79,4 +84,5 @@ class Factory {
 	public static function get_data_input_object( $post_id ){
 		return new Data_Set_Input( $post_id );
 	}
+	
 }

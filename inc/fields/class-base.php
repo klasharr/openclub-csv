@@ -2,6 +2,8 @@
 
 namespace OpenClub\Fields;
 
+use OpenClub\Data_Set_Input;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -37,9 +39,15 @@ abstract class Base_Field implements Field_Validator {
 	 */
 	private $required = false;
 
-	public function __construct( $data ) {
+	/**
+	 * @var $input Data_Set_Input
+	 */
+	private $input;
+	
+	public function __construct( $data, Data_Set_Input $input ) {
 
 		$this->data = $data;
+		$this->input = $input;
 
 		if ( isset( $this->data['options'] ) && ! array( $this->data['options'] ) ) {
 			throw new Validator_Field_Exception( 'options is not an array' );
@@ -56,7 +64,7 @@ abstract class Base_Field implements Field_Validator {
 			$this->required = true;
 		}
 
-		if( isset( $this->data[ 'display' ] ) && !$this->data[ 'display' ] ){
+		if( !$this->input->has_reset_display_fields() && isset( $this->data[ 'display' ] ) && !$this->data[ 'display' ] ){
 			$this->display_field = false;
 		}
 	}

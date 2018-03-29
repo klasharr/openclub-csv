@@ -22,6 +22,22 @@ class Data_Set_Input {
 	private $post_id;
 
 	/**
+	 * @var string
+	 */
+	private $group_by_field;
+
+	/**
+	 * @var int
+	 */
+	private $limit;
+
+
+	/**
+	 * @var bool
+	 */
+	private $reset_display_fields = false;
+
+	/**
 	 * @param $post_id int
 	 *
 	 * @throws \Exception
@@ -71,4 +87,46 @@ class Data_Set_Input {
 		return $this->post_id;
 	}
 
+
+	public function reset_field_display_rules(){
+		$this->reset_display_fields = true;
+	}
+
+	public function has_reset_display_fields(){
+		return $this->reset_display_fields;
+	}
+
+	public function set_group_by_field( $group_by_field ){
+
+		if( empty( trim( $group_by_field ) ) ) {
+			throw new \Exception('$group_by_field cannot be empty' );
+		}
+
+		$this->group_by_field = $group_by_field;
+	}
+
+	public function get_group_by_field(){
+
+		return $this->set_group_by_field;
+	}
+
+
+	public function has_limit(){
+		return $this->limit ? true : false;
+	}
+
+	/**
+	 * @param $limit
+	 */
+	public function set_limit( $limit ){
+
+		if( !is_numeric($limit ) || (int) $limit != $limit || $limit <= 0 ) {
+			throw new \Exception( '$limit must be passed a positive integer.');
+		}
+		$this->limit = (int) $limit;
+	}
+
+	public function get_limit(){
+		return $this->limit;
+	}
 }
