@@ -36,7 +36,7 @@ class Parser {
 	/**
 	 * @var $field_validator_manager Field_Validator_Manager
 	 */
-	private $field_validator_manager;
+	public $field_validator_manager;
 
 
 	/**
@@ -59,7 +59,7 @@ class Parser {
 	/**
 	 * @var $input Data_Set_Input
 	 */
-	private $input;
+	public $input;
 
 
 	/**
@@ -77,13 +77,14 @@ class Parser {
 
 		$this->data_set = Factory::get_data_set( $this->input->get_post() );
 		$this->field_validator_manager = Factory::get_field_validator_manager( $this->input );
+		$this->set_group_by_field( $input->get_group_by_field() );
 		
 	}
 
 
 	public function set_group_by_field( $field ) {
 
-		if( !$this->has_field( $field ) ) {
+		if( !empty( $field ) && !$this->has_field( $field ) ) {
 			throw new \Exception( 'Trying to group on field: '. $field .' which does not exist' );
 		}
 		$this->group_by_field = $field;
@@ -191,7 +192,9 @@ class Parser {
 					$line_number ++;
 					continue;
 				}
-				$this->data_set->push_row( $this->get_line_number($line_number), $dto );
+				
+				$this->data_set->push_row( $this->get_line_number($line_number), $dto, $this );
+				
 
 			} catch ( DTO_Exception $e ) {
 
@@ -223,7 +226,7 @@ class Parser {
 	}
 
 	public function has_field( $field ) {
-		return in_array( $field, $this->header_fields );
+		return $this->field_validator_manager->is_valid_field( $field );
 	}
 
 	/**
@@ -262,5 +265,6 @@ class Parser {
 			\WP_CLI::log( $error_message );
 		}
 	}
+
 
 }

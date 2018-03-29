@@ -2,6 +2,8 @@
 
 namespace OpenClub;
 
+use SSCMods\Fields\FieldValidatorManager;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -55,11 +57,24 @@ class Data_Set {
 	 *
 	 * @throws \Exception
 	 */
-	public function push_row( $line_number, DTO $dto) {
+	public function push_row( $line_number, DTO $dto, Parser $parser) {
 
-		$this->validate_number( $line_number );
-		$this->data_rows[ $line_number ] = $dto;
+		if( $parser->get_group_by_field() ) {
+			if( !$parser->field_validator_manager->is_valid_field( $parser->get_group_by_field() ) ) {
+				throw new \Exception('The group by field: %s is invalid, please check field headings and settings',
+					$parser->get_group_by_field() );
+			}
+			$a = $dto->get_data();
+
+			$this->data_rows[ $a[$parser->get_group_by_field()]][] = $dto;
+
+		} else {
+
+			$this->validate_number( $line_number );
+			$this->data_rows[ $line_number ] = $dto;
+		}
 	}
+
 
 	/**
 	 * @param int $line_number

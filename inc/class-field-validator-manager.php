@@ -50,6 +50,12 @@ class Field_Validator_Manager {
 
 	}
 
+	public function is_valid_field( $field ){
+
+		if( array_key_exists( $field, $this->fields)) {
+			return true;
+		}
+	}
 
 	public function has_validators() {
 		return ! empty( $this->fields ) ? true : false;

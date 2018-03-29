@@ -107,9 +107,13 @@ class Data_Set_Input {
 
 	public function get_group_by_field(){
 
-		return $this->set_group_by_field;
+		return $this->group_by_field;
 	}
 
+
+	public function has_group_by_field(){
+		return $this->group_by_field ? true: false;
+	}
 
 	public function has_limit(){
 		return $this->limit ? true : false;
