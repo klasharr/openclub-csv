@@ -12,8 +12,12 @@ require_once( 'interface-field-validator.php' );
 
 class DateField extends Base_Field implements Field_Validator {
 
+	private $format = null;
+	private $timestamp = null;
+
 	public function __construct( $data, Data_Set_Input $input ) {
 		parent::__construct( $data, $input );
+
 	}
 
 	public function validate( $value ) {
@@ -22,8 +26,21 @@ class DateField extends Base_Field implements Field_Validator {
 			throw new Validator_Field_Exception( 'Date field validation failed, no data' );
 		}
 
-		/** 
-		 * @var $d DateTime 
+		$this->set_date( $value );
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_timestamp( $value ) {
+		$this->set_date( $value );
+		return $this->timestamp;
+	}
+
+	private function set_date( $value ) {
+
+		/**
+		 * @var $d DateTime
 		 */
 		if ( ! $d = \DateTime::createFromFormat( $this->data['format'], $value ) ) {
 			throw new Validator_Field_Exception( 'Date field validation failed, expected format: ' . $this->data['format'] . ', value is: ' . $value );
@@ -47,6 +64,8 @@ class DateField extends Base_Field implements Field_Validator {
 		if ( ! checkdate( $month, $day, $year ) ) {
 			throw new Validator_Field_Exception( 'Date field validation failed, format is valid, invalid date. Got: ' . $value );
 		}
+
+		$this->timestamp = $d->getTimestamp();
 
 	}
 

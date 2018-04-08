@@ -88,7 +88,7 @@ class CSV_Util {
 
 	public static function get_csv_table_header( Field_Validator_Manager $field_Validator_Manager )  {
 		return '<tr><th>' .
-		       implode('</th><th>', $field_Validator_Manager->getDisplayFields() ) .
+		       implode('</th><th>', $field_Validator_Manager->get_display_fields() ) .
 		       "</tr>\n";
 	}
 

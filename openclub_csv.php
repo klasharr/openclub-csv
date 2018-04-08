@@ -146,7 +146,7 @@ function openclub_csv_get_display_table( $config ) {
 		 * @var $input \OpenClub\Data_Set_Input
 		 */
 		$input = \OpenClub\Factory::get_data_input_object( $config[ 'post_id'] );
-		
+
 		/**
 		 * @var \OpenClub\Data_Set $data_set
 		 */

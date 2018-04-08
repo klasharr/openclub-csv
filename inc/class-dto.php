@@ -77,4 +77,8 @@ class DTO {
 		return $this->num_fields;
 	}
 
+	public function get_value( $key ){
+		return $this->data[ $key ];
+	}
+
 }

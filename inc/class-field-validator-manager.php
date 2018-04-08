@@ -63,6 +63,10 @@ class Field_Validator_Manager {
 
 	public function get_validator( $key ) {
 
+		if( !$this->has_validators() ) {
+			throw new \Exception( 'The Validators have not been set.' );
+		}
+
         if(!isset( $this->fields[ $key ] ) ) {
 	        throw new \Exception( 'Validator '. $key . ' does not exist, check the column name.' );
         }
@@ -70,7 +74,29 @@ class Field_Validator_Manager {
 		return $this->fields[ $key ];
 	}
 
-	public function getDisplayFields() {
+	public function get_validator_type( $key ) {
+
+		if( !$this->has_validators() ) {
+			throw new \Exception( 'The Validators have not been set.' );
+		}
+
+		if(!isset( $this->fields[ $key ] ) ) {
+			throw new \Exception( 'Validator '. $key . ' does not exist, check the column name.' );
+		}
+
+		return $this->fields[ $key ]->getType();
+	}
+
+	public function get_all_registered_fields(){
+		$out = array();
+		foreach( $this->fields as $fieldName => $validator ){
+			$out[] = $fieldName;
+		}
+		return $out;
+	}
+
+
+	public function get_display_fields() {
 
 		$out = array();
 		foreach( $this->fields as $fieldName => $validator ){

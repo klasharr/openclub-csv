@@ -164,4 +164,5 @@ abstract class Base_Field implements Field_Validator {
 			throw new Validator_Field_Exception( 'Data error in field ' . $this->data['field_name'] . ' value too long, a max length of  ' . $this->data['max-length'] . ' is expected. ' . strlen( $value ) . ' given. Value: "' . $value . '"' );
 		}
 	}
+
 }

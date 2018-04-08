@@ -78,7 +78,7 @@ class Parser {
 		$this->data_set = Factory::get_data_set( $this->input->get_post() );
 		$this->field_validator_manager = Factory::get_field_validator_manager( $this->input );
 		$this->set_group_by_field( $input->get_group_by_field() );
-		
+
 	}
 
 
@@ -129,6 +129,8 @@ class Parser {
 	public function get_data() {
 
 		$data_file = explode( "\n", esc_html( $this->input->get_post()->post_content ) );
+
+
 
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
@@ -192,10 +194,15 @@ class Parser {
 					$line_number ++;
 					continue;
 				}
-				
-				$this->data_set->push_row( $this->get_line_number($line_number), $dto, $this );
-				
 
+				$config = array(
+					'line_number' => $this->get_line_number( $line_number ),
+					'group_by_field' => $this->get_group_by_field(),
+					'field_validator_manager' => $this->field_validator_manager,
+				);
+
+				$this->data_set->push_row( $config, $dto);
+				
 			} catch ( DTO_Exception $e ) {
 
 				$this->log_cli_error( $error_message );

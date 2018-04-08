@@ -2,6 +2,7 @@
 
 namespace OpenClub;
 
+use OpenClub\Fields\DateField;
 use SSCMods\Fields\FieldValidatorManager;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -57,21 +58,30 @@ class Data_Set {
 	 *
 	 * @throws \Exception
 	 */
-	public function push_row( $line_number, DTO $dto, Parser $parser) {
+	public function push_row( $config, DTO $dto ) {
 
-		if( $parser->get_group_by_field() ) {
-			if( !$parser->field_validator_manager->is_valid_field( $parser->get_group_by_field() ) ) {
-				throw new \Exception('The group by field: %s is invalid, please check field headings and settings',
-					$parser->get_group_by_field() );
+		if( empty( $config[ 'field_validator_manager' ] ) ) {
+			throw new \Exception( 'A field_validator_manager must be passed' );
+		}
+
+		/* @var Field_Validator_Manager $validator_manager */
+		$validator_manager = $config[ 'field_validator_manager' ];
+
+		if( !empty( $config['group_by_field'] ) ) {
+
+			if( $validator_manager->get_validator_type( $config['group_by_field'] ) == 'date' ) {
+
+				$date_validator = $validator_manager->get_validator( $config['group_by_field'] );
+				$this->data_rows[ $date_validator->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
+
+			} else {
+				$this->data_rows[ $dto->get_value( $config['group_by_field'] ) ][] = $dto;
 			}
-			$a = $dto->get_data();
-
-			$this->data_rows[ $a[$parser->get_group_by_field()]][] = $dto;
-
+			
 		} else {
 
-			$this->validate_number( $line_number );
-			$this->data_rows[ $line_number ] = $dto;
+			$this->validate_number( $config['line_number'] );
+			$this->data_rows[ $config['line_number'] ] = $dto;
 		}
 	}
 
