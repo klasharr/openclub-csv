@@ -4,7 +4,7 @@
  Plugin URI: TBD
  Description:
  Author: Klaus Harris
- Version: -
+ Version: 0.09
  Author URI: https://klaus.blog
  Text Domain: openclub
  */
@@ -71,7 +71,6 @@ add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
 
 
 /**
- * A very rough P.O.C.
  *
  * [openclub_display_csv post_id="102"]
  *
@@ -88,7 +87,7 @@ function openclub_csv_display_shortcode_callback( $config ) {
 		$config
 	);
 
-	echo openclub_csv_get_display_table( $config );
+	return openclub_csv_get_display_table( $config );
 
 }
 add_shortcode( 'openclub_display_csv', 'openclub_csv_display_shortcode_callback' );
