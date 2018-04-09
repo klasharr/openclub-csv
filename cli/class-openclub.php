@@ -10,23 +10,27 @@ use \OpenClub\Factory;
 use \OpenClub\CSV_Util;
 use \WP_CLI;
 
-require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-file-runner-base.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 
-Class File_Runner extends  File_Runner_Base{
-
-	/**
-	 * @param $args
-	 */
-	public function __invoke( $args ) {
-		parent::__invoke( $args );
-	}
+Class OpenClub {
 
 	/**
 	 * @throws \Exception
 	 * @throws \OpenClub\Exception
 	 */
-	public function execute() {
+	public function post_content( $args ) {
+
+		try {
+
+			if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
+				throw new \Exception( 'The first argument must be a non zero integer value.' );
+			}
+
+			$this->post_id = $args[0];
+
+		} catch ( \Exception $e ) {
+			\WP_CLI::error( $e->getMessage() );
+		}
 
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
 
@@ -49,6 +53,11 @@ Class File_Runner extends  File_Runner_Base{
 
 		WP_CLI::success( '====== Success! ====== ' );
 
+	}
+
+	public function foo(){
+		// public methods are executable, neat!
+		WP_CLI::success( '====== Success! ====== ' );
 	}
 
 }

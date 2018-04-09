@@ -18,9 +18,9 @@ define( 'OPENCLUB_DEFAULT_FILTER_PRIORITY', 10 );
 
 if ( class_exists( 'WP_CLI' ) ) {
 
-	require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-file-runner.php' );
-	$runner = new OpenClub\CLI\File_Runner();
-	WP_CLI::add_command( 'file-runner', $runner );
+	require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-openclub.php' );
+	$command = new OpenClub\CLI\OpenClub;
+	WP_CLI::add_command( 'openclub', $command );
 
 }
 
