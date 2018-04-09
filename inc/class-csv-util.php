@@ -77,7 +77,7 @@ class CSV_Util {
 		foreach( $line_data->get_data() as $key => $value ) {
 
 			if( $field_Validator_Manager->get_validator( $key )->displayField() ) {
-				$out .= '<td>'.$value.'</td>';
+				$out .= '<td>'.$field_Validator_Manager->get_validator( $key )->format_value( $value ).'</td>';
 			}
 		}
 		$out .= "</tr>\n";

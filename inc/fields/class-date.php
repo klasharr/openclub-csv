@@ -42,7 +42,7 @@ class DateField extends Base_Field implements Field_Validator {
 		/**
 		 * @var $d DateTime
 		 */
-		if ( ! $d = \DateTime::createFromFormat( $this->data['format'], $value ) ) {
+		if ( ! $d = \DateTime::createFromFormat( $this->data['input_format'], $value ) ) {
 			throw new Validator_Field_Exception( 'Date field validation failed, expected format: ' . $this->data['format'] . ', value is: ' . $value );
 
 		}
@@ -67,6 +67,40 @@ class DateField extends Base_Field implements Field_Validator {
 
 		$this->timestamp = $d->getTimestamp();
 
+	}
+
+	/**
+	 * @todo refactor to remove duplication
+	 * 
+	 * @param $value
+	 *
+	 * @return string
+	 * @throws Validator_Field_Exception
+	 */
+	public function format_value( $value ) {
+
+		if( !empty( $this->data[ 'output_format' ] ) ) {
+
+
+			if ( ! $d = \DateTime::createFromFormat( $this->data['input_format'], $value ) ) {
+				throw new Validator_Field_Exception( 'Date field validation failed, expected format: ' . $this->data['format'] . ', value is: ' . $value );
+
+			}
+
+			$errors = \DateTime::getLastErrors();
+
+			if($errors['warning_count'] > 0 ){
+				throw new Validator_Field_Exception( '[Warning] Date field validation failed, parsed date is invalid:' . $value );
+			}
+
+			if($errors['error_count'] > 0 ) {
+				throw new Validator_Field_Exception( '[Error] Date field validation failed, parsed date is invalid:' . $value );
+			}
+
+			return $d->format( $this->data[ 'output_format' ] );
+
+		}
+		return $value;
 	}
 
 }

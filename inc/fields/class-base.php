@@ -165,4 +165,8 @@ abstract class Base_Field implements Field_Validator {
 		}
 	}
 
+	public function format_value( $value ) {
+		return $value;
+	}
+
 }
