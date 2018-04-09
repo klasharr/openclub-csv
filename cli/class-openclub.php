@@ -56,7 +56,7 @@ Class OpenClub {
 	}
 
 	public function foo(){
-		// public methods are executable, neat!
+		// public methods are executable, neat! 
 		WP_CLI::success( '====== Success! ====== ' );
 	}
 
