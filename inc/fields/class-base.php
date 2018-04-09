@@ -64,6 +64,14 @@ abstract class Base_Field implements Field_Validator {
 			$this->required = true;
 		}
 
+		$overridden_display_fields = $this->input->get_overridden_display_fields();
+
+		if( !empty( $overridden_display_fields ) ) {
+			if( !in_array( $this->data[ 'field_name' ], $overridden_display_fields ) ) {
+				$this->display_field = false;
+			}
+		}
+
 		if( !$this->input->has_reset_display_fields() && isset( $this->data[ 'display' ] ) && !$this->data[ 'display' ] ){
 			$this->display_field = false;
 		}
@@ -155,7 +163,7 @@ abstract class Base_Field implements Field_Validator {
 	}
 	
 	
-	public function displayField(){
+	public function display_field(){
 		return $this->display_field;
 	}
 

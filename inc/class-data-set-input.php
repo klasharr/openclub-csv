@@ -37,6 +37,12 @@ class Data_Set_Input {
 	 */
 	private $reset_display_fields = false;
 
+
+	/**
+	 * @var array
+	 */
+	private $display_fields_overridden = array();
+
 	/**
 	 * @param $post_id int
 	 *
@@ -132,5 +138,17 @@ class Data_Set_Input {
 
 	public function get_limit(){
 		return $this->limit;
+	}
+
+	public function override_display_fields( $fields ){
+
+		if(!is_array($fields)){
+			throw new \Exception( '$fields must me passed as an array' );
+		}
+		$this->display_fields_overridden = $fields;
+	}
+
+	public function get_overridden_display_fields() {
+		return !empty( $this->display_fields_overridden ) ? $this->display_fields_overridden : false;
 	}
 }

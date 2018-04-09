@@ -99,17 +99,25 @@ class Field_Validator_Manager {
 	public function get_display_fields() {
 
 		$out = array();
-		foreach( $this->fields as $fieldName => $validator ){
 
+		$overridden_display_fields = $this->input->get_overridden_display_fields();
+
+		foreach( $this->fields as $fieldName => $validator ){
 			/** @var $validator Field_Validator */
-			if( $this->input->has_reset_display_fields() ){
+			if( !empty( $overridden_display_fields) ) {
+				if(in_array( $fieldName, $overridden_display_fields ) ){
+					$out[] = $fieldName;
+				}
+			} elseif ( $this->input->has_reset_display_fields() ) {
 				$out[] = $fieldName;
-			} elseif( $validator->displayField() ) {
+			} elseif( $validator->display_field() ) {
 				$out[] = $fieldName;
 			}
 		}
+
 		return $out;
 	}
+
 
 
 }
