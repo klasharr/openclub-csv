@@ -212,8 +212,8 @@ function openclub_csv_example_data_set_filter( \OpenClub\Data_Set $data_set, $po
 }
 add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_set_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );
 
-function openclub_csv_log_cli( $error_message ) {
+function openclub_csv_log_cli( $message ) {
 	if ( class_exists( 'WP_CLI' ) ) {
-		\WP_CLI::log( $error_message );
+		\WP_CLI::log( $message );
 	}
 }
