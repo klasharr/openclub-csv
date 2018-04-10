@@ -32,9 +32,9 @@ class Data_Set {
 
 
 	/**
-	 * @var Field_Validator_Manager $field_validator_manager
+	 * @var Field_Manager $field_manager
 	 */
-	private $field_validator_manager;
+	private $field_manager;
 
 	/**
 	 * @var array
@@ -60,12 +60,12 @@ class Data_Set {
 	 */
 	public function push_row( $config, DTO $dto ) {
 
-		if( empty( $config[ 'field_validator_manager' ] ) ) {
-			throw new \Exception( 'A field_validator_manager must be passed' );
+		if( empty( $config[ 'field_manager' ] ) ) {
+			throw new \Exception( 'A field_manager must be passed' );
 		}
 
-		/* @var Field_Validator_Manager $validator_manager */
-		$validator_manager = $config[ 'field_validator_manager' ];
+		/* @var Field_Manager $validator_manager */
+		$validator_manager = $config[ 'field_manager' ];
 
 		if( !empty( $config['group_by_field'] ) ) {
 
@@ -108,11 +108,11 @@ class Data_Set {
 	}
 
 	/**
-	 * @param Field_Validator_Manager $field_validator_manager
+	 * @param Field_Manager $field_manager
 	 */
-	public function set_field_validator_manager( Field_Validator_Manager $field_validator_manager ){
+	public function set_field_manager( Field_Manager $field_manager ){
 
-		$this->field_validator_manager = $field_validator_manager;
+		$this->field_manager = $field_manager;
 	}
 
 	/**
@@ -140,16 +140,16 @@ class Data_Set {
 	}
 
 	/**
-	 * @return Field_Validator_Manager
+	 * @return Field_Manager
 	 * @throws \Exception
 	 */
-	public function get_field_validator_manager(){
+	public function get_field_manager(){
 
-		if(empty( $this->field_validator_manager) ) {
-			throw new \Exception('$field_validator_manager has not been set');
+		if(empty( $this->field_manager) ) {
+			throw new \Exception('$field_manager has not been set');
 		}
 
-		return $this->field_validator_manager;
+		return $this->field_manager;
 	}
 
 	/**

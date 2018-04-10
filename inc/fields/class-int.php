@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once( 'class-base.php' );
-require_once( 'interface-field-validator.php' );
+require_once( 'interface-field.php' );
 
-class IntField extends Base_Field implements Field_Validator {
+class IntField extends Base_Field implements Field {
 
 	public function __construct( $data, Data_Set_Input $input ) {
 		parent::__construct( $data, $input );

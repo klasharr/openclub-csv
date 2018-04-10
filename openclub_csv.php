@@ -83,6 +83,11 @@ function openclub_csv_display_shortcode_callback( $config ) {
 			'post_id' => null,
 			'error_messages' => "yes",
 			'error_lines' => "yes",
+			'reset_display_fields' => "no",
+			'limit' => null,
+			'future_events_only' => null,
+			'display' => 'table',
+			'fields' => array(),
 		),
 		$config
 	);
@@ -163,16 +168,16 @@ function openclub_csv_get_display_table( $config ) {
 			}
 
 			$out .= "<table class='openclub_csv'>\n";
-			$out .= \OpenClub\CSV_Util::get_csv_table_header( $data_set->get_field_validator_manager() );
+			$out .= \OpenClub\CSV_Util::get_csv_table_header( $data_set->get_field_manager() );
 
 			/** @var DTO $line_data */
 			foreach($data_set->get_data() as $line_data ){
 				if( !$line_data->has_validation_error() ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_validator_manager() );
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_manager() );
 					continue;
 				}
 				if( $config['error_lines'] == "yes" ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_validator_manager() );
+					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_manager() );
 				}
 			}
 			$out .= "</table>\n";
@@ -206,3 +211,9 @@ function openclub_csv_example_data_set_filter( \OpenClub\Data_Set $data_set, $po
 	return $data_set;
 }
 add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_set_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );
+
+function openclub_csv_log_cli( $error_message ) {
+	if ( class_exists( 'WP_CLI' ) ) {
+		\WP_CLI::log( $error_message );
+	}
+}

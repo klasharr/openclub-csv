@@ -55,8 +55,30 @@ Class OpenClub {
 
 	}
 
-	public function foo(){
-		// public methods are executable, neat! 
+	public function foo( $args ){
+
+
+		try {
+
+			if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
+				throw new \Exception( 'The first argument must be a non zero integer value.' );
+			}
+
+			$this->post_id = $args[0];
+
+		} catch ( \Exception $e ) {
+			\WP_CLI::error( $e->getMessage() );
+		}
+
+
+		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
+
+		$input->override_display_fields( array('Date') );
+
+		/**  @var Data_Set @data_set */
+		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
+
+
 		WP_CLI::success( '====== Success! ====== ' );
 	}
 

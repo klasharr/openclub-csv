@@ -65,7 +65,7 @@ class CSV_Util {
 	}
 
 
-	public static function get_csv_table_row( DTO $line_data, Field_Validator_Manager $field_Validator_Manager ) {
+	public static function get_csv_table_row( DTO $line_data, Field_Manager $field_validator_manager ) {
 
 		$class = '';
 		if( $line_data->has_validation_error()){
@@ -76,8 +76,8 @@ class CSV_Util {
 
 		foreach( $line_data->get_data() as $key => $value ) {
 
-			if ( $field_Validator_Manager->get_validator( $key )->display_field() ) {
-					$out .= '<td>' . $field_Validator_Manager->get_validator( $key )->format_value( $value ) . '</td>';
+			if ( $field_validator_manager->get_validator( $key )->is_displayed() ) {
+					$out .= '<td>' . $field_validator_manager->get_validator( $key )->format_value( $value ) . '</td>';
 			}
 
 		}
@@ -87,9 +87,9 @@ class CSV_Util {
 
 	}
 
-	public static function get_csv_table_header( Field_Validator_Manager $field_Validator_Manager )  {
+	public static function get_csv_table_header( Field_Manager $field_validator_manager )  {
 		return '<tr><th>' .
-		       implode('</th><th>', $field_Validator_Manager->get_display_fields() ) .
+		       implode('</th><th>', $field_validator_manager->get_display_fields() ) .
 		       "</tr>\n";
 	}
 

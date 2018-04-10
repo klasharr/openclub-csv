@@ -2,7 +2,7 @@
 
 namespace OpenClub\Fields;
 
-interface Field_Validator {
+interface Field {
 
 	public function validate( $value );
 

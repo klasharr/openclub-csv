@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Field_Validator_Manager {
+class Field_Manager {
 
 	/**
 	 * @var $post WP_Post
@@ -35,6 +35,8 @@ class Field_Validator_Manager {
 			return;
 		}
 
+		$have_fields_to_display = false;
+
 		foreach ( $this->post->field_settings as $field => $config ) {
 
 			if ( empty( $config['type'] ) ) {
@@ -44,10 +46,20 @@ class Field_Validator_Manager {
 			$config['field_name'] = $field;
 
 			$className              = ucwords( $config['type'] ) . 'Field';
-			$this->fields[ $field ] = Factory::get_field( $className, $config, $this->input );
+			$this->fields[ $field ] = $o = Factory::get_field( $className, $config, $this->input );
+
+			if($o->is_displayed()){
+				$have_fields_to_display = true;
+			}
 		}
 
-
+		if(!$have_fields_to_display ) {
+			if( !class_exists( 'WP_CLI' ) ) {
+				throw new \Exception( 'All fields have been set to not display, check your shortcode and also the fields meta value.' );
+			} else {
+				openclub_csv_log_cli( 'All fields have been set to not display.' );
+			}
+		}
 	}
 
 	public function is_valid_field( $field ){
@@ -89,7 +101,7 @@ class Field_Validator_Manager {
 
 	public function get_all_registered_fields(){
 		$out = array();
-		foreach( $this->fields as $fieldName => $validator ){
+		foreach( $this->fields as $fieldName => $field ){
 			$out[] = $fieldName;
 		}
 		return $out;
@@ -102,15 +114,15 @@ class Field_Validator_Manager {
 
 		$overridden_display_fields = $this->input->get_overridden_display_fields();
 
-		foreach( $this->fields as $fieldName => $validator ){
-			/** @var $validator Field_Validator */
+		foreach( $this->fields as $fieldName => $field ){
+			/** @var $field Field_Validator */
 			if( !empty( $overridden_display_fields) ) {
 				if(in_array( $fieldName, $overridden_display_fields ) ){
 					$out[] = $fieldName;
 				}
 			} elseif ( $this->input->has_reset_display_fields() ) {
 				$out[] = $fieldName;
-			} elseif( $validator->display_field() ) {
+			} elseif( $field->is_displayed() ) {
 				$out[] = $fieldName;
 			}
 		}

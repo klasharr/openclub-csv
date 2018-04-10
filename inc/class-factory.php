@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once( 'class-field-validator-manager.php' );
+require_once( 'class-field-manager.php' );
 require_once( 'class-null-filter.php' );
 require_once( 'class-dto.php' );
 require_once( 'class-parser.php' );
@@ -32,10 +32,10 @@ class Factory {
 	/**
 	 * @param Data_Set_Input $input
 	 *
-	 * @return Field_Validator_Manager
+	 * @return Field_Manager
 	 */
-	public static function get_field_validator_manager( Data_Set_Input $input ) {
-		return new Field_Validator_Manager( $input );
+	public static function get_field_manager( Data_Set_Input $input ) {
+		return new Field_Manager( $input );
 	}
 
 	public static function get_null_filter() {

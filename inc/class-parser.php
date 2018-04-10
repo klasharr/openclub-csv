@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use OpenClub\Fields\Validator_Field_Exception;
+use OpenClub\Fields\Field_Exception;
 
 require_once( 'class-factory.php' );
 
@@ -34,9 +34,9 @@ class Parser {
 	private $header_fields_count = null;
 
 	/**
-	 * @var $field_validator_manager Field_Validator_Manager
+	 * @var $field_manager Field_Manager
 	 */
-	public $field_validator_manager;
+	public $field_manager;
 
 
 	/**
@@ -76,7 +76,7 @@ class Parser {
 		}
 
 		$this->data_set = Factory::get_data_set( $this->input->get_post() );
-		$this->field_validator_manager = Factory::get_field_validator_manager( $this->input );
+		$this->field_manager = Factory::get_field_manager( $this->input );
 		$this->set_group_by_field( $input->get_group_by_field() );
 
 	}
@@ -172,7 +172,7 @@ class Parser {
 
 				$this->validate_data( $field_value_pairs );
 
-			} catch ( Validator_Field_Exception $e ) {
+			} catch ( Field_Exception $e ) {
 
 				$error_message = sprintf( 'Field validation error line: %d %s', $this->get_line_number($line_number), $e->getMessage() );
 
@@ -198,7 +198,7 @@ class Parser {
 				$config = array(
 					'line_number' => $this->get_line_number( $line_number ),
 					'group_by_field' => $this->get_group_by_field(),
-					'field_validator_manager' => $this->field_validator_manager,
+					'field_manager' => $this->field_manager,
 				);
 
 				$this->data_set->push_row( $config, $dto);
@@ -213,7 +213,7 @@ class Parser {
 		}
 
 		$this->data_set->set_header_fields( $this->get_header_fields() );
-		$this->data_set->set_field_validator_manager( $this->field_validator_manager );
+		$this->data_set->set_field_manager( $this->field_manager );
 
 		$this->data_set = apply_filters( 'openclub_csv_filter_data', $this->data_set, $this->input->get_post() );
 
@@ -233,7 +233,7 @@ class Parser {
 	}
 
 	public function has_field( $field ) {
-		return $this->field_validator_manager->is_valid_field( $field );
+		return $this->field_manager->is_valid_field( $field );
 	}
 
 	/**
@@ -252,7 +252,7 @@ class Parser {
 			throw new \Exception( 'There\'s an empty column, please remove from the CSV.' );
 		}
 
-		if ( ! $field_validator = $this->field_validator_manager->get_validator( $field_name ) ) {
+		if ( ! $field_validator = $this->field_manager->get_validator( $field_name ) ) {
 			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the column name against the field setting in \'fields\' to see that they match.' );
 		}
 

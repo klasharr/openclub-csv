@@ -148,7 +148,15 @@ class Data_Set_Input {
 		$this->display_fields_overridden = $fields;
 	}
 
-	public function get_overridden_display_fields() {
-		return !empty( $this->display_fields_overridden ) ? $this->display_fields_overridden : false;
+	public function get_overridden_display_fields( $return_as_string = false) {
+
+		$return = !empty( $this->display_fields_overridden ) ? $this->display_fields_overridden : false;
+
+		if($return && $return_as_string ) {
+			return implode(',', $return );
+		} else {
+			return $return;
+		}
+
 	}
 }
