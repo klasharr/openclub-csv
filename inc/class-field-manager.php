@@ -60,9 +60,6 @@ class Field_Manager {
 				openclub_csv_log_cli( 'All fields have been set to not display.' );
 			}
 		}
-
-		print_r($this->get_display_fields());
-
 	}
 
 	public function is_valid_field( $field ){
