@@ -12,6 +12,7 @@ require_once( 'class-dto.php' );
 require_once( 'class-parser.php' );
 require_once( 'class-data-set.php' );
 require_once( 'class-data-set-input.php' );
+require_once( 'class-template-loader.php' );
 
 class Factory {
 
@@ -83,6 +84,10 @@ class Factory {
 	 */
 	public static function get_data_input_object( $post_id ){
 		return new Data_Set_Input( $post_id );
+	}
+
+	public static function get_template_loader() {
+		return new Template_Loader;
 	}
 	
 }

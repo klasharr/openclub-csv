@@ -142,6 +142,8 @@ add_filter( 'the_content', 'openclub_csv_view_content_page' );
 
 function openclub_csv_get_display_table( $config ) {
 
+
+
 	$out = '';
 
 	try{
@@ -157,6 +159,14 @@ function openclub_csv_get_display_table( $config ) {
 		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
 
 		if( $data_set->has_data() ) {
+
+
+			$templates = \OpenClub\Factory::get_template_loader();
+			$templates->set_template_data( $data_set );
+			ob_start();
+			$templates->get_template_part( 'programme', 'header' );
+
+			return ob_get_clean();
 
 			if( $data_set->has_errors() && $config['error_messages' ] == "yes"  ) {
 				$out .= "<h3 class='openclub_csv_error'>Errors</h3><p>";
