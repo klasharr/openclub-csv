@@ -25,16 +25,26 @@ class DateField extends Base_Field implements Field {
 	public function __construct( $data, Data_Set_Input $input ) {
 		parent::__construct( $data, $input );
 
+		if(empty( $this->data['input_format'] ) ) {
+			throw new Field_Exception( 'Date field chosen but no input format specified, check the field description.' );
+		}
+
+		$date_pattern = '/^[djmn]\/[djmn]\/[Yy]$/';
+
+		if(!preg_match( $date_pattern, $this->data['input_format'] ) ) {
+			throw new Field_Exception( 'Invalid input_format specified' );
+		}
+
+		if(!empty( $this->data['output_format'] ) && !preg_match( $date_pattern, $this->data['output_format'] ) ) {
+			throw new Field_Exception( 'Invalid output_format specified' );
+		}
+
 	}
 
 	public function validate( $value ) {
 
 		if ( empty( trim( $value ) ) ) {
 			throw new Field_Exception( 'Date field validation failed, no data' );
-		}
-
-		if(empty( $this->data['input_format'] ) ) {
-			throw new Field_Exception( 'Date field chosen but no input format specified, check the field description.' );
 		}
 
 		/**
