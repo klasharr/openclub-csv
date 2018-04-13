@@ -12,8 +12,15 @@ require_once( 'interface-field.php' );
 
 class DateField extends Base_Field implements Field {
 
-	private $format = null;
+	/**
+	 * @var int
+	 */
 	private $timestamp = null;
+
+	/**
+	 * @var \DateTime
+	 */
+	private $datetime;
 
 	public function __construct( $data, Data_Set_Input $input ) {
 		parent::__construct( $data, $input );
@@ -26,24 +33,15 @@ class DateField extends Base_Field implements Field {
 			throw new Field_Exception( 'Date field validation failed, no data' );
 		}
 
-		$this->set_date( $value );
-	}
-
-	/**
-	 * @return int
-	 */
-	public function get_timestamp( $value ) {
-		$this->set_date( $value );
-		return $this->timestamp;
-	}
-
-	private function set_date( $value ) {
+		if(empty( $this->data['input_format'] ) ) {
+			throw new Field_Exception( 'Date field chosen but no input format specified, check the field description.' );
+		}
 
 		/**
-		 * @var $d DateTime
+		 * @var $datetime DateTime
 		 */
-		if ( ! $d = \DateTime::createFromFormat( $this->data['input_format'], $value ) ) {
-			throw new Field_Exception( 'Date field validation failed, expected format: ' . $this->data['format'] . ', value is: ' . $value );
+		if ( ! $datetime = \DateTime::createFromFormat( $this->data['input_format'], $value ) ) {
+			throw new Field_Exception( 'Date field validation failed, expected format: ' . $this->data['input_format'] . ', value is: ' . $value );
 
 		}
 
@@ -57,21 +55,29 @@ class DateField extends Base_Field implements Field {
 			throw new Field_Exception( '[Error] Date field validation failed, parsed date is invalid:' . $value );
 		}
 
-		$month = $d->format('m');
-		$day = $d->format('d');
-		$year = $d->format('Y');
+		$month = $datetime->format('m');
+		$day = $datetime->format('d');
+		$year = $datetime->format('Y');
 
 		if ( ! checkdate( $month, $day, $year ) ) {
 			throw new Field_Exception( 'Date field validation failed, format is valid, invalid date. Got: ' . $value );
 		}
 
-		$this->timestamp = $d->getTimestamp();
+		$this->datetime = $datetime;
+		$this->timestamp = $datetime->getTimestamp();
 
 	}
 
 	/**
-	 * @todo refactor to remove duplication
-	 * 
+	 * @return int
+	 */
+	public function get_timestamp( $value ) {
+		return $this->timestamp;
+	}
+
+
+
+	/**
 	 * @param $value
 	 *
 	 * @return string
@@ -80,25 +86,7 @@ class DateField extends Base_Field implements Field {
 	public function format_value( $value ) {
 
 		if( !empty( $this->data[ 'output_format' ] ) ) {
-
-
-			if ( ! $d = \DateTime::createFromFormat( $this->data['input_format'], $value ) ) {
-				throw new Field_Exception( 'Date field validation failed, expected format: ' . $this->data['format'] . ', value is: ' . $value );
-
-			}
-
-			$errors = \DateTime::getLastErrors();
-
-			if($errors['warning_count'] > 0 ){
-				throw new Field_Exception( '[Warning] Date field validation failed, parsed date is invalid:' . $value );
-			}
-
-			if($errors['error_count'] > 0 ) {
-				throw new Field_Exception( '[Error] Date field validation failed, parsed date is invalid:' . $value );
-			}
-
-			return $d->format( $this->data[ 'output_format' ] );
-
+			return $this->datetime->format( $this->data[ 'output_format' ] );
 		}
 		return $value;
 	}
