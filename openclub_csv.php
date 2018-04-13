@@ -142,8 +142,6 @@ add_filter( 'the_content', 'openclub_csv_view_content_page' );
 
 function openclub_csv_get_display_table( $config ) {
 
-
-
 	$out = '';
 
 	try{
@@ -158,39 +156,18 @@ function openclub_csv_get_display_table( $config ) {
 		 */
 		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
 
+		$templates = \OpenClub\Factory::get_template_loader();
+
 		if( $data_set->has_data() ) {
 
+			$templates->set_template_data(
+				array( 'data_set' => $data_set, 'config' => $config )
+			);
 
-			$templates = \OpenClub\Factory::get_template_loader();
-			$templates->set_template_data( $data_set );
 			ob_start();
-			$templates->get_template_part( 'programme', 'header' );
+			$templates->get_template_part( 'csv-table' );
+			$out .= ob_get_clean();
 
-			return ob_get_clean();
-
-			if( $data_set->has_errors() && $config['error_messages' ] == "yes"  ) {
-				$out .= "<h3 class='openclub_csv_error'>Errors</h3><p>";
-
-				foreach($data_set->get_errors() as $line_number => $message ){
-					$out .= \OpenClub\CSV_Util::get_formatted_csv_line_error_message($message);
-				}
-				$out .= '</p>';
-			}
-
-			$out .= "<table class='openclub_csv'>\n";
-			$out .= \OpenClub\CSV_Util::get_csv_table_header( $data_set->get_field_manager() );
-
-			/** @var DTO $line_data */
-			foreach($data_set->get_data() as $line_data ){
-				if( !$line_data->has_validation_error() ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_manager() );
-					continue;
-				}
-				if( $config['error_lines'] == "yes" ) {
-					$out .= \OpenClub\CSV_Util::get_csv_table_row( $line_data, $data_set->get_field_manager() );
-				}
-			}
-			$out .= "</table>\n";
 		} else {
 			$out .= 'No data';
 		}
@@ -227,3 +204,20 @@ function openclub_csv_log_cli( $message ) {
 		\WP_CLI::log( $message );
 	}
 }
+
+/**
+ * Debug
+ *
+ * @param $templates
+ *
+ * @return mixed
+ */
+function openclub_csv_show_template_paths( $templates ){
+	echo "<pre>";
+	print_r($templates);
+	echo "</pre>";
+	return $templates;
+}
+
+
+add_filter( 'openclub_template_paths', 'openclub_csv_show_template_paths')  ;

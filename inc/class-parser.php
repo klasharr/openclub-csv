@@ -226,7 +226,7 @@ class Parser {
 	private function validate_data( $field_value_pairs ) {
 
 		foreach ( $field_value_pairs as $field_name => $value ) {
-			$field_validator = $this->get_validator( $field_name );
+			$field_validator = $this->get_field( $field_name );
 			$field_validator->validate( $value );
 		}
 
@@ -242,7 +242,7 @@ class Parser {
 	 * @return bool|mixed
 	 * @throws Exception
 	 */
-	private function get_validator( $field_name ) {
+	private function get_field( $field_name ) {
 
 		if ( isset( $this->validators[ $field_name ] ) ) {
 			return $this->validators[ $field_name ];
@@ -252,7 +252,7 @@ class Parser {
 			throw new \Exception( 'There\'s an empty column, please remove from the CSV.' );
 		}
 
-		if ( ! $field_validator = $this->field_manager->get_validator( $field_name ) ) {
+		if ( ! $field_validator = $this->field_manager->get_field( $field_name ) ) {
 			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the column name against the field setting in \'fields\' to see that they match.' );
 		}
 

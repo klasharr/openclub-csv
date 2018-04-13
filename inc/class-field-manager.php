@@ -60,6 +60,9 @@ class Field_Manager {
 				openclub_csv_log_cli( 'All fields have been set to not display.' );
 			}
 		}
+
+		print_r($this->get_display_fields());
+
 	}
 
 	public function is_valid_field( $field ){
@@ -69,13 +72,13 @@ class Field_Manager {
 		}
 	}
 
-	public function has_validators() {
+	public function has_fields() {
 		return ! empty( $this->fields ) ? true : false;
 	}
 
-	public function get_validator( $key ) {
+	public function get_field( $key ) {
 
-		if( !$this->has_validators() ) {
+		if( !$this->has_fields() ) {
 			throw new \Exception( 'The Validators have not been set.' );
 		}
 
@@ -86,9 +89,9 @@ class Field_Manager {
 		return $this->fields[ $key ];
 	}
 
-	public function get_validator_type( $key ) {
+	public function get_field_type( $key ) {
 
-		if( !$this->has_validators() ) {
+		if( !$this->has_fields() ) {
 			throw new \Exception( 'The Validators have not been set.' );
 		}
 

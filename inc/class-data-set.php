@@ -64,14 +64,14 @@ class Data_Set {
 			throw new \Exception( 'A field_manager must be passed' );
 		}
 
-		/* @var Field_Manager $validator_manager */
-		$validator_manager = $config[ 'field_manager' ];
+		/* @var Field_Manager $field_manager */
+		$field_manager = $config[ 'field_manager' ];
 
 		if( !empty( $config['group_by_field'] ) ) {
 
-			if( $validator_manager->get_validator_type( $config['group_by_field'] ) == 'date' ) {
+			if( $field_manager->get_field_type( $config['group_by_field'] ) == 'date' ) {
 
-				$date_validator = $validator_manager->get_validator( $config['group_by_field'] );
+				$date_validator = $field_manager->get_field( $config['group_by_field'] );
 				$this->data_rows[ $date_validator->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
 
 			} else {
