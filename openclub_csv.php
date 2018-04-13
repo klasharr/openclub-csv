@@ -54,6 +54,19 @@ function openclub_importer_post_types_init() {
 
 add_action( 'init', 'openclub_importer_post_types_init' );
 
+add_action( 'fm_post_openclub-csv', function () {
+
+	$fm = new Fieldmanager_TextArea( array(
+		'name'       => 'fields',
+		'attributes' => array(
+			'rows' => 10,
+			'cols' => 80,
+		),
+	) );
+	$fm->add_meta_box( 'CSV field descriptions', array( 'openclub-csv' ) );
+} );
+
+
 function openclub_importer_disable_wysiwyg( $default ) {
 
 	global $post;
