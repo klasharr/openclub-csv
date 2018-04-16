@@ -41,7 +41,13 @@ class Data_Set_Input {
 	/**
 	 * @var array
 	 */
+	private $raw_display_fields = array();
+
+	/**
+	 * @var array
+	 */
 	private $display_fields_overridden = array();
+
 
 	/**
 	 * @param $post_id int
@@ -56,6 +62,7 @@ class Data_Set_Input {
 
 		$this->post_id = $post_id;
 		$this->post = CSV_Util::get_csv_post( $post_id );
+		$this->raw_display_fields = $this->post->field_settings;
 	}
 
 	/**
@@ -140,23 +147,36 @@ class Data_Set_Input {
 		return $this->limit;
 	}
 
+	/**
+	 * @param $fields
+	 *
+	 * @throws \Exception
+	 */
 	public function override_display_fields( $fields ){
 
 		if(!is_array($fields)){
 			throw new \Exception( '$fields must me passed as an array' );
 		}
-		$this->display_fields_overridden = $fields;
+
+		foreach( $fields as $field ) {
+			if( trim($field) != $field ) {
+				throw new \Exception('Bad field name passed in override \''. $field . '\'. Check shortcode config.' );
+			}
+			if( !array_key_exists( $field, $this->raw_display_fields ) ) {
+				throw new \Exception( 'Invalid field name passed to override. \'' . $field . '\'' );
+			}
+			$this->display_fields_overridden[ $field ] = $this->raw_display_fields[ $field ];
+			$this->display_fields_overridden[ $field ]['display'] = 1;
+		}
 	}
 
-	public function get_overridden_display_fields( $return_as_string = false) {
+	public function get_overridden_display_field_settings() {
 
-		$return = !empty( $this->display_fields_overridden ) ? $this->display_fields_overridden : false;
+		return $this->display_fields_overridden;
+	}
 
-		if($return && $return_as_string ) {
-			return implode(',', $return );
-		} else {
-			return $return;
-		}
+	public function has_overridden_display_fields(){
 
+		return !empty( $this->display_fields_overridden ) ? true : false;
 	}
 }

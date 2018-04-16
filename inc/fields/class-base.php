@@ -50,6 +50,7 @@ abstract class Base_Field implements Field {
 
 		$this->field_name = $data[ 'field_name' ];
 		$this->type = $data['type'];
+		$this->display_field = $data['display_field'];
 
 		$this->data = $data;
 		$this->input = $input;
@@ -66,34 +67,8 @@ abstract class Base_Field implements Field {
 		if ( ! empty( $this->data['required'] ) ) {
 			$this->required = true;
 		}
-
-		$this->set_field_display_flag();
 	}
 
-	private function set_field_display_flag(){
-
-		$overridden_display_fields = $this->input->get_overridden_display_fields();
-
-		$fields_overridden = false;
-
-		if( $this->input->has_reset_display_fields() ){
-			if(!empty( $overridden_display_fields )){
-				throw new \Exception('You can\'t override fields and reset fields, choose one setting');
-			}
-			return;
-		}
-
-		if( !empty( $overridden_display_fields ) ) {
-
-			if( !in_array( $this->data[ 'field_name' ], $overridden_display_fields ) ) {
-				$this->display_field = false;
-			}
-		}
-
-		if( isset( $this->data[ 'display' ] ) && !$this->data[ 'display' ] ){
-			$this->display_field = false;
-		}
-	}
 
 	protected function _validate( $value ) {
 
@@ -193,6 +168,14 @@ abstract class Base_Field implements Field {
 
 	public function format_value( $value ) {
 		return $value;
+	}
+
+	public function set_hide(){
+		$this->display_field = false;
+	}
+
+	public function set_show(){
+		$this->display_field = true;
 	}
 
 }

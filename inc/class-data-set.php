@@ -2,9 +2,6 @@
 
 namespace OpenClub;
 
-use OpenClub\Fields\DateField;
-use SSCMods\Fields\FieldValidatorManager;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
