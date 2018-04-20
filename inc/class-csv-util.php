@@ -74,7 +74,7 @@ class CSV_Util {
 
 		$out = '<tr class="'.$class.'">';
 
-		foreach( $field_manager->get_display_fields() as $field_name => $settings ) {
+		foreach( $field_manager->get_display_field_names() as $field_name ) {
 			$out .= '<td>' . $field_manager->get_field( $field_name )->format_value( $line_data->get_value( $field_name ) ) . '</td>';
 		}
 		$out .= "</tr>\n";
@@ -85,10 +85,8 @@ class CSV_Util {
 
 	public static function get_csv_table_header( Field_Manager $field_manager )  {
 
-
-
 		return '<tr><th>' .
-		       implode('</th><th>', array_keys( $field_manager->get_display_fields() ) ) .
+		       implode('</th><th>', $field_manager->get_display_field_names() ) .
 		       "</tr>\n";
 	}
 

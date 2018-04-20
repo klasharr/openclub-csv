@@ -8,10 +8,15 @@ if( $data->data_set->has_errors() && $data->config['error_messages' ] == "yes"  
 			echo \OpenClub\CSV_Util::get_formatted_csv_line_error_message( $message );
 		} ?>
 	</p>
-	<table class='openclub_csv'>
-	<?php echo \OpenClub\CSV_Util::get_csv_table_header( $data->data_set->get_field_manager() );
 
-}
+<?php } ?>
+
+	<table class='openclub_csv'>
+	<?php
+	
+
+
+echo \OpenClub\CSV_Util::get_csv_table_header( $data->data_set->get_field_manager() );
 
 /** @var DTO $line_data */
 foreach($data->data_set->get_data() as $line_data ){

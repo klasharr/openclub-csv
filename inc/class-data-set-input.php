@@ -27,29 +27,6 @@ class Data_Set_Input {
 	private $group_by_field;
 
 	/**
-	 * @var int
-	 */
-	private $limit;
-
-
-	/**
-	 * @var bool
-	 */
-	private $reset_display_fields = false;
-
-
-	/**
-	 * @var array
-	 */
-	private $raw_display_fields = array();
-
-	/**
-	 * @var array
-	 */
-	private $display_fields_overridden = array();
-
-
-	/**
 	 * @param $post_id int
 	 *
 	 * @throws \Exception
@@ -100,15 +77,6 @@ class Data_Set_Input {
 		return $this->post_id;
 	}
 
-
-	public function reset_field_display_rules(){
-		$this->reset_display_fields = true;
-	}
-
-	public function has_reset_display_fields(){
-		return $this->reset_display_fields;
-	}
-
 	public function set_group_by_field( $group_by_field ){
 
 		if( empty( trim( $group_by_field ) ) ) {
@@ -128,55 +96,4 @@ class Data_Set_Input {
 		return $this->group_by_field ? true: false;
 	}
 
-	public function has_limit(){
-		return $this->limit ? true : false;
-	}
-
-	/**
-	 * @param $limit
-	 */
-	public function set_limit( $limit ){
-
-		if( !is_numeric($limit ) || (int) $limit != $limit || $limit <= 0 ) {
-			throw new \Exception( '$limit must be passed a positive integer.');
-		}
-		$this->limit = (int) $limit;
-	}
-
-	public function get_limit(){
-		return $this->limit;
-	}
-
-	/**
-	 * @param $fields
-	 *
-	 * @throws \Exception
-	 */
-	public function override_display_fields( $fields ){
-
-		if(!is_array($fields)){
-			throw new \Exception( '$fields must me passed as an array' );
-		}
-
-		foreach( $fields as $field ) {
-			if( trim($field) != $field ) {
-				throw new \Exception('Bad field name passed in override \''. $field . '\'. Check shortcode config.' );
-			}
-			if( !array_key_exists( $field, $this->raw_display_fields ) ) {
-				throw new \Exception( 'Invalid field name passed to override. \'' . $field . '\'' );
-			}
-			$this->display_fields_overridden[ $field ] = $this->raw_display_fields[ $field ];
-			$this->display_fields_overridden[ $field ]['display'] = 1;
-		}
-	}
-
-	public function get_overridden_display_field_settings() {
-
-		return $this->display_fields_overridden;
-	}
-
-	public function has_overridden_display_fields(){
-
-		return !empty( $this->display_fields_overridden ) ? true : false;
-	}
 }

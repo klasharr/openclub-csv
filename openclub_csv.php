@@ -96,11 +96,8 @@ function openclub_csv_display_shortcode_callback( $config ) {
 			'post_id' => null,
 			'error_messages' => "yes",
 			'error_lines' => "yes",
-			'reset_display_fields' => "no",
-			'limit' => null,
 			'future_events_only' => null,
 			'display' => 'table',
-			'fields' => array(),
 		),
 		$config
 	);
@@ -140,6 +137,8 @@ function openclub_csv_view_content_page( $content ) {
 			'post_id' => $post->ID,
 			'error_messages' => "yes",
 			'error_lines' => "yes",
+			'future_events_only' => null,
+			'display' => 'table',
 		);
 
 		return openclub_csv_get_display_table( $config );
@@ -178,7 +177,7 @@ function openclub_csv_get_display_table( $config ) {
 			);
 
 			ob_start();
-			$templates->get_template_part( 'csv-table' );
+			$templates->get_template_part( 'table' );
 			$out .= ob_get_clean();
 
 		} else {
@@ -215,6 +214,8 @@ add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_set_filter', 
 function openclub_csv_log_cli( $message ) {
 	if ( class_exists( 'WP_CLI' ) ) {
 		\WP_CLI::log( $message );
+	} else {
+		//echo $message ."<br/>";
 	}
 }
 
@@ -226,9 +227,9 @@ function openclub_csv_log_cli( $message ) {
  * @return mixed
  */
 function openclub_csv_show_template_paths( $templates ){
-	echo "<pre>";
-	print_r($templates);
-	echo "</pre>";
+	//echo "<pre>";
+	//print_r($templates);
+	//echo "</pre>";
 	return $templates;
 }
 

@@ -28,7 +28,6 @@ class Field_Manager {
 	 */
 	private $have_fields_to_display = false;
 
-
 	/**
 	 * @param \WP_Post $post
 	 */
@@ -41,13 +40,7 @@ class Field_Manager {
 			return;
 		}
 
-		if( $this->input->has_overridden_display_fields() && $this->input->has_reset_display_fields() ) {
-
-			throw new \Exception( 'You cant override fields and reset fields, choose one setting' );
-		}
-
-
-		$this->get_field_objects();
+		$this->get_field_objects( $this->post->field_settings );
 
 		if(!$this->have_fields_to_display ) {
 			if( !class_exists( 'WP_CLI' ) ) {
@@ -68,26 +61,17 @@ class Field_Manager {
 	 */
 	private function field_is_displayed( $field_name, $config ) {
 
-		// @todo fix
-
-		if(
-			!empty( $this->overridden_fields_to_display ) &&
-		    in_array( $field_name, $this->overridden_fields_to_display )
-		){
-			return true;
-		}
-
 		if( isset( $config[ 'display' ] ) && !$config[ 'display' ] ){
+			openclub_csv_log_cli( 'Field settings: '. $field_name . ' - no display' );
 			return false;
 		}
 
+		openclub_csv_log_cli( 'Field settings: '. $field_name . ' - display' );
 		return true;
 
 	}
 
-	private function get_field_objects() {
-
-		$field_settings = $this->post->field_settings;
+	private function get_field_objects( array $field_settings ) {
 
 		foreach ( $field_settings as $field_name => $config ) {
 
@@ -105,29 +89,30 @@ class Field_Manager {
 			}
 
 			$className  = ucwords( $config['type'] ) . 'Field';
+
 			$this->fields[ $field_name ] = $o = Factory::get_field( $className, $config, $this->input );
+
 		}
 	}
 
-	public function is_valid_field( $field ){
-
-		if( array_key_exists( $field, $this->fields)) {
-			return true;
-		}
-	}
 
 	public function has_fields() {
 		return ! empty( $this->fields ) ? true : false;
 	}
 
+
 	public function get_field( $key ) {
+
+		if( !is_string( $key ) ) {
+			throw new \Exception('$key must be passed as a string');
+		}
 
 		if( !$this->has_fields() ) {
 			throw new \Exception( 'The fields have not been set.' );
 		}
 
         if(!isset( $this->fields[ $key ] ) ) {
-			throw new \Exception( 'Validator '. $key . ' does not exist, check the column name.' );
+			throw new \Exception( 'Validator '. $key . ' does not exists, check the column name.' );
         }
 
 		return $this->fields[ $key ];
@@ -155,30 +140,17 @@ class Field_Manager {
 	}
 
 
-	public function get_display_fields() {
+	public function get_display_field_names() {
 
 		$out = array();
 
-		if( $f = $this->input->get_overridden_display_field_settings()){
-			if( $this->input->has_reset_display_fields() ) {
-				throw new \Exception('Can can\'t reset and override fields, choose one. Check the shortcode.');
-			}
-			return $f;
-		}
-
 		foreach( $this->fields as $fieldName => $field ){
-			if ( $this->input->has_reset_display_fields() ) {
-				$out[] = $fieldName;
-			} elseif( $field->is_displayed() ) {
+			if( $field->is_displayed() ) {
 				$out[] = $fieldName;
 			}
 		}
 
 		return $out;
 	}
-
-
-	
-	
 
 }

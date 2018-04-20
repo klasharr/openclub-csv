@@ -55,8 +55,7 @@ Class OpenClub {
 
 	}
 
-	public function foo( $args ){
-
+	public function config_check( $args ){
 
 		try {
 
@@ -70,17 +69,34 @@ Class OpenClub {
 			\WP_CLI::error( $e->getMessage() );
 		}
 
-
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
 
-		$input->override_display_fields( array('Date') );
+		//$input->set_override_display_field_names( array( 'Team','Date' ) );
 
-		/**  @var Data_Set @data_set */
-		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
+		$parser = Factory::get_parser( $input );
 
+		echo $parser->get_header_fields( false );
 
 		WP_CLI::success( '====== Success! ====== ' );
 	}
+
+
+	private function as_bool_string( $value ) {
+
+		return $value ? 'true' : 'false';
+	}
+
+	private function log_settings( $settings ){
+
+		foreach( $settings as $field_name => $settings ) {
+			WP_CLI::log( $field_name );
+			foreach( $settings as $key => $value ) {
+				WP_CLI::log( $key . ': ' . $value );
+			}
+			WP_CLI::log( '----------------------------' );
+		}
+	}
+
 
 }
 

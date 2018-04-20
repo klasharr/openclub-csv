@@ -42,7 +42,7 @@ class Parser {
 	/**
 	 * @var array
 	 */
-	private $validators = array();
+	private $fields = array();
 
 
 	/**
@@ -84,7 +84,7 @@ class Parser {
 
 	public function set_group_by_field( $field ) {
 
-		if( !empty( $field ) && !$this->has_field( $field ) ) {
+		if( !empty( $field ) && !$this->field_manager->is_valid_field( $field ) ) {
 			throw new \Exception( 'Trying to group on field: '. $field .' which does not exist' );
 		}
 		$this->group_by_field = $field;
@@ -97,19 +97,25 @@ class Parser {
 	/**
 	 * @param $csv_line string
 	 */
-	private function set_header_from_csv( $csv_line ) {
+	private function set_header_fields_from_csv( $csv_line ) {
 		
-		$fields = explode( ",", $csv_line );
+		$csv_header_fields = explode( ",", $csv_line );
 
-		$this->header_fields       = $fields;
+		foreach( $csv_header_fields as $cvs_field_name ) {
+			if(!$this->field_manager->get_field( trim( $cvs_field_name ) ) ) {
+				throw new \Exception('Field name in CSV header is invalid, can not parse data.' );
+			}
+		}
+
+		$this->header_fields       = $csv_header_fields;
 		$this->header_fields_count = count( $this->header_fields );
 	}
 
 	/**
 	 * @return array
 	 */
-	private function get_header_fields( $return_as_array = true ) {
-
+	public function get_header_fields( $return_as_array = true ) {
+		
 		return $return_as_array ? $this->header_fields : implode( ',', $this->header_fields );
 	}
 
@@ -130,8 +136,6 @@ class Parser {
 
 		$data_file = explode( "\n", esc_html( $this->input->get_post()->post_content ) );
 
-
-
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
 
@@ -139,7 +143,7 @@ class Parser {
 			$has_validation_error = false;
 
 			if ( $line_number == 0 ) {
-				$this->set_header_from_csv( $data_line );
+				$this->set_header_fields_from_csv( $data_line );
 				$this->get_header_fields_count();
 				$line_number ++;
 				continue;
@@ -182,10 +186,6 @@ class Parser {
 			}
 
 			try {
-
-				if( $this->input->has_limit() && $this->get_line_number($line_number)  > $this->input->get_limit())  {
-					break;
-				}
 
 				/** @var $dto DTO */
 				$dto = Factory::get_dto( $this->get_line_number($line_number), $field_value_pairs, $has_validation_error );
@@ -232,10 +232,6 @@ class Parser {
 
 	}
 
-	public function has_field( $field ) {
-		return $this->field_manager->is_valid_field( $field );
-	}
-
 	/**
 	 * @param $field_name
 	 *
@@ -244,21 +240,21 @@ class Parser {
 	 */
 	private function get_field( $field_name ) {
 
-		if ( isset( $this->validators[ $field_name ] ) ) {
-			return $this->validators[ $field_name ];
+		if ( isset( $this->fields[ $field_name ] ) ) {
+			return $this->fields[ $field_name ];
 		}
 
 		if(empty($field_name)){
 			throw new \Exception( 'There\'s an empty column, please remove from the CSV.' );
 		}
 
-		if ( ! $field_validator = $this->field_manager->get_field( $field_name ) ) {
+		if ( ! $field = $this->field_manager->get_field( $field_name ) ) {
 			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the column name against the field setting in \'fields\' to see that they match.' );
 		}
 
-		$this->validators[ $field_name ] = $field_validator;
+		$this->fields[ $field_name ] = $field;
 
-		return $field_validator;
+		return $field;
 
 	}
 
