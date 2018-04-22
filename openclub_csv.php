@@ -164,18 +164,18 @@ function openclub_csv_get_display_table( $config ) {
 		$input = \OpenClub\Factory::get_data_input_object( $config[ 'post_id'] );
 
 		/**
-		 * @var $data_set \OpenClub\Data_Set
+		 * @var $output \OpenClub\Output_Data
 		 */
-		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
+		$output_data = \OpenClub\Factory::get_output_data( $input );
 
-		$output = \OpenClub\Factory::get_output( $data_set, $input );
+		if( $output_data->exists() ) {
 
-		$templates = \OpenClub\Factory::get_template_loader();
-
-		if( $data_set->has_data() ) {
-
+			$templates = \OpenClub\Factory::get_template_loader();
 			$templates->set_template_data(
-				array( 'output' => $output, 'config' => $config )
+				array(
+					'output_data' => $output_data,
+					'config' => $config
+				)
 			);
 
 			ob_start();

@@ -51,38 +51,6 @@ class CSV_Util {
 	}
 
 
-	/**
-	 * @param Data_Set_Input $input
-	 *
-	 * @return mixed|Data_Set|void
-	 * @throws \Exception
-	 */
-	public static function get_data_set( Data_Set_Input $input ) {
-
-		$parser = Factory::get_parser( $input );
-		return $parser->get_data();
-	}
-
-
-	public static function get_csv_table_row( DTO $line_data, Field_Manager $field_manager ) {
-
-		$class = '';
-		if( $line_data->has_validation_error()){
-			$class = 'openclub_csv_error';
-		}
-
-		$out = '<tr class="'.$class.'">';
-
-		foreach( $field_manager->get_display_field_names() as $field_name ) {
-			$out .= '<td>' . $field_manager->get_field( $field_name )->format_value( $line_data->get_value( $field_name ) ) . '</td>';
-		}
-		$out .= "</tr>\n";
-
-		return $out;
-
-	}
-
-
 	public static function get_formatted_csv_line_error_message( $error_message ){
 		return '<span class="openclub_csv_error">'.$error_message.'</span><br/>';
 	}

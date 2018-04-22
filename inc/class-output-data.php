@@ -2,7 +2,16 @@
 
 namespace OpenClub;
 
-class Output {
+/**
+ *
+ * @todo group by
+ * @todo limit
+ * @todo display override
+ *
+ * Class Output_Data
+ * @package OpenClub
+ */
+class Output_Data {
 
 	/**
 	 * @var Data_Set
@@ -30,18 +39,20 @@ class Output {
 	private $input;
 
 
-	public function __construct( Data_Set $data_set, Data_Set_Input $input ) {
+	public function __construct( Data_Set_Input $input ) {
 
-		$this->data_set = $data_set;
+		$parser = Factory::get_parser( $input );
+
+		$this->data_set = $parser->get_data();
 		$this->input = $input;
 		$this->field_manager = $this->data_set->get_field_manager();
 
 		$this->header_fields = $this->field_manager->get_display_field_names();
-		$this->rows = $this->normalise_rows();
+		$this->normalise_rows();
 
 	}
 
-	public function has_data(){
+	public function exists(){
 		return count( $this->rows ) > 0 ? true : false;
 	}
 
@@ -68,16 +79,17 @@ class Output {
 
 			foreach( $this->field_manager->get_display_field_names() as $field_name ) {
 
-				$this->rows[ $line_number ][ $field_name ] = array(
+				$tmp[ $field_name ] = array(
 					'value' => $dto->get_value( $field_name ),
 					'formatted_value' => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
 					'validation_error' => $dto->has_validation_error() ? 1 : 0,
 					'class' => $dto->has_validation_error() ? 'openclub_csv_error' : '',
 					'display_default' => $this->field_manager->get_field( $field_name )->is_displayed(),
 				);
-
 			}
-			$line_number ++;
+
+			$this->rows[ $line_number ] = $tmp;
+			$line_number++;
 		}
 	}
 

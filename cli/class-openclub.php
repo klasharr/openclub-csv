@@ -15,6 +15,8 @@ require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 Class OpenClub {
 
 	/**
+	 * @todo fix
+	 *
 	 * @throws \Exception
 	 * @throws \OpenClub\Exception
 	 */
@@ -33,12 +35,9 @@ Class OpenClub {
 		}
 
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
-		
 
-		/**
-		 * @var Data_Set @data_set
-		 */
-		$data_set = \OpenClub\CSV_Util::get_data_set( $input );
+		$parser = Factory::get_parser( $input );
+		$this->data_set = $parser->get_data();
 
 		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
 

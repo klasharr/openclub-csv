@@ -13,7 +13,7 @@ require_once( 'class-parser.php' );
 require_once( 'class-data-set.php' );
 require_once( 'class-data-set-input.php' );
 require_once( 'class-template-loader.php' );
-require_once( 'class-output.php' );
+require_once( 'class-output-data.php' );
 
 class Factory {
 
@@ -91,8 +91,8 @@ class Factory {
 		return new Template_Loader;
 	}
 
-	public static function get_output( Data_Set $data_set, Data_Set_Input $input ){
-		return new Output( $data_set, $input );
+	public static function get_output_data( Data_Set_Input $input ){
+		return new Output_Data( $input );
 	}
 
 }
