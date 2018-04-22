@@ -62,11 +62,9 @@ class Field_Manager {
 	private function field_is_displayed( $field_name, $config ) {
 
 		if( isset( $config[ 'display' ] ) && !$config[ 'display' ] ){
-			openclub_csv_log_cli( 'Field settings: '. $field_name . ' - no display' );
 			return false;
 		}
 
-		openclub_csv_log_cli( 'Field settings: '. $field_name . ' - display' );
 		return true;
 
 	}

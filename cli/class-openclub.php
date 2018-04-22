@@ -15,8 +15,6 @@ require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 Class OpenClub {
 
 	/**
-	 * @todo fix
-	 *
 	 * @throws \Exception
 	 * @throws \OpenClub\Exception
 	 */
@@ -39,14 +37,15 @@ Class OpenClub {
 		$parser = Factory::get_parser( $input );
 		$this->data_set = $parser->get_data();
 
+
 		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
 
 		/** @var DTO $line_data */
-		foreach($data_set->get_data() as $line_data ){
+		foreach($this->data_set->get_data() as $line_data ){
 			WP_CLI::log( $line_data );
 		}
 
-		if($data_set->has_errors()) {
+		if($this->data_set->has_errors()) {
 			WP_CLI::log( '====== Completed with errors! =======');
 			return;
 		}
@@ -55,6 +54,11 @@ Class OpenClub {
 
 	}
 
+	/**
+	 * @todo make useful
+	 *
+	 * @param $args
+	 */
 	public function config_check( $args ){
 
 		try {
@@ -70,10 +74,6 @@ Class OpenClub {
 		}
 
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
-
-		$parser = Factory::get_parser( $input );
-
-		echo $parser->get_header_field_names( false );
 
 		WP_CLI::success( '====== Success! ====== ' );
 	}
