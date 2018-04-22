@@ -60,8 +60,7 @@ class CSV_Util {
 	public static function get_data_set( Data_Set_Input $input ) {
 
 		$parser = Factory::get_parser( $input );
-		return  $parser->get_data();
-
+		return $parser->get_data();
 	}
 
 
@@ -83,12 +82,6 @@ class CSV_Util {
 
 	}
 
-	public static function get_csv_table_header( Field_Manager $field_manager )  {
-
-		return '<tr><th>' .
-		       implode('</th><th>', $field_manager->get_display_field_names() ) .
-		       "</tr>\n";
-	}
 
 	public static function get_formatted_csv_line_error_message( $error_message ){
 		return '<span class="openclub_csv_error">'.$error_message.'</span><br/>';

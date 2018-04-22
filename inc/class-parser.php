@@ -26,12 +26,12 @@ class Parser {
 	/**
 	 * @var array
 	 */
-	private $header_fields = array();
+	private $header_field_names = array();
 
 	/**
 	 * @var int|null
 	 */
-	private $header_fields_count = null;
+	private $header_field_names_count = null;
 
 	/**
 	 * @var $field_manager Field_Manager
@@ -97,33 +97,33 @@ class Parser {
 	/**
 	 * @param $csv_line string
 	 */
-	private function set_header_fields_from_csv( $csv_line ) {
+	private function set_header_field_names_from_csv( $csv_line ) {
 		
-		$csv_header_fields = explode( ",", $csv_line );
+		$csv_header_field_names = explode( ",", $csv_line );
 
-		foreach( $csv_header_fields as $cvs_field_name ) {
+		foreach( $csv_header_field_names as $cvs_field_name ) {
 			if(!$this->field_manager->get_field( trim( $cvs_field_name ) ) ) {
 				throw new \Exception('Field name in CSV header is invalid, can not parse data.' );
 			}
 		}
 
-		$this->header_fields       = $csv_header_fields;
-		$this->header_fields_count = count( $this->header_fields );
+		$this->header_field_names       = $csv_header_field_names;
+		$this->header_field_names_count = count( $this->header_field_names );
 	}
 
 	/**
 	 * @return array
 	 */
-	public function get_header_fields( $return_as_array = true ) {
-		
-		return $return_as_array ? $this->header_fields : implode( ',', $this->header_fields );
+	public function get_header_field_names( $return_as_array = true ) {
+
+		return $return_as_array ? $this->header_field_names : implode( ',', $this->header_field_names );
 	}
 
 	/**
 	 * @return int|null
 	 */
-	private function get_header_fields_count() {
-		return $this->header_fields_count;
+	private function get_header_field_names_count() {
+		return $this->header_field_names_count;
 	}
 
 	/**
@@ -143,8 +143,8 @@ class Parser {
 			$has_validation_error = false;
 
 			if ( $line_number == 0 ) {
-				$this->set_header_fields_from_csv( $data_line );
-				$this->get_header_fields_count();
+				$this->set_header_field_names_from_csv( $data_line );
+				$this->get_header_field_names_count();
 				$line_number ++;
 				continue;
 			}
@@ -155,12 +155,12 @@ class Parser {
 
 			$data_array = explode( ",", $data_line );
 
-			if ( count( $data_array ) != $this->header_fields_count ) {
+			if ( count( $data_array ) != $this->header_field_names_count ) {
 				throw new \Exception(
 					sprintf( 'Line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
 						$this->get_line_number($line_number),
-						$this->get_header_fields_count(),
-						$this->get_header_fields( false ),
+						$this->get_header_field_names_count(),
+						$this->get_header_field_names( false ),
 						$data_line
 					)
 				);
@@ -169,7 +169,7 @@ class Parser {
 			$i = 0;
 			$field_value_pairs = array();
 			foreach ( $data_array as $i => $field ) {
-				$field_value_pairs[ trim( $this->header_fields[ $i ] ) ] = trim( $field );
+				$field_value_pairs[ trim( $this->header_field_names[ $i ] ) ] = trim( $field );
 			}
 
 			try {
@@ -212,12 +212,12 @@ class Parser {
 			$line_number ++;
 		}
 
-		$this->data_set->set_header_fields( $this->get_header_fields() );
+		$this->data_set->set_header_field_names( $this->get_header_field_names() );
 		$this->data_set->set_field_manager( $this->field_manager );
 
 		$this->data_set = apply_filters( 'openclub_csv_filter_data', $this->data_set, $this->input->get_post() );
-
 		return $this->data_set;
+		
 	}
 
 	/**

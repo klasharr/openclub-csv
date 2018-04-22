@@ -33,6 +33,7 @@ Class OpenClub {
 		}
 
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
+		
 
 		/**
 		 * @var Data_Set @data_set
@@ -71,11 +72,9 @@ Class OpenClub {
 
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
 
-		//$input->set_override_display_field_names( array( 'Team','Date' ) );
-
 		$parser = Factory::get_parser( $input );
 
-		echo $parser->get_header_fields( false );
+		echo $parser->get_header_field_names( false );
 
 		WP_CLI::success( '====== Success! ====== ' );
 	}

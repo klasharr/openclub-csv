@@ -36,7 +36,7 @@ class Data_Set {
 	/**
 	 * @var array
 	 */
-	private $header_fields = array();
+	private $header_field_names = array();
 
 
 	/**
@@ -96,12 +96,11 @@ class Data_Set {
 	}
 
 	/**
-	 * @param array $header_fields
+	 * @param array $header_fields_names
 	 */
-	public function set_header_fields( array $header_fields ){
+	public function set_header_field_names( array $header_field_names ){
 
-		$this->header_fields = $header_fields;
-
+		$this->header_field_names = $header_field_names;
 	}
 
 	/**
@@ -127,13 +126,13 @@ class Data_Set {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function get_header_fields(){
+	public function get_header_field_names(){
 
-		if(empty( $this->header_fields )){
-			throw new \Exception('$header_fields has not been set');
+		if(empty( $this->header_field_names )){
+			throw new \Exception('$header_field_names has not been set');
 		}
 
-		return $this->header_fields;
+		return $this->header_field_names;
 	}
 
 	/**
