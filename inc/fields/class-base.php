@@ -45,14 +45,14 @@ abstract class Base_Field implements Field {
 	private $input;
 
 	private $field_name = null;
-	
+
 	public function __construct( $data, Data_Set_Input $input ) {
 
-		$this->field_name = $data[ 'field_name' ];
-		$this->type = $data['type'];
+		$this->field_name    = $data['field_name'];
+		$this->type          = $data['type'];
 		$this->display_field = $data['display_field'];
 
-		$this->data = $data;
+		$this->data  = $data;
 		$this->input = $input;
 
 		if ( isset( $this->data['options'] ) && ! array( $this->data['options'] ) ) {
@@ -148,15 +148,13 @@ abstract class Base_Field implements Field {
 		return $this->errorMessage;
 	}
 
-	
-
 
 	public function is_required() {
 		return $this->required;
 	}
-	
-	
-	public function is_displayed(){
+
+
+	public function is_displayed() {
 		return $this->display_field;
 	}
 
@@ -170,11 +168,11 @@ abstract class Base_Field implements Field {
 		return $value;
 	}
 
-	public function set_hide(){
+	public function set_hide() {
 		$this->display_field = false;
 	}
 
-	public function set_show(){
+	public function set_show() {
 		$this->display_field = true;
 	}
 

@@ -4,18 +4,19 @@
 
 ?>
 <table class='openclub_csv'>
-	<tr><th>
-	<?php  echo implode('</th><th>', $data->output_data->get_header_fields() ); ?>
+	<tr>
+		<th>
+			<?php echo implode( '</th><th>', $data->output_data->get_header_fields() ); ?>
 	</tr>
-<?php
+	<?php
 
-foreach( $data->output_data->get_rows() as $row) {
+	foreach ( $data->output_data->get_rows() as $row ) {
 
-	echo "<tr>";
-    foreach( $row as $fieldname => $values ) {
-	    echo '<td>' . $values['formatted_value'] . '</td>';
-    }
-	echo "</tr>\n";
-}
-?>
+		echo "<tr>";
+		foreach ( $row as $fieldname => $values ) {
+			echo '<td class="' . $values['class'] . '">' . $values['formatted_value'] . '</td>';
+		}
+		echo "</tr>\n";
+	}
+	?>
 </table>

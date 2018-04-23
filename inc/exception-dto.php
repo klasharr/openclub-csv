@@ -9,4 +9,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 Use \Exception;
 
-class DTO_Exception extends Exception {}
+class DTO_Exception extends Exception {
+}

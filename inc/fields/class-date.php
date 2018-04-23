@@ -25,17 +25,17 @@ class DateField extends Base_Field implements Field {
 	public function __construct( $data, Data_Set_Input $input ) {
 		parent::__construct( $data, $input );
 
-		if(empty( $this->data['input_format'] ) ) {
+		if ( empty( $this->data['input_format'] ) ) {
 			throw new Field_Exception( 'Date field chosen but no input format specified, check the field description.' );
 		}
 
 		$date_pattern = '/^[djmn]\/[djmn]\/[Yy]$/';
 
-		if(!preg_match( $date_pattern, $this->data['input_format'] ) ) {
+		if ( ! preg_match( $date_pattern, $this->data['input_format'] ) ) {
 			throw new Field_Exception( 'Invalid input_format specified' );
 		}
 
-		if(!empty( $this->data['output_format'] ) && !preg_match( $date_pattern, $this->data['output_format'] ) ) {
+		if ( ! empty( $this->data['output_format'] ) && ! preg_match( $date_pattern, $this->data['output_format'] ) ) {
 			throw new Field_Exception( 'Invalid output_format specified' );
 		}
 
@@ -57,23 +57,23 @@ class DateField extends Base_Field implements Field {
 
 		$errors = \DateTime::getLastErrors();
 
-		if($errors['warning_count'] > 0 ){
+		if ( $errors['warning_count'] > 0 ) {
 			throw new Field_Exception( '[Warning] Date field validation failed, parsed date is invalid:' . $value );
 		}
 
-		if($errors['error_count'] > 0 ) {
+		if ( $errors['error_count'] > 0 ) {
 			throw new Field_Exception( '[Error] Date field validation failed, parsed date is invalid:' . $value );
 		}
 
-		$month = $datetime->format('m');
-		$day = $datetime->format('d');
-		$year = $datetime->format('Y');
+		$month = $datetime->format( 'm' );
+		$day   = $datetime->format( 'd' );
+		$year  = $datetime->format( 'Y' );
 
 		if ( ! checkdate( $month, $day, $year ) ) {
 			throw new Field_Exception( 'Date field validation failed, format is valid, invalid date. Got: ' . $value );
 		}
 
-		$this->datetime = $datetime;
+		$this->datetime  = $datetime;
 		$this->timestamp = $datetime->getTimestamp();
 
 	}
@@ -86,7 +86,6 @@ class DateField extends Base_Field implements Field {
 	}
 
 
-
 	/**
 	 * @param $value
 	 *
@@ -95,9 +94,10 @@ class DateField extends Base_Field implements Field {
 	 */
 	public function format_value( $value ) {
 
-		if( !empty( $this->data[ 'output_format' ] ) ) {
-			return $this->datetime->format( $this->data[ 'output_format' ] );
+		if ( ! empty( $this->data['output_format'] ) ) {
+			return $this->datetime->format( $this->data['output_format'] );
 		}
+
 		return $value;
 	}
 

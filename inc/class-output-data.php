@@ -43,8 +43,8 @@ class Output_Data {
 
 		$parser = Factory::get_parser( $input );
 
-		$this->data_set = $parser->get_data();
-		$this->input = $input;
+		$this->data_set      = $parser->get_data();
+		$this->input         = $input;
 		$this->field_manager = $this->data_set->get_field_manager();
 
 		$this->header_fields = $this->field_manager->get_display_field_names();
@@ -52,15 +52,15 @@ class Output_Data {
 
 	}
 
-	public function exists(){
+	public function exists() {
 		return count( $this->rows ) > 0 ? true : false;
 	}
 
-	public function get_header(){
+	public function get_header() {
 		return $this->header_fields;
 	}
 
-	public function get_rows(){
+	public function get_rows() {
 		return $this->rows;
 	}
 
@@ -70,29 +70,36 @@ class Output_Data {
 	}
 
 
-	private function normalise_rows(){
+	private function normalise_rows() {
 
-		$line_number = 1;
+		$errors = $this->data_set->get_errors();
+
+
+		$line_number = 0;
 
 		/** @var DTO $dto */
-		foreach( $this->data_set->get_data() as $dto ){
+		foreach ( $this->data_set->get_rows() as $dto ) {
 
-			foreach( $this->field_manager->get_display_field_names() as $field_name ) {
+			foreach ( $this->field_manager->get_display_field_names() as $field_name ) {
 
 				$tmp[ $field_name ] = array(
-					'value' => $dto->get_value( $field_name ),
-					'formatted_value' => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
+					'value'            => $dto->get_value( $field_name ),
+					'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
 					'validation_error' => $dto->has_validation_error() ? 1 : 0,
-					'class' => $dto->has_validation_error() ? 'openclub_csv_error' : '',
-					'display_default' => $this->field_manager->get_field( $field_name )->is_displayed(),
+					'class'            => $dto->has_validation_error() ? 'openclub_csv_error' : '',
+					'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
 				);
 			}
 
-			$this->rows[ $line_number ] = $tmp;
-			$line_number++;
+			$this->rows[ $line_number ]['data']  = $tmp;
+			$this->rows[ $line_number ]['error'] = $dto->has_validation_error() ? $errors[ $line_number ] : '';
+			$line_number ++;
 		}
+
+		echo "<pre>";
+		print_r( $this->rows );
+		echo "</pre>";
 	}
 
 
-	
 }

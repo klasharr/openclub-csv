@@ -93,11 +93,11 @@ function openclub_csv_display_shortcode_callback( $config ) {
 
 	$config = shortcode_atts(
 		array(
-			'post_id' => null,
-			'error_messages' => "yes",
-			'error_lines' => "yes",
+			'post_id'            => null,
+			'error_messages'     => "yes",
+			'error_lines'        => "yes",
 			'future_events_only' => null,
-			'display' => 'table',
+			'display'            => 'table',
 		),
 		$config
 	);
@@ -105,6 +105,7 @@ function openclub_csv_display_shortcode_callback( $config ) {
 	return openclub_csv_get_display_table( $config );
 
 }
+
 add_shortcode( 'openclub_display_csv', 'openclub_csv_display_shortcode_callback' );
 
 
@@ -114,14 +115,15 @@ function openclub_csv_add_inline_css() {
 		.openclub_csv_error {
 			color: red;
 		}
+
 		table.openclub_csv th {
 			background-color: #EFEFEF;
 		}
 	</style>
 	<?php
 }
-add_action('wp_head', 'openclub_csv_add_inline_css');
 
+add_action( 'wp_head', 'openclub_csv_add_inline_css' );
 
 
 function openclub_csv_view_content_page( $content ) {
@@ -134,11 +136,11 @@ function openclub_csv_view_content_page( $content ) {
 	if ( is_singular() && in_array( get_post_type( $post ), array( 'openclub-csv' ) ) ) {
 
 		$config = array(
-			'post_id' => $post->ID,
-			'error_messages' => "yes",
-			'error_lines' => "yes",
+			'post_id'            => $post->ID,
+			'error_messages'     => "yes",
+			'error_lines'        => "yes",
 			'future_events_only' => null,
-			'display' => 'table',
+			'display'            => 'table',
 		);
 
 		return openclub_csv_get_display_table( $config );
@@ -156,25 +158,25 @@ function openclub_csv_get_display_table( $config ) {
 
 	$out = '';
 
-	try{
+	try {
 
 		/**
 		 * @var $input \OpenClub\Data_Set_Input
 		 */
-		$input = \OpenClub\Factory::get_data_input_object( $config[ 'post_id'] );
+		$input = \OpenClub\Factory::get_data_input_object( $config['post_id'] );
 
 		/**
 		 * @var $output \OpenClub\Output_Data
 		 */
 		$output_data = \OpenClub\Factory::get_output_data( $input );
 
-		if( $output_data->exists() ) {
+		if ( $output_data->exists() ) {
 
 			$templates = \OpenClub\Factory::get_template_loader();
 			$templates->set_template_data(
 				array(
 					'output_data' => $output_data,
-					'config' => $config
+					'config'      => $config
 				)
 			);
 
@@ -186,7 +188,7 @@ function openclub_csv_get_display_table( $config ) {
 			$out .= 'No data';
 		}
 
-	} catch( \Exception $e ) {
+	} catch ( \Exception $e ) {
 		$out .= 'Error: ' . $e->getMessage();
 	}
 
@@ -196,6 +198,7 @@ function openclub_csv_get_display_table( $config ) {
 function openclub_csv_robots_override( $output ) {
 
 	$output .= "Disallow: /openclub_csv/\n";
+
 	return $output;
 }
 
@@ -208,32 +211,14 @@ add_filter( 'robots_txt', 'openclub_csv_robots_override', 0, 2 );
  *
  * @return \OpenClub\Data_Set
  */
-function openclub_csv_example_data_set_filter( \OpenClub\Data_Set $data_set, $post ){
+function openclub_csv_example_data_set_filter( \OpenClub\Data_Set $data_set, $post ) {
 	return $data_set;
 }
+
 add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_set_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );
 
 function openclub_csv_log_cli( $message ) {
 	if ( class_exists( 'WP_CLI' ) ) {
 		\WP_CLI::log( $message );
-	} else {
-		//echo $message ."<br/>";
 	}
 }
-
-/**
- * Debug
- *
- * @param $templates
- *
- * @return mixed
- */
-function openclub_csv_show_template_paths( $templates ){
-	//echo "<pre>";
-	//print_r($templates);
-	//echo "</pre>";
-	return $templates;
-}
-
-
-add_filter( 'openclub_template_paths', 'openclub_csv_show_template_paths')  ;

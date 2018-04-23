@@ -17,9 +17,9 @@ class Data_Set {
 
 	/**
 	 *
-	 * @var array $data_rows
+	 * @var array $rows
 	 */
-	private $data_rows = array();
+	private $rows = array();
 
 
 	/**
@@ -57,28 +57,28 @@ class Data_Set {
 	 */
 	public function push_row( $config, DTO $dto ) {
 
-		if( empty( $config[ 'field_manager' ] ) ) {
+		if ( empty( $config['field_manager'] ) ) {
 			throw new \Exception( 'A field_manager must be passed' );
 		}
 
 		/* @var Field_Manager $field_manager */
-		$field_manager = $config[ 'field_manager' ];
+		$field_manager = $config['field_manager'];
 
-		if( !empty( $config['group_by_field'] ) ) {
+		if ( ! empty( $config['group_by_field'] ) ) {
 
-			if( $field_manager->get_field_type( $config['group_by_field'] ) == 'date' ) {
+			if ( $field_manager->get_field_type( $config['group_by_field'] ) == 'date' ) {
 
-				$date_validator = $field_manager->get_field( $config['group_by_field'] );
-				$this->data_rows[ $date_validator->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
+				$date_validator                                                                                 = $field_manager->get_field( $config['group_by_field'] );
+				$this->rows[ $date_validator->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
 
 			} else {
-				$this->data_rows[ $dto->get_value( $config['group_by_field'] ) ][] = $dto;
+				$this->rows[ $dto->get_value( $config['group_by_field'] ) ][] = $dto;
 			}
-			
+
 		} else {
 
-			$this->validate_number( $config['line_number'] );
-			$this->data_rows[ $config['line_number'] ] = $dto;
+			$this->validate_line_number( $config['line_number'] );
+			$this->rows[ $config['line_number'] ] = $dto;
 		}
 	}
 
@@ -91,14 +91,14 @@ class Data_Set {
 	 */
 	public function push_line_error_message( $line_number, $message ) {
 
-		$this->validate_number( $line_number );
+		$this->validate_line_number( $line_number );
 		$this->errors[ $line_number ] = $message;
 	}
 
 	/**
 	 * @param array $header_fields_names
 	 */
-	public function set_header_field_names( array $header_field_names ){
+	public function set_header_field_names( array $header_field_names ) {
 
 		$this->header_field_names = $header_field_names;
 	}
@@ -106,7 +106,7 @@ class Data_Set {
 	/**
 	 * @param Field_Manager $field_manager
 	 */
-	public function set_field_manager( Field_Manager $field_manager ){
+	public function set_field_manager( Field_Manager $field_manager ) {
 
 		$this->field_manager = $field_manager;
 	}
@@ -116,9 +116,9 @@ class Data_Set {
 	 *
 	 * @throws \Exception
 	 */
-	private function validate_number( $line_number ){
-		if( !is_numeric( $line_number ) || $line_number < 0 ){
-			throw new \Exception('$line_number must have a positive integer value.');
+	private function validate_line_number( $line_number ) {
+		if ( ! is_numeric( $line_number ) || $line_number < 0 ) {
+			throw new \Exception( '$line_number must have a positive integer value.' );
 		}
 	}
 
@@ -126,10 +126,10 @@ class Data_Set {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function get_header_field_names(){
+	public function get_header_field_names() {
 
-		if(empty( $this->header_field_names )){
-			throw new \Exception('$header_field_names has not been set');
+		if ( empty( $this->header_field_names ) ) {
+			throw new \Exception( '$header_field_names has not been set' );
 		}
 
 		return $this->header_field_names;
@@ -139,10 +139,10 @@ class Data_Set {
 	 * @return Field_Manager
 	 * @throws \Exception
 	 */
-	public function get_field_manager(){
+	public function get_field_manager() {
 
-		if(empty( $this->field_manager) ) {
-			throw new \Exception('$field_manager has not been set');
+		if ( empty( $this->field_manager ) ) {
+			throw new \Exception( '$field_manager has not been set' );
 		}
 
 		return $this->field_manager;
@@ -151,42 +151,35 @@ class Data_Set {
 	/**
 	 * @return array
 	 */
-	public function get_line_errors(){
+	public function get_line_errors() {
 		return $this->errors;
 	}
 
 	/**
-	 * @return array 
+	 * @return bool
 	 */
-	public function get_result_set(){
-		return $this->data_rows;
+	public function has_data() {
+		return ! empty( $this->rows ) ? true : false;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function has_data(){
-		return !empty( $this->data_rows ) ? true: false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function has_errors(){
-		return !empty( $this->errors ) ? true: false;
+	public function has_errors() {
+		return ! empty( $this->errors ) ? true : false;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function get_errors(){
+	public function get_errors() {
 		return $this->errors;
 	}
 
 	/**
 	 * @return array of DTO
 	 */
-	public function get_data(){
-		return $this->data_rows;
+	public function get_rows() {
+		return $this->rows;
 	}
 }

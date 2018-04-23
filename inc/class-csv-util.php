@@ -12,13 +12,13 @@ class CSV_Util {
 
 	public static function get_csv_post( $post_id ) {
 
-		if( !is_numeric( $post_id ) ) {
+		if ( ! is_numeric( $post_id ) ) {
 			throw new \Exception (
 				sprintf( '$post_id %s must be a numeric value.', $post_id )
 			);
 		}
 
-		/** @var $post \WP_Post  */
+		/** @var $post \WP_Post */
 		$post = get_post( $post_id );
 
 		if ( empty( $post ) || ! is_a( $post, 'WP_Post' ) ) {
@@ -46,13 +46,14 @@ class CSV_Util {
 				sprintf( '$post_id %d does not have a fields post meta set.', $post_id )
 			);
 		}
+
 		return $post;
 
 	}
 
 
-	public static function get_formatted_csv_line_error_message( $error_message ){
-		return '<span class="openclub_csv_error">'.$error_message.'</span><br/>';
+	public static function get_formatted_csv_line_error_message( $error_message ) {
+		return '<span class="openclub_csv_error">' . $error_message . '</span><br/>';
 	}
 
 }

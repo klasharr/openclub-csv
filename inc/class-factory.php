@@ -68,14 +68,15 @@ class Factory {
 	 *
 	 * @return Data_Set
 	 */
-	public static function get_data_set( \WP_Post $post ){
+	public static function get_data_set( \WP_Post $post ) {
 
-		if( isset( self::$data_sets[ $post->ID] ) ) {
-			return self::$data_sets[ $post->ID];
+		if ( isset( self::$data_sets[ $post->ID ] ) ) {
+			return self::$data_sets[ $post->ID ];
 		}
 
-		$data_set = new Data_Set( $post );
-		self::$data_sets[ $post->ID] = $data_set;
+		$data_set                     = new Data_Set( $post );
+		self::$data_sets[ $post->ID ] = $data_set;
+
 		return $data_set;
 	}
 
@@ -83,7 +84,7 @@ class Factory {
 	/**
 	 * @return Data_Set_Input
 	 */
-	public static function get_data_input_object( $post_id ){
+	public static function get_data_input_object( $post_id ) {
 		return new Data_Set_Input( $post_id );
 	}
 
@@ -91,7 +92,7 @@ class Factory {
 		return new Template_Loader;
 	}
 
-	public static function get_output_data( Data_Set_Input $input ){
+	public static function get_output_data( Data_Set_Input $input ) {
 		return new Output_Data( $input );
 	}
 

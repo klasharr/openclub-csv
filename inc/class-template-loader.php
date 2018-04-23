@@ -12,7 +12,7 @@ class Template_Loader extends \Gamajo_Template_Loader {
 
 	protected $plugin_directory = OPENCLUB_CSV_PLUGIN_DIR;
 
-	public function set_plugin_dir_path( $path ){
+	public function set_plugin_dir_path( $path ) {
 		$this->plugin_directory = $path;
 	}
 

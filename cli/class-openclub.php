@@ -34,19 +34,20 @@ Class OpenClub {
 
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
 
-		$parser = Factory::get_parser( $input );
+		$parser         = Factory::get_parser( $input );
 		$this->data_set = $parser->get_data();
 
 
 		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
 
-		/** @var DTO $line_data */
-		foreach($this->data_set->get_data() as $line_data ){
-			WP_CLI::log( $line_data );
+		/** @var DTO $dto */
+		foreach ( $this->data_set->get_rows() as $dto ) {
+			WP_CLI::log( $dto );
 		}
 
-		if($this->data_set->has_errors()) {
-			WP_CLI::log( '====== Completed with errors! =======');
+		if ( $this->data_set->has_errors() ) {
+			WP_CLI::log( '====== Completed with errors! =======' );
+
 			return;
 		}
 
@@ -59,7 +60,7 @@ Class OpenClub {
 	 *
 	 * @param $args
 	 */
-	public function config_check( $args ){
+	public function config_check( $args ) {
 
 		try {
 
@@ -84,11 +85,11 @@ Class OpenClub {
 		return $value ? 'true' : 'false';
 	}
 
-	private function log_settings( $settings ){
+	private function log_settings( $settings ) {
 
-		foreach( $settings as $field_name => $settings ) {
+		foreach ( $settings as $field_name => $settings ) {
 			WP_CLI::log( $field_name );
-			foreach( $settings as $key => $value ) {
+			foreach ( $settings as $key => $value ) {
 				WP_CLI::log( $key . ': ' . $value );
 			}
 			WP_CLI::log( '----------------------------' );

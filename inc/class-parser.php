@@ -68,14 +68,14 @@ class Parser {
 	 * @param Data_Set_Input $input
 	 */
 	public function __construct( Data_Set_Input $input ) {
-		
+
 		$this->input = $input;
 
 		if ( empty( trim( $this->input->get_post()->post_content ) ) ) {
-			throw new \Exception( 'Post ID '. $this->input->get_post()->ID . ' has no content.' );
+			throw new \Exception( 'Post ID ' . $this->input->get_post()->ID . ' has no content.' );
 		}
 
-		$this->data_set = Factory::get_data_set( $this->input->get_post() );
+		$this->data_set      = Factory::get_data_set( $this->input->get_post() );
 		$this->field_manager = Factory::get_field_manager( $this->input );
 		$this->set_group_by_field( $input->get_group_by_field() );
 
@@ -84,8 +84,8 @@ class Parser {
 
 	public function set_group_by_field( $field ) {
 
-		if( !empty( $field ) && !$this->field_manager->is_valid_field( $field ) ) {
-			throw new \Exception( 'Trying to group on field: '. $field .' which does not exist' );
+		if ( ! empty( $field ) && ! $this->field_manager->is_valid_field( $field ) ) {
+			throw new \Exception( 'Trying to group on field: ' . $field . ' which does not exist' );
 		}
 		$this->group_by_field = $field;
 	}
@@ -97,13 +97,13 @@ class Parser {
 	/**
 	 * @param $csv_line string
 	 */
-	private function set_header_field_names_from_csv( $csv_line ) {
-		
+	private function set_header_field_names_and_count_from_csv( $csv_line ) {
+
 		$csv_header_field_names = explode( ",", $csv_line );
 
-		foreach( $csv_header_field_names as $cvs_field_name ) {
-			if(!$this->field_manager->get_field( trim( $cvs_field_name ) ) ) {
-				throw new \Exception('Field name in CSV header is invalid, can not parse data.' );
+		foreach ( $csv_header_field_names as $cvs_field_name ) {
+			if ( ! $this->field_manager->get_field( trim( $cvs_field_name ) ) ) {
+				throw new \Exception( 'Field name in CSV header is invalid, can not parse data.' );
 			}
 		}
 
@@ -139,12 +139,11 @@ class Parser {
 		$line_number = 0;
 		foreach ( $data_file as $data_line ) {
 
-			$error_message = '';
+			$error_message        = '';
 			$has_validation_error = false;
 
 			if ( $line_number == 0 ) {
-				$this->set_header_field_names_from_csv( $data_line );
-				$this->get_header_field_names_count();
+				$this->set_header_field_names_and_count_from_csv( $data_line );
 				$line_number ++;
 				continue;
 			}
@@ -157,8 +156,9 @@ class Parser {
 
 			if ( count( $data_array ) != $this->header_field_names_count ) {
 				throw new \Exception(
-					sprintf( 'Line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
-						$this->get_line_number($line_number),
+					sprintf( 'Post %d, line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
+						$this->input->get_post()->ID,
+						$this->get_line_number( $line_number ),
 						$this->get_header_field_names_count(),
 						$this->get_header_field_names( false ),
 						$data_line
@@ -166,7 +166,7 @@ class Parser {
 				);
 			}
 
-			$i = 0;
+			$i                 = 0;
 			$field_value_pairs = array();
 			foreach ( $data_array as $i => $field ) {
 				$field_value_pairs[ trim( $this->header_field_names[ $i ] ) ] = trim( $field );
@@ -178,17 +178,17 @@ class Parser {
 
 			} catch ( Field_Exception $e ) {
 
-				$error_message = sprintf( 'Field validation error line: %d %s', $this->get_line_number($line_number), $e->getMessage() );
+				$error_message = sprintf( 'Field validation error line: %d %s', $this->get_line_number( $line_number ), $e->getMessage() );
 
 				$this->log_cli_error( $error_message );
-				$this->data_set->push_line_error_message( $this->get_line_number($line_number), $error_message );
+				$this->data_set->push_line_error_message( $this->get_line_number( $line_number ), $error_message );
 				$has_validation_error = true;
 			}
 
 			try {
 
 				/** @var $dto DTO */
-				$dto = Factory::get_dto( $this->get_line_number($line_number), $field_value_pairs, $has_validation_error );
+				$dto = Factory::get_dto( $this->get_line_number( $line_number ), $field_value_pairs, $has_validation_error );
 
 				if ( $this->input->get_filter()->is_filtered_out( $dto ) ) {
 					$line_number ++;
@@ -196,17 +196,17 @@ class Parser {
 				}
 
 				$config = array(
-					'line_number' => $this->get_line_number( $line_number ),
+					'line_number'    => $this->get_line_number( $line_number ),
 					'group_by_field' => $this->get_group_by_field(),
-					'field_manager' => $this->field_manager,
+					'field_manager'  => $this->field_manager,
 				);
 
-				$this->data_set->push_row( $config, $dto);
-				
+				$this->data_set->push_row( $config, $dto );
+
 			} catch ( DTO_Exception $e ) {
 
 				$this->log_cli_error( $error_message );
-				$this->data_set->push_line_error_message( $this->get_line_number($line_number), $e->getMessage() );
+				$this->data_set->push_line_error_message( $this->get_line_number( $line_number ), $e->getMessage() );
 			}
 
 			$line_number ++;
@@ -216,8 +216,9 @@ class Parser {
 		$this->data_set->set_field_manager( $this->field_manager );
 
 		$this->data_set = apply_filters( 'openclub_csv_filter_data', $this->data_set, $this->input->get_post() );
+
 		return $this->data_set;
-		
+
 	}
 
 	/**
@@ -226,7 +227,7 @@ class Parser {
 	private function validate_data( $field_value_pairs ) {
 
 		foreach ( $field_value_pairs as $field_name => $value ) {
-			$field_validator = $this->get_field( $field_name );
+			$field_validator = $this->get_field_object( $field_name );
 			$field_validator->validate( $value );
 		}
 
@@ -238,13 +239,13 @@ class Parser {
 	 * @return bool|mixed
 	 * @throws Exception
 	 */
-	private function get_field( $field_name ) {
+	private function get_field_object( $field_name ) {
 
 		if ( isset( $this->fields[ $field_name ] ) ) {
 			return $this->fields[ $field_name ];
 		}
 
-		if(empty($field_name)){
+		if ( empty( $field_name ) ) {
 			throw new \Exception( 'There\'s an empty column, please remove from the CSV.' );
 		}
 
@@ -258,8 +259,8 @@ class Parser {
 
 	}
 
-	private function get_line_number( $line_number ){
-		return ( $line_number - 1 ) ;
+	private function get_line_number( $line_number ) {
+		return ( $line_number - 1 );
 	}
 
 

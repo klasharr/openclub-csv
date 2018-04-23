@@ -34,11 +34,11 @@ class DTO {
 
 	public function __construct( $line_number, array $data, $has_validation_error ) {
 
-		if ( !is_numeric( $line_number ) ) {
+		if ( ! is_numeric( $line_number ) ) {
 			throw new \DTO_Exception( 'Invalid line number passed: ' . $line_number );
 		}
 
-		if ( !is_bool( $has_validation_error )) {
+		if ( ! is_bool( $has_validation_error ) ) {
 			throw new \DTO_Exception( '$has_validation_error must be a boolean.' );
 		}
 
@@ -46,10 +46,10 @@ class DTO {
 			throw new \DTO_Exception( '$data cannot be empty' );
 		}
 
-		$this->line_number = $line_number;
-		$this->data        = $data;
+		$this->line_number          = $line_number;
+		$this->data                 = $data;
 		$this->has_validation_error = $has_validation_error;
-		$this->num_fields = count( $data );
+		$this->num_fields           = count( $data );
 
 	}
 
@@ -62,14 +62,14 @@ class DTO {
 
 		$validation_error_flag = $this->has_validation_error ? '[Validation ERROR]' : '';
 
-		return $validation_error_flag . implode( ',', $this->data ) ;
+		return $validation_error_flag . implode( ',', $this->data );
 	}
 
-	public function has_validation_error(){
+	public function has_validation_error() {
 		return $this->has_validation_error;
 	}
 
-	public function get_line_number(){
+	public function get_line_number() {
 		return $this->line_number;
 	}
 
@@ -77,7 +77,7 @@ class DTO {
 		return $this->num_fields;
 	}
 
-	public function get_value( $key ){
+	public function get_value( $key ) {
 		return $this->data[ $key ];
 	}
 
