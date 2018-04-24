@@ -1,8 +1,18 @@
 <?php
 
-// @todo validation errors, display rules
+if( $data->config[ 'error_messages' ] == 'yes' && $data->output_data->get_errors()) : ?>
+	<div class='openclub_csv_error'>
+		<h3>Errors</h3>
+		<p class='openclub_csv'>
+			<?php foreach($data->output_data->get_errors() as $line_number => $error ) { ?>
+				Line: <?php echo  ( $line_number + 1 ). ' ' . $error ?>
+				<br/>
+			<?php } ?>
+		</p>
+	</div>
+<?php endif; ?>
+<h3>Programme</h3>
 
-?>
 <table class='openclub_csv'>
 	<tr>
 		<th>
@@ -11,12 +21,14 @@
 	<?php
 
 	foreach ( $data->output_data->get_rows() as $row ) {
+		if( $row['error'] == 0 || ( $row['error'] == 1 && $data->config[ 'error_lines' ] == 'yes' ) ) {
+			echo "<tr  class='" . $row['class'] . "'>";
+			foreach ( $row['data'] as $fieldname => $values ) {
 
-		echo "<tr>";
-		foreach ( $row as $fieldname => $values ) {
-			echo '<td class="' . $values['class'] . '">' . $values['formatted_value'] . '</td>';
+				echo '<td>' . $values['formatted_value'] . '</td>';
+			}
+			echo "</tr>\n";
 		}
-		echo "</tr>\n";
 	}
 	?>
 </table>

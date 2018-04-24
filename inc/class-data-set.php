@@ -68,8 +68,8 @@ class Data_Set {
 
 			if ( $field_manager->get_field_type( $config['group_by_field'] ) == 'date' ) {
 
-				$date_validator                                                                                 = $field_manager->get_field( $config['group_by_field'] );
-				$this->rows[ $date_validator->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
+				$date_field = $field_manager->get_field( $config['group_by_field'] );
+				$this->rows[ $date_field->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
 
 			} else {
 				$this->rows[ $dto->get_value( $config['group_by_field'] ) ][] = $dto;

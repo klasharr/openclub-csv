@@ -46,7 +46,6 @@ class Output_Data {
 		$this->data_set      = $parser->get_data();
 		$this->input         = $input;
 		$this->field_manager = $this->data_set->get_field_manager();
-
 		$this->header_fields = $this->field_manager->get_display_field_names();
 		$this->normalise_rows();
 
@@ -64,6 +63,10 @@ class Output_Data {
 		return $this->rows;
 	}
 
+	public function get_errors() {
+		return $this->data_set->get_errors();
+	}
+
 	public function get_header_fields() {
 
 		return $this->header_fields;
@@ -72,34 +75,30 @@ class Output_Data {
 
 	private function normalise_rows() {
 
-		$errors = $this->data_set->get_errors();
-
+		$errors = $this->get_errors();
 
 		$line_number = 0;
 
 		/** @var DTO $dto */
 		foreach ( $this->data_set->get_rows() as $dto ) {
 
+			$error = 0;
+
 			foreach ( $this->field_manager->get_display_field_names() as $field_name ) {
 
 				$tmp[ $field_name ] = array(
 					'value'            => $dto->get_value( $field_name ),
 					'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
-					'validation_error' => $dto->has_validation_error() ? 1 : 0,
-					'class'            => $dto->has_validation_error() ? 'openclub_csv_error' : '',
 					'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
 				);
 			}
 
 			$this->rows[ $line_number ]['data']  = $tmp;
-			$this->rows[ $line_number ]['error'] = $dto->has_validation_error() ? $errors[ $line_number ] : '';
+			$this->rows[ $line_number ]['class'] = $dto->has_validation_error() ? 'openclub_csv_error' : '';
+			$this->rows[ $line_number ]['error'] = $dto->has_validation_error() ? 1 : 0;
+			$this->rows[ $line_number ]['error_message'] = $dto->has_validation_error() ? $errors[ $line_number ] : '';
 			$line_number ++;
 		}
-
-		echo "<pre>";
-		print_r( $this->rows );
-		echo "</pre>";
 	}
-
 
 }
