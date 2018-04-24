@@ -103,6 +103,8 @@ class Data_Set_Input {
 
 	public function set_fields_override( $overridden_fields ) {
 
+		if( empty($overridden_fields )) return false;
+
 		$fields = explode( ',' , $overridden_fields );
 
 		foreach( $fields as $field_name ) {
