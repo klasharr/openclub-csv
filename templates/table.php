@@ -2,7 +2,7 @@
 
 if( $data->config[ 'error_messages' ] == 'yes' && $data->output_data->get_errors()) : ?>
 	<div class='openclub_csv_error'>
-		<h3>Errors</h3>
+		<h3><?php echo __( 'Errors', 'openclub_csv' );?></h3>
 		<p class='openclub_csv'>
 			<?php foreach($data->output_data->get_errors() as $line_number => $error ) { ?>
 				Line: <?php echo  ( $line_number + 1 ). ' ' . $error ?>
@@ -11,8 +11,6 @@ if( $data->config[ 'error_messages' ] == 'yes' && $data->output_data->get_errors
 		</p>
 	</div>
 <?php endif; ?>
-<h3>Programme</h3>
-
 <table class='openclub_csv'>
 	<tr>
 		<th>

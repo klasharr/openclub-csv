@@ -27,6 +27,11 @@ class Data_Set_Input {
 	private $group_by_field;
 
 	/**
+	 * @var string
+	 */
+	private $overridden_fields;
+
+	/**
 	 * @param $post_id int
 	 *
 	 * @throws \Exception
@@ -96,4 +101,26 @@ class Data_Set_Input {
 		return $this->group_by_field ? true : false;
 	}
 
+	public function set_fields_override( $overridden_fields ) {
+
+		$fields = explode( ',' , $overridden_fields );
+
+		foreach( $fields as $field_name ) {
+			if( !array_key_exists( $field_name, $this->raw_display_fields ) ) {
+				throw new \Exception('Field override: ' . $field_name . ' is invalid. Check the shortcode' );
+			}
+		}
+		$this->overridden_fields = $overridden_fields;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_overridden_fields() {
+		return explode( ',' , $this->overridden_fields );
+	}
+
+	public function has_overridden_fields() {
+		return !empty( $this->overridden_fields );
+	}
 }

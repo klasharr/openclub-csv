@@ -92,13 +92,7 @@ add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
 function openclub_csv_display_shortcode_callback( $config ) {
 
 	$config = shortcode_atts(
-		array(
-			'post_id'            => null,
-			'error_messages'     => "yes",
-			'error_lines'        => "yes",
-			'future_events_only' => null,
-			'display'            => 'table',
-		),
+		openclub_csv_get_config_defaults(),
 		$config
 	);
 
@@ -135,15 +129,9 @@ function openclub_csv_view_content_page( $content ) {
 
 	if ( is_singular() && in_array( get_post_type( $post ), array( 'openclub-csv' ) ) ) {
 
-		$config = array(
-			'post_id'            => $post->ID,
-			'error_messages'     => "yes",
-			'error_lines'        => "yes",
-			'future_events_only' => null,
-			'display'            => 'table',
+		return openclub_csv_get_display_table(
+			openclub_csv_get_config_defaults( array( 'post_id' => $post->ID ) )
 		);
-
-		return openclub_csv_get_display_table( $config );
 
 	}
 
@@ -170,26 +158,25 @@ function openclub_csv_get_display_table( $config ) {
 		 */
 		$output_data = \OpenClub\Factory::get_output_data( $input );
 
-		if ( $output_data->exists() ) {
+		if ( !empty( $output_data ) && $output_data->exists() ) {
 
 			$templates = \OpenClub\Factory::get_template_loader();
+
 			$templates->set_template_data(
 				array(
 					'output_data' => $output_data,
-					'config'      => $config
+					'config' => $config
 				)
 			);
 
-			ob_start();
-			$templates->get_template_part( 'table' );
-			$out .= ob_get_clean();
+			echo $templates->get_template( $config[ 'display' ] );
 
 		} else {
-			$out .= 'No data';
+			$out .= __( 'No data', 'openclub_csv' );
 		}
 
 	} catch ( \Exception $e ) {
-		$out .= 'Error: ' . $e->getMessage();
+		$out .= __( 'Error', 'openclub_csv' ).': ' . $e->getMessage();
 	}
 
 	return $out;
@@ -221,4 +208,25 @@ function openclub_csv_log_cli( $message ) {
 	if ( class_exists( 'WP_CLI' ) ) {
 		\WP_CLI::log( $message );
 	}
+}
+
+/**
+ * @param array $config
+ *
+ * @return array
+ */
+function openclub_csv_get_config_defaults( $config = array() ) {
+
+	return array_replace(
+		array(
+			'post_id'            => null,
+			'error_messages'     => "yes",
+			'error_lines'        => "yes",
+			'future_events_only' => null,
+			'display'            => 'table',
+			'fields' => null,
+		),
+		$config
+	);
+
 }

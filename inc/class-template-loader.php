@@ -16,4 +16,25 @@ class Template_Loader extends \Gamajo_Template_Loader {
 		$this->plugin_directory = $path;
 	}
 
+	/**
+	 * Wrapper
+	 *
+	 * @param $slug
+	 * @param null $name
+	 * @param bool $load
+	 *
+	 * @return string
+	 */
+	public function get_template(  $slug, $name = null, $load = true  ) {
+
+		$out = '';
+		ob_start();
+		$this->get_template_part( $slug, $name, $load );
+		$out .= ob_get_clean();
+
+		return $out;
+		
+	}
+
+
 }

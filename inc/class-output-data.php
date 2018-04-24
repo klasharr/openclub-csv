@@ -4,9 +4,11 @@ namespace OpenClub;
 
 /**
  *
+ * @todo merge back to class-data-set.php
+ *
+ *
  * @todo group by
  * @todo limit
- * @todo display override
  *
  * Class Output_Data
  * @package OpenClub
@@ -69,6 +71,10 @@ class Output_Data {
 
 	public function get_header_fields() {
 
+		if( $this->input->has_overridden_fields() ) {
+			return  $this->input->get_overridden_fields();
+		}
+
 		return $this->header_fields;
 	}
 
@@ -79,12 +85,18 @@ class Output_Data {
 
 		$line_number = 0;
 
+		$field_names = $this->field_manager->get_display_field_names();
+
+		if( $this->input->has_overridden_fields() ) {
+			$field_names =  $this->input->get_overridden_fields();
+		}
+
 		/** @var DTO $dto */
 		foreach ( $this->data_set->get_rows() as $dto ) {
 
 			$error = 0;
 
-			foreach ( $this->field_manager->get_display_field_names() as $field_name ) {
+			foreach ( $field_names as $field_name ) {
 
 				$tmp[ $field_name ] = array(
 					'value'            => $dto->get_value( $field_name ),
