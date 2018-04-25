@@ -32,22 +32,24 @@ Class OpenClub {
 			\WP_CLI::error( $e->getMessage() );
 		}
 
+		/**
+		 * @var $input \OpenClub\Data_Set_Input
+		 */
 		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
 
-		$parser         = Factory::get_parser( $input );
-		$this->data_set = $parser->get_data();
-
-
+		/**
+		 * @var $output \OpenClub\Output_Data
+		 */
+		$output_data = \OpenClub\Factory::get_output_data( $input );
+		
 		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
 
-		/** @var DTO $dto */
-		foreach ( $this->data_set->get_rows() as $dto ) {
-			WP_CLI::log( $dto );
+		foreach ( $output_data->get_rows() as $row) {
+			WP_CLI::log( $row['data']['First Name']['formatted_value'] . ' ' . $row['data']['Second name']['formatted_value'] );
 		}
 
-		if ( $this->data_set->has_errors() ) {
+		if ( $output_data->get_errors() ) {
 			WP_CLI::log( '====== Completed with errors! =======' );
-
 			return;
 		}
 
@@ -55,35 +57,6 @@ Class OpenClub {
 
 	}
 
-	/**
-	 * @todo make useful
-	 *
-	 * @param $args
-	 */
-	public function config_check( $args ) {
-
-		try {
-
-			if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
-				throw new \Exception( 'The first argument must be a non zero integer value.' );
-			}
-
-			$this->post_id = $args[0];
-
-		} catch ( \Exception $e ) {
-			\WP_CLI::error( $e->getMessage() );
-		}
-
-		$input = \OpenClub\Factory::get_data_input_object( $this->post_id );
-
-		WP_CLI::success( '====== Success! ====== ' );
-	}
-
-
-	private function as_bool_string( $value ) {
-
-		return $value ? 'true' : 'false';
-	}
 
 	private function log_settings( $settings ) {
 
@@ -95,7 +68,6 @@ Class OpenClub {
 			WP_CLI::log( '----------------------------' );
 		}
 	}
-
 
 }
 

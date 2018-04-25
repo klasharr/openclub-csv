@@ -104,50 +104,51 @@ class Output_Data {
 			foreach ( $this->data_set->get_rows() as $grouped_field => $rows ) {
 
 				$line_number = 0;
+
+				/** @var DTO $dto */
 				foreach( $rows as $dto ) {
-
-					foreach ( $field_names as $field_name ) {
-
-						$tmp[ $field_name ] = array(
-							'value'            => $dto->get_value( $field_name ),
-							'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
-							'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
-						);
-					}
-
-					$this->rows[ $grouped_field ][ $line_number ]['data']  = $tmp;
-					$this->rows[ $grouped_field ][ $line_number ]['class'] = $dto->has_validation_error() ? 'openclub_csv_error' : '';
-					$this->rows[ $grouped_field ][ $line_number ]['error'] = $dto->has_validation_error() ? 1 : 0;
-					$this->rows[ $grouped_field ][ $line_number ]['error_message'] = $dto->has_validation_error() ? $errors[ $line_number ] : '';
+					$this->rows[ $grouped_field ][ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
 					$line_number ++;
 				}
-				$error = 0;
 			}
-
 			return;
 		}
 
 
 		/** @var DTO $dto */
 		foreach ( $this->data_set->get_rows() as $dto ) {
-
-			$error = 0;
-
-			foreach ( $field_names as $field_name ) {
-
-				$tmp[ $field_name ] = array(
-					'value'            => $dto->get_value( $field_name ),
-					'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
-					'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
-				);
-			}
-
-			$this->rows[ $line_number ]['data']  = $tmp;
-			$this->rows[ $line_number ]['class'] = $dto->has_validation_error() ? 'openclub_csv_error' : '';
-			$this->rows[ $line_number ]['error'] = $dto->has_validation_error() ? 1 : 0;
-			$this->rows[ $line_number ]['error_message'] = $dto->has_validation_error() ? $errors[ $line_number ] : '';
+			$this->rows[ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
 			$line_number ++;
 		}
 	}
 
+	/**
+	 * @param $field_names array
+	 * @param $dto DTO
+	 * @param $errors array
+	 * @param $line_number int
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	private function get_row_data( $field_names, $dto, $errors, $line_number ) {
+
+		$tmp = array();
+
+		foreach ( $field_names as $field_name ) {
+
+			$tmp[ $field_name ] = array(
+				'value'            => $dto->get_value( $field_name ),
+				'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
+				'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
+			);
+		}
+
+		return array(
+			'data' => $tmp,
+			'class' => $dto->has_validation_error() ? 'openclub_csv_error' : '',
+			'error' => $dto->has_validation_error() ? 1 : 0,
+			'error_message' => $dto->has_validation_error() ? $errors[ $line_number ] : '',
+			);
+	}
 }
