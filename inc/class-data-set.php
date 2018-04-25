@@ -64,6 +64,7 @@ class Data_Set {
 		/* @var Field_Manager $field_manager */
 		$field_manager = $config['field_manager'];
 
+
 		if ( ! empty( $config['group_by_field'] ) ) {
 
 			if ( $field_manager->get_field_type( $config['group_by_field'] ) == 'date' ) {
@@ -180,6 +181,7 @@ class Data_Set {
 	 * @return array of DTO
 	 */
 	public function get_rows() {
+
 		return $this->rows;
 	}
 }

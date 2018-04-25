@@ -103,6 +103,7 @@ class Output_Data {
 
 			foreach ( $this->data_set->get_rows() as $grouped_field => $rows ) {
 
+				$line_number = 0;
 				foreach( $rows as $dto ) {
 
 					foreach ( $field_names as $field_name ) {
@@ -125,8 +126,6 @@ class Output_Data {
 
 			return;
 		}
-
-
 
 
 		/** @var DTO $dto */

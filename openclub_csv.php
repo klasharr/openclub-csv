@@ -153,6 +153,10 @@ function openclub_csv_get_display_table( $config ) {
 		 */
 		$input = \OpenClub\Factory::get_data_input_object( $config['post_id'] );
 
+		if($config['group_by_field']){
+			$input->set_group_by_field($config['group_by_field']);
+		}
+
 		/**
 		 * @var $output \OpenClub\Output_Data
 		 */
@@ -224,8 +228,8 @@ function openclub_csv_get_config_defaults( $config = array() ) {
 			'error_lines'        => "yes",
 			'future_events_only' => null,
 			'display'            => 'table',
-			'fields' =>         null,
-			'group_by' =>       null,
+			'fields'             => null,
+			'group_by_field'     => null,
 		),
 		$config
 	);

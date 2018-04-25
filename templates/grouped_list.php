@@ -14,27 +14,21 @@ if( $data->config[ 'error_messages' ] == 'yes' && $data->output_data->get_errors
 <p>
 	<?php
 
-// WIP
-
 	foreach ( $data->output_data->get_rows() as $grouped_field_value => $grouped_rows ) {
 
-		echo "<p>$grouped_field_value</p>";
+		echo "<p><strong>$grouped_field_value</strong></br>";
 
-		echo "<pre>";
-		print_r($grouped_rows);
-		echo "</pre>";
-
-		/**foreach ( $grouped_rows as $row ) {
+		foreach ( $grouped_rows as $row ) {
 
 			if ( $row['error'] == 0 || ( $row['error'] == 1 && $data->config['error_lines'] == 'yes' ) ) {
 				echo "<span  class='" . $row['class'] . "'>";
 				foreach ( $row['data'] as $fieldname => $values ) {
-
 					echo $values['formatted_value'] . ',';
 				}
 				echo "</span><br/>\n";
 			}
-		}*/
+		}
+		echo '</p>';
 	}
 	?>
 </p>
