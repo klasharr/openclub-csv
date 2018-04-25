@@ -98,7 +98,7 @@ class Field_Manager {
 	}
 
 
-	public function get_field( $key ) {
+	public function get_field( $key, $simple_existence_check = false ) {
 
 		if ( ! is_string( $key ) ) {
 			throw new \Exception( '$key must be passed as a string' );
@@ -108,11 +108,18 @@ class Field_Manager {
 			throw new \Exception( 'The fields have not been set.' );
 		}
 
+		if( isset( $this->fields[ $key ] ) ) {
+			return $this->fields[ $key ];
+		}
+
+		if( $simple_existence_check ) {
+			return false;
+		}
+
 		if ( ! isset( $this->fields[ $key ] ) ) {
 			throw new \Exception( 'Validator ' . $key . ' does not exists, check the column name.' );
 		}
 
-		return $this->fields[ $key ];
 	}
 
 	public function get_field_type( $key ) {
@@ -150,5 +157,6 @@ class Field_Manager {
 
 		return $out;
 	}
+
 
 }

@@ -224,7 +224,8 @@ function openclub_csv_get_config_defaults( $config = array() ) {
 			'error_lines'        => "yes",
 			'future_events_only' => null,
 			'display'            => 'table',
-			'fields' => null,
+			'fields' =>         null,
+			'group_by' =>       null,
 		),
 		$config
 	);

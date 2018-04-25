@@ -84,8 +84,13 @@ class Data_Set_Input {
 
 	public function set_group_by_field( $group_by_field ) {
 
+		if( empty( $group_by_field ) ) {
+			openclub_csv_log_cli( 'set_group_by_field() called with an empty value' );
+			return;
+		}
+
 		if ( empty( trim( $group_by_field ) ) ) {
-			throw new \Exception( '$group_by_field cannot be empty' );
+			throw new \Exception( 'set_group_by_field called with invalid value, likely an empty space' );
 		}
 
 		$this->group_by_field = $group_by_field;

@@ -79,9 +79,15 @@ class Output_Data {
 	}
 
 
+	/**
+	 * Needs refactoring to remove duplication.
+	 *
+	 * @throws \Exception
+	 */
 	private function normalise_rows() {
 
 		$errors = $this->get_errors();
+		$group_by_field = null;
 
 		$line_number = 0;
 
@@ -90,6 +96,38 @@ class Output_Data {
 		if( $this->input->has_overridden_fields() ) {
 			$field_names =  $this->input->get_overridden_fields();
 		}
+
+		$group_by_field = $this->input->get_group_by_field();
+
+		if( $group_by_field ) {
+
+			foreach ( $this->data_set->get_rows() as $grouped_field => $rows ) {
+
+				foreach( $rows as $dto ) {
+
+					foreach ( $field_names as $field_name ) {
+
+						$tmp[ $field_name ] = array(
+							'value'            => $dto->get_value( $field_name ),
+							'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
+							'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
+						);
+					}
+
+					$this->rows[ $grouped_field ][ $line_number ]['data']  = $tmp;
+					$this->rows[ $grouped_field ][ $line_number ]['class'] = $dto->has_validation_error() ? 'openclub_csv_error' : '';
+					$this->rows[ $grouped_field ][ $line_number ]['error'] = $dto->has_validation_error() ? 1 : 0;
+					$this->rows[ $grouped_field ][ $line_number ]['error_message'] = $dto->has_validation_error() ? $errors[ $line_number ] : '';
+					$line_number ++;
+				}
+				$error = 0;
+			}
+
+			return;
+		}
+
+
+
 
 		/** @var DTO $dto */
 		foreach ( $this->data_set->get_rows() as $dto ) {
