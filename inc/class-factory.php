@@ -14,6 +14,7 @@ require_once( 'class-data-set.php' );
 require_once( 'class-data-set-input.php' );
 require_once( 'class-template-loader.php' );
 require_once( 'class-output-data.php' );
+require_once( 'class-csv-display.php' );
 
 class Factory {
 
