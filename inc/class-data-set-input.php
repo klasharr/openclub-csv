@@ -32,6 +32,11 @@ class Data_Set_Input {
 	private $overridden_fields;
 
 	/**
+	 * @var mixed
+	 */
+	private $context;
+
+	/**
 	 * @param $post_id int
 	 *
 	 * @throws \Exception
@@ -129,5 +134,19 @@ class Data_Set_Input {
 
 	public function has_overridden_fields() {
 		return !empty( $this->overridden_fields );
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_context() {
+		return $this->context;
+	}
+
+	/**
+	 * @param mixed $context
+	 */
+	public function set_context( $context ) {
+		$this->context = $context;
 	}
 }

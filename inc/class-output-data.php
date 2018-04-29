@@ -114,7 +114,6 @@ class Output_Data {
 			return;
 		}
 
-
 		/** @var DTO $dto */
 		foreach ( $this->data_set->get_rows() as $dto ) {
 			$this->rows[ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );

@@ -83,8 +83,12 @@ function openclub_importer_disable_wysiwyg( $default ) {
 add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
 
 /**
- * @todo update this comment
- * [openclub_display_csv post_id="102"]
+ * Example usage: 
+ * [openclub_display_csv post_id=311 error_lines="yes" error_messages="yes"  display="safety_teams" group_by_field="Team"]
+ * 
+ * @see \OpenClub\CSV_Display::get_config() 
+ * 
+ * 
  */
 add_shortcode( 'openclub_display_csv', function( $config ) {
 
@@ -132,7 +136,6 @@ add_filter( 'the_content', 'openclub_csv_view_content_page' );
 function openclub_csv_robots_override( $output ) {
 
 	$output .= "Disallow: /openclub_csv/\n";
-
 	return $output;
 }
 
@@ -151,9 +154,9 @@ function openclub_csv_example_data_set_filter( \OpenClub\Data_Set $data_set, $po
 
 add_filter( 'openclub_csv_filter_data', 'openclub_csv_example_data_set_filter', OPENCLUB_DEFAULT_FILTER_PRIORITY, 2 );
 
+
 function openclub_csv_log_cli( $message ) {
 	if ( class_exists( 'WP_CLI' ) ) {
 		\WP_CLI::log( $message );
 	}
 }
-
