@@ -52,8 +52,4 @@ class CSV_Util {
 	}
 
 
-	public static function get_formatted_csv_line_error_message( $error_message ) {
-		return '<span class="openclub_csv_error">' . $error_message . '</span><br/>';
-	}
-
 }

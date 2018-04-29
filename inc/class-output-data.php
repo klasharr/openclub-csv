@@ -28,7 +28,7 @@ class Output_Data {
 	/**
 	 * @var array|void
 	 */
-	private $rows = array();
+	public $rows = array();
 
 	/**
 	 * @var Field_Manager
