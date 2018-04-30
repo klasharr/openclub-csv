@@ -80,7 +80,6 @@ class Output_Data {
 
 
 	/**
-	 * Needs refactoring to remove duplication.
 	 *
 	 * @throws \Exception
 	 */
@@ -89,6 +88,7 @@ class Output_Data {
 		$errors = $this->get_errors();
 		$group_by_field = null;
 
+		$limit = false;
 		$line_number = 0;
 
 		$field_names = $this->field_manager->get_display_field_names();
@@ -97,27 +97,48 @@ class Output_Data {
 			$field_names =  $this->input->get_overridden_fields();
 		}
 
+		$limit = $this->input->get_limit();
+
 		$group_by_field = $this->input->get_group_by_field();
 
 		if( $group_by_field ) {
 
-			foreach ( $this->data_set->get_rows() as $grouped_field => $rows ) {
+			$grouped_count = 1;
+
+			foreach ( $this->data_set->get_rows() as $grouped_field_value => $rows ) {
+
+				if( strtolower( $this->input->get_group_by_field() ) == 'date' &&
+				    ( $this->input->is_show_future_events_only() && $grouped_field_value < time() ) ) {
+					continue;
+				}
+
+				if( $limit && ( $grouped_count > $limit ) ) {
+					break;
+				}
 
 				$line_number = 0;
 
 				/** @var DTO $dto */
 				foreach( $rows as $dto ) {
-					$this->rows[ $grouped_field ][ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
+					$this->rows[ $grouped_field_value ][ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
 					$line_number ++;
+
 				}
+				$grouped_count ++;
 			}
 			return;
-		}
 
-		/** @var DTO $dto */
-		foreach ( $this->data_set->get_rows() as $dto ) {
-			$this->rows[ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
-			$line_number ++;
+		} else {
+
+			/** @var DTO $dto */
+			foreach ( $this->data_set->get_rows() as $dto ) {
+
+				if( $limit && $line_number > $limit ) {
+					break;
+				}
+				$this->rows[ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
+				$line_number ++;
+			}
 		}
 	}
 

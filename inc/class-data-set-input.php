@@ -37,6 +37,17 @@ class Data_Set_Input {
 	private $context;
 
 	/**
+	 * @var int
+	 */
+	private $limit;
+
+
+	/**
+	 * @var bool
+	 */
+	private $future_events_only;
+
+	/**
 	 * @param $post_id int
 	 *
 	 * @throws \Exception
@@ -68,9 +79,6 @@ class Data_Set_Input {
 		return $this->post;
 	}
 
-	/**
-	 * @return Filter|Null_Filter
-	 */
 	public function get_filter() {
 
 		if ( empty( $this->filter ) ) {
@@ -148,5 +156,54 @@ class Data_Set_Input {
 	 */
 	public function set_context( $context ) {
 		$this->context = $context;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_limit() {
+		return $this->limit;
+	}
+
+	/**
+	 * @param mixed int|bool $limit
+	 */
+	public function set_limit( $limit ) {
+
+		if( $limit === false ) {
+			return;
+		}
+
+		if( (int) $limit != $limit ) {
+			throw new \Exception( '$limit must be passed as an integer' );
+		}
+		if( $limit <= 0 ){
+			throw new \Exception( '$limit must be greater than zero' );
+		}
+
+		$this->limit = (int) $limit;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function is_show_future_events_only() {
+
+		if( $this->future_events_only == "yes" ) {
+			return true;
+		}
+	}
+
+	/**
+	 * @param $future_events_only int
+	 *
+	 * @throws \Exception
+	 */
+	public function set_future_events_only( $future_events_only ) {
+
+		if(!empty( $future_events_only ) && $future_events_only != "yes" ) {
+			throw new \Exception('$future_events_only can be "yes" or must not be set');
+		}
+		$this->future_events_only = $future_events_only;
 	}
 }

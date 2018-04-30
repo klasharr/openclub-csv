@@ -29,14 +29,23 @@ class CSV_Display {
 			if( !empty(  $config[ 'fields' ]) ) {
 				$input->set_fields_override( $config[ 'fields' ] );
 			}
-			if( !empty( $config[ 'group_by'] ) ){
-				$input->set_group_by_field( $config[ 'group_by'] );
-			}
 
 			if( !empty( $config[ 'context'] ) ){
 				$input->set_context( $config[ 'context'] );
 			}
 
+			if( !empty( $config[ 'limit'] ) ){
+				$input->set_limit( $config[ 'limit'] );
+			}
+
+			if( !empty( $config[ 'future_events_only'] ) ){
+				$input->set_future_events_only( $config[ 'future_events_only'] );
+			}
+
+			if( !empty( $config[ 'filter'] ) ) {
+				$input->set_filter( $config[ 'filter'] );
+			}
+			
 			/**
 			 * @var $output \OpenClub\Output_Data
 			 */
@@ -84,7 +93,7 @@ class CSV_Display {
 	 * post_id              - the post of type openclub-csv
 	 * error_messages       - "yes" / "no"
 	 * error_lines          -  "yes" / "no"
-	 * future_events_only   - if grouping on a date field display events only in the future
+	 * future_events_only   - "yes" if grouping on a date field display events only in the future
 	 * display              - the template name with .php ending. Placed in the theme or plugin templates directory.
 	 *                          Theme templates take precedence over plugin templates
 	 * fields               - choose which fields to display and order, overrides fields settings
@@ -104,6 +113,8 @@ class CSV_Display {
 				'fields'             => null,
 				'group_by_field'     => null,
 				'context'            => null,
+				'limit'              => false,
+				'filter'             => null,
 			),
 			$config
 		);
