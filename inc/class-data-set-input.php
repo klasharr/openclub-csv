@@ -52,15 +52,44 @@ class Data_Set_Input {
 	 *
 	 * @throws \Exception
 	 */
-	public function __construct( $post_id ) {
+	public function __construct( $config ) {
 
-		if ( ! is_numeric( $post_id ) ) {
+		if ( ! is_numeric( $config[ 'post_id' ] ) ) {
 			throw new \Exception( '$post_id is not numeric' );
 		}
 
-		$this->post_id            = $post_id;
-		$this->post               = CSV_Util::get_csv_post( $post_id );
+		$this->post_id            = $config[ 'post_id' ];
+		$this->post               = CSV_Util::get_csv_post( $this->post_id );
 		$this->raw_display_fields = $this->post->field_settings;
+
+		if( !empty(  $config['group_by_field']) ) {
+			$this->set_group_by_field($config['group_by_field']);
+		}
+		if( !empty(  $config[ 'fields' ]) ) {
+			$this->set_fields_override( $config[ 'fields' ] );
+		}
+
+		if( !empty( $config[ 'context'] ) ){
+			$this->set_context( $config[ 'context'] );
+		}
+
+		if( !empty( $config[ 'limit'] ) ){
+			$this->set_limit( $config[ 'limit'] );
+		}
+
+		if( !empty( $config[ 'future_events_only'] ) ){
+			$this->set_future_events_only( $config[ 'future_events_only'] );
+		}
+
+		if( !empty(  $config[ 'filter' ] ) ) {
+
+			$class = "\OpenClub\\" . $config[ 'filter' ];
+			if( !class_exists( $class ) ) {
+				throw new \Exception( $class . ' does not exist, check the value passed in $config[ \'filter\' ]' );
+			}
+
+			$this->set_filter( new $class() );
+		}
 	}
 
 	/**

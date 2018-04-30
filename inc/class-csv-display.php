@@ -21,31 +21,8 @@ class CSV_Display {
 			/**
 			 * @var $input \OpenClub\Data_Set_Input
 			 */
-			$input = \OpenClub\Factory::get_data_input_object( $config['post_id'] );
+			$input = \OpenClub\Factory::get_data_input_object( $config );
 
-			if( !empty(  $config['group_by_field']) ) {
-				$input->set_group_by_field($config['group_by_field']);
-			}
-			if( !empty(  $config[ 'fields' ]) ) {
-				$input->set_fields_override( $config[ 'fields' ] );
-			}
-
-			if( !empty( $config[ 'context'] ) ){
-				$input->set_context( $config[ 'context'] );
-			}
-
-			if( !empty( $config[ 'limit'] ) ){
-				$input->set_limit( $config[ 'limit'] );
-			}
-
-			if( !empty( $config[ 'future_events_only'] ) ){
-				$input->set_future_events_only( $config[ 'future_events_only'] );
-			}
-
-			if( !empty( $config[ 'filter'] ) ) {
-				$input->set_filter( $config[ 'filter'] );
-			}
-			
 			/**
 			 * @var $output \OpenClub\Output_Data
 			 */

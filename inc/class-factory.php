@@ -71,8 +71,9 @@ class Factory {
 	 */
 	public static function get_data_set( \WP_Post $post ) {
 
+		// @todo figure out why this doesn't work
 		if ( isset( self::$data_sets[ $post->ID ] ) ) {
-			return self::$data_sets[ $post->ID ];
+			//return self::$data_sets[ $post->ID ];
 		}
 
 		$data_set                     = new Data_Set( $post );

@@ -1,3 +1,4 @@
+<!-- openclub-csv -->
 <?php
 
 if( $data->config[ 'error_messages' ] == 'yes' && $data->output_data->get_errors()) : ?>
