@@ -1,13 +1,17 @@
 # openclub-csv
 
-A plugin which adds a custom post type called CSV, allows rules to be applied to the columns and has functionality for display and CLI processing.
+A WordPress plugin which allows you to use CSV data as a data source and display it on your website.
 
-The main use cases for this were:
+ - store CSV data in a new custom post type and use this as a data source
+ - apply validation and display rules to the CSV data fields, e.g. one input date format, a different output date format
+ - set of basic table and list templates with overriding and custom template creation/usage in plugins or your theme
+ - API to easily make shortcodes using optionally custom templates
+ - filter API e.g. filter out data based on the value of a field
+ - WP_CLI API to write scripts using CSV data
+ - field display rules, data sorting, limit, grouping and basic date time rules e.g. only show data > current timestamp
+ - early and late filters to alter data based on your own rules.
 
-1. Adding content to a site from excel sheets (with export to CSV).
-2. Being able to further process said CSV files.
-
-Example CSV content stored in post content:
+### Example CSV content stored in post content:
 
 ```
 Day,Date,Event,Time,Team,Note,IsJunior
@@ -19,7 +23,7 @@ Sat,3/31/18,The Opener,1400,3,,
 Sun,4/1/18,Spring Series 1 of 10 - Spring Berthing starts,1100,4,,
 ```
 
-Example CSV field rules, stored in a meta field:
+### Example CSV field rules, stored in a meta field:
 
 ```
 [Day]
@@ -57,15 +61,71 @@ options = 1
 display = false
 ```
 
-The rules enforce rules on the data and provide optional feedback on the web interface.
+### Example shortcode:
+
+```
+[openclub_display_csv post_id=1361 error_lines="yes" error_messages="yes" group_by_field="Date" future_events_only="yes"  display="grouped_date_table" limit="3"]
+```
+
+### Examples in production use:
+
+- [http://www.swanagesailingclub.org.uk/](http://www.swanagesailingclub.org.uk/) - the 'Next Sailing Events' panel
+- [http://www.swanagesailingclub.org.uk/social-events/](http://www.swanagesailingclub.org.uk/social-events/) - showing default table display
+- [http://www.swanagesailingclub.org.uk/sailing-programme/2018/](http://www.swanagesailingclub.org.uk/sailing-programme/2018/) - using a custom plugin template
+- [http://www.swanagesailingclub.org.uk/safety-teams-2018/](http://www.swanagesailingclub.org.uk/safety-teams-2018/) - another custom template
 
 
-# Examples in production use:
+### Example shortcode implementation
 
-http://www.swanagesailingclub.org.uk/social-events/
-http://www.swanagesailingclub.org.uk/sailing-programme/2018/
-http://www.swanagesailingclub.org.uk/ (next sailing events, pulling data from the sailing programme (above) ).
+Taken from another plugin using the API, see more [here](https://github.com/klasharr/ssc/blob/master/inc/shortcodes.php).
 
-# Can I use it?
+```
+add_shortcode( 'ssc_safety_teams', function( $config ){
 
-Not yet, the APIs aren't fixed yet.
+	$config = shortcode_atts(
+		OpenClub\CSV_Display::get_config(
+			array(
+				'context' => 'ssc_safety_teams_shortcode',
+			)),
+		$config
+	);
+
+	return OpenClub\CSV_Display::get_html( $config, SSC_PLUGIN_DIR );
+} );
+
+```
+
+### Example CLI command using the API
+
+See [here](https://github.com/klasharr/openclub-csv/blob/master/cli/class-openclub.php). The minimum looks like this:
+
+```
+/**
+		 * @var $input \OpenClub\Data_Set_Input
+		 */
+		$input = \OpenClub\Factory::get_data_input_object(
+			array(
+				'post_id' => $this->post_id,
+			)
+		);
+
+		/**
+		 * @var $output \OpenClub\Output_Data
+		 */
+		$output_data = \OpenClub\Factory::get_output_data( $input );
+
+		foreach ( $output_data->get_rows() as $row ) {
+			WP_CLI::log( CSV_Display::get_csv_row( $row ) );
+		}
+```
+
+
+
+
+### Can I use it?
+Not yet, work still to do:
+
+- code improvements and cleanup
+- much more testing
+- unit tests
+- inline and wiki documentation

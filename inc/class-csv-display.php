@@ -6,6 +6,39 @@ namespace OpenClub;
 class CSV_Display {
 
 	/**
+	 * @param array $row
+	 *  Array(
+	 *      [value] =>
+	 *      [formatted_value] =>
+	 *      [display_default] => 1
+	 *  )
+	 * @param bool $formatted_value
+	 *
+	 * @see Output_Data->get_row_data()
+	 *
+	 * @return string|void
+	 */
+	public static function get_csv_row( array $row, $formatted_value = true ){
+
+		if( empty( $row[ 'data' ] ) ) {
+			return __('empty', 'openclub_csv');
+		}
+
+		$out = array();
+		foreach($row['data'] as $field_name => $values ){
+			if( $formatted_value ) {
+				$out[] = $row['data'][$field_name]['formatted_value'];
+			} else {
+				$out[] = $row['data'][$field_name]['value'];
+			}
+		}
+		
+		return implode( ',', $out );
+
+	}
+
+
+	/**
 	 * @param $config
 	 * @param null $plugin_directory - location of plugin templates directory, used for shortcodes in custom plugins
 	 *   built on the openclub_csv API

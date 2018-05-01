@@ -145,15 +145,15 @@ class Output_Data {
 	}
 
 	/**
-	 * @param $field_names array
-	 * @param $dto DTO
-	 * @param $errors array
-	 * @param $line_number int
+	 * @param array $field_names
+	 * @param DTO $dto
+	 * @param array $errors
+	 * @param int $line_number
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	private function get_row_data( $field_names, $dto, $errors, $line_number ) {
+	private function get_row_data( array $field_names, DTO $dto, array $errors, int $line_number ) {
 
 		$tmp = array();
 
@@ -161,7 +161,9 @@ class Output_Data {
 
 			$tmp[ $field_name ] = array(
 				'value'           => $dto->get_value( $field_name ),
-				'formatted_value' => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
+				'formatted_value' => $this->field_manager->get_field( $field_name )->format_value(
+					$dto->get_value( $field_name )
+				),
 				'display_default' => $this->field_manager->get_field( $field_name )->is_displayed(),
 			);
 		}

@@ -55,31 +55,31 @@ class Data_Set {
 	 *
 	 * @throws \Exception
 	 */
-	public function push_row( $config, DTO $dto ) {
+	public function push_row( $row_meta, DTO $dto ) {
 
-		if ( empty( $config['field_manager'] ) ) {
+		if ( empty( $row_meta['field_manager'] ) ) {
 			throw new \Exception( 'A field_manager must be passed' );
 		}
 
 		/* @var Field_Manager $field_manager */
-		$field_manager = $config['field_manager'];
+		$field_manager = $row_meta['field_manager'];
 
 
-		if ( ! empty( $config['group_by_field'] ) ) {
+		if ( ! empty( $row_meta['group_by_field'] ) ) {
 
-			if ( $field_manager->get_field_type( $config['group_by_field'] ) == 'date' ) {
+			if ( $field_manager->get_field_type( $row_meta['group_by_field'] ) == 'date' ) {
 
-				$date_field                                                                                 = $field_manager->get_field( $config['group_by_field'] );
-				$this->rows[ $date_field->get_timestamp( $dto->get_value( $config['group_by_field'] ) ) ][] = $dto;
+				$date_field                                                                                 = $field_manager->get_field( $row_meta['group_by_field'] );
+				$this->rows[ $date_field->get_timestamp( $dto->get_value( $row_meta['group_by_field'] ) ) ][] = $dto;
 
 			} else {
-				$this->rows[ $dto->get_value( $config['group_by_field'] ) ][] = $dto;
+				$this->rows[ $dto->get_value( $row_meta['group_by_field'] ) ][] = $dto;
 			}
 
 		} else {
 
-			$this->validate_line_number( $config['line_number'] );
-			$this->rows[ $config['line_number'] ] = $dto;
+			$this->validate_line_number( $row_meta['line_number'] );
+			$this->rows[ $row_meta['line_number'] ] = $dto;
 		}
 	}
 

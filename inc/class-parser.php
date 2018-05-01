@@ -195,13 +195,13 @@ class Parser {
 					continue;
 				}
 
-				$config = array(
+				$row_meta = array(
 					'line_number'    => $this->get_line_number( $line_number ),
 					'group_by_field' => $this->get_group_by_field(),
 					'field_manager'  => $this->field_manager,
 				);
 
-				$this->data_set->push_row( $config, $dto );
+				$this->data_set->push_row( $row_meta, $dto );
 
 			} catch ( DTO_Exception $e ) {
 
