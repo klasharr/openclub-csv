@@ -83,28 +83,30 @@ function openclub_importer_disable_wysiwyg( $default ) {
 add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
 
 /**
- * Example usage: 
+ * Example usage:
  * [openclub_display_csv post_id=311 error_lines="yes" error_messages="yes"  display="safety_teams" group_by_field="Team"]
- * 
- * @see \OpenClub\CSV_Display::get_config() 
- * 
- * 
+ *
+ * @see \OpenClub\CSV_Display::get_config()
+ *
+ *
  */
-add_shortcode( 'openclub_display_csv', function( $config ) {
+add_shortcode( 'openclub_display_csv', function ( $config ) {
 
 	$config = shortcode_atts(
 		OpenClub\CSV_Display::get_config(),
 		$config
 	);
+
 	return OpenClub\CSV_Display::get_html( $config );
 } );
 
-add_action( 'wp_head', function() {
+add_action( 'wp_head', function () {
 	?>
 	<style>
 		.openclub_csv_error {
 			color: red;
 		}
+
 		table.openclub_csv th {
 			background-color: #EFEFEF;
 		}
@@ -126,16 +128,17 @@ function openclub_csv_view_content_page( $content ) {
 		);
 
 	}
+
 	return $content;
 }
 
 add_filter( 'the_content', 'openclub_csv_view_content_page' );
 
 
-
 function openclub_csv_robots_override( $output ) {
 
 	$output .= "Disallow: /openclub_csv/\n";
+
 	return $output;
 }
 

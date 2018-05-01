@@ -18,6 +18,8 @@ class CSV_Display {
 
 		try {
 
+			$config = self::set_default_display_template( $config );
+
 			/**
 			 * @var $input \OpenClub\Data_Set_Input
 			 */
@@ -33,32 +35,32 @@ class CSV_Display {
 			 */
 			apply_filters( 'openclub_csv_display_data', $output_data, $input );
 
-			if ( !empty( $output_data ) && $output_data->exists() ) {
+			if ( ! empty( $output_data ) && $output_data->exists() ) {
 
 				/**
 				 * @var $templates \OpenClub\Template_Loader
 				 */
 				$templates = \OpenClub\Factory::get_template_loader();
-				
-				if( $plugin_directory ){    
+
+				if ( $plugin_directory ) {
 					$templates->set_plugin_dir_path( $plugin_directory );
 				}
-				
+
 				$templates->set_template_data(
 					array(
 						'output_data' => $output_data,
-						'config' => $config
+						'config'      => $config
 					)
 				);
 
-				$out .= $templates->get_template( $config[ 'display' ] );
+				$out .= $templates->get_template( $config['display'] );
 
 			} else {
 				$out .= __( 'No data', 'openclub_csv' );
 			}
 
 		} catch ( \Exception $e ) {
-			$out .= __( 'Error', 'openclub_csv' ).': ' . $e->getMessage();
+			$out .= __( 'Error', 'openclub_csv' ) . ': ' . $e->getMessage();
 		}
 
 		return $out;
@@ -95,5 +97,15 @@ class CSV_Display {
 			),
 			$config
 		);
+	}
+
+	private static function set_default_display_template( $config ) {
+
+		if ( ! empty( $config['group_by_field'] ) && $config['display'] == 'table' ) {
+			$config['display'] = 'grouped_list';
+		}
+
+		return $config;
+
 	}
 }

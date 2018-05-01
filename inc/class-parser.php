@@ -84,7 +84,7 @@ class Parser {
 
 	public function set_group_by_field( $field ) {
 
-		if ( ! empty( $field ) && ! $this->field_manager->get_field( $field, true) ) {
+		if ( ! empty( $field ) && ! $this->field_manager->get_field( $field, true ) ) {
 			throw new \Exception( 'Trying to group on field: ' . $field . ' which does not exist' );
 		}
 		$this->group_by_field = $field;

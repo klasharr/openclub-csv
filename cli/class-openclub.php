@@ -41,15 +41,16 @@ Class OpenClub {
 		 * @var $output \OpenClub\Output_Data
 		 */
 		$output_data = \OpenClub\Factory::get_output_data( $input );
-		
+
 		WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
 
-		foreach ( $output_data->get_rows() as $row) {
+		foreach ( $output_data->get_rows() as $row ) {
 			WP_CLI::log( $row['data']['First Name']['formatted_value'] . ' ' . $row['data']['Second name']['formatted_value'] );
 		}
 
 		if ( $output_data->get_errors() ) {
 			WP_CLI::log( '====== Completed with errors! =======' );
+
 			return;
 		}
 

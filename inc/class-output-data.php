@@ -71,8 +71,8 @@ class Output_Data {
 
 	public function get_header_fields() {
 
-		if( $this->input->has_overridden_fields() ) {
-			return  $this->input->get_overridden_fields();
+		if ( $this->input->has_overridden_fields() ) {
+			return $this->input->get_overridden_fields();
 		}
 
 		return $this->header_fields;
@@ -85,47 +85,49 @@ class Output_Data {
 	 */
 	private function normalise_rows() {
 
-		$errors = $this->get_errors();
+		$errors         = $this->get_errors();
 		$group_by_field = null;
 
-		$limit = false;
+		$limit       = false;
 		$line_number = 0;
 
 		$field_names = $this->field_manager->get_display_field_names();
 
-		if( $this->input->has_overridden_fields() ) {
-			$field_names =  $this->input->get_overridden_fields();
+		if ( $this->input->has_overridden_fields() ) {
+			$field_names = $this->input->get_overridden_fields();
 		}
 
 		$limit = $this->input->get_limit();
 
 		$group_by_field = $this->input->get_group_by_field();
 
-		if( $group_by_field ) {
+		if ( $group_by_field ) {
 
 			$grouped_count = 1;
 
 			foreach ( $this->data_set->get_rows() as $grouped_field_value => $rows ) {
 
-				if( strtolower( $this->input->get_group_by_field() ) == 'date' &&
-				    ( $this->input->is_show_future_events_only() && $grouped_field_value < time() ) ) {
+				if ( strtolower( $this->input->get_group_by_field() ) == 'date' &&
+				     ( $this->input->is_show_future_events_only() && $grouped_field_value < time() )
+				) {
 					continue;
 				}
 
-				if( $limit && ( $grouped_count > $limit ) ) {
+				if ( $limit && ( $grouped_count > $limit ) ) {
 					break;
 				}
 
 				$line_number = 0;
 
 				/** @var DTO $dto */
-				foreach( $rows as $dto ) {
+				foreach ( $rows as $dto ) {
 					$this->rows[ $grouped_field_value ][ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
 					$line_number ++;
 
 				}
 				$grouped_count ++;
 			}
+
 			return;
 
 		} else {
@@ -133,7 +135,7 @@ class Output_Data {
 			/** @var DTO $dto */
 			foreach ( $this->data_set->get_rows() as $dto ) {
 
-				if( $limit && $line_number > $limit ) {
+				if ( $limit && $line_number > $limit ) {
 					break;
 				}
 				$this->rows[ $line_number ] = $this->get_row_data( $field_names, $dto, $errors, $line_number );
@@ -158,17 +160,17 @@ class Output_Data {
 		foreach ( $field_names as $field_name ) {
 
 			$tmp[ $field_name ] = array(
-				'value'            => $dto->get_value( $field_name ),
-				'formatted_value'  => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
-				'display_default'  => $this->field_manager->get_field( $field_name )->is_displayed(),
+				'value'           => $dto->get_value( $field_name ),
+				'formatted_value' => $this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) ),
+				'display_default' => $this->field_manager->get_field( $field_name )->is_displayed(),
 			);
 		}
 
 		return array(
-			'data' => $tmp,
-			'class' => $dto->has_validation_error() ? 'openclub_csv_error' : '',
-			'error' => $dto->has_validation_error() ? 1 : 0,
+			'data'          => $tmp,
+			'class'         => $dto->has_validation_error() ? 'openclub_csv_error' : '',
+			'error'         => $dto->has_validation_error() ? 1 : 0,
 			'error_message' => $dto->has_validation_error() ? $errors[ $line_number ] : '',
-			);
+		);
 	}
 }

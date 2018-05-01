@@ -25,7 +25,7 @@ class Template_Loader extends \Gamajo_Template_Loader {
 	 *
 	 * @return string
 	 */
-	public function get_template(  $slug, $name = null, $load = true  ) {
+	public function get_template( $slug, $name = null, $load = true ) {
 
 		$out = '';
 		ob_start();
@@ -33,7 +33,7 @@ class Template_Loader extends \Gamajo_Template_Loader {
 		$out .= ob_get_clean();
 
 		return $out;
-		
+
 	}
 
 

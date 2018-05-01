@@ -108,11 +108,11 @@ class Field_Manager {
 			throw new \Exception( 'The fields have not been set.' );
 		}
 
-		if( isset( $this->fields[ $key ] ) ) {
+		if ( isset( $this->fields[ $key ] ) ) {
 			return $this->fields[ $key ];
 		}
 
-		if( $simple_existence_check ) {
+		if ( $simple_existence_check ) {
 			return false;
 		}
 

@@ -54,37 +54,37 @@ class Data_Set_Input {
 	 */
 	public function __construct( $config ) {
 
-		if ( ! is_numeric( $config[ 'post_id' ] ) ) {
+		if ( ! is_numeric( $config['post_id'] ) ) {
 			throw new \Exception( '$post_id is not numeric' );
 		}
 
-		$this->post_id            = $config[ 'post_id' ];
+		$this->post_id            = $config['post_id'];
 		$this->post               = CSV_Util::get_csv_post( $this->post_id );
 		$this->raw_display_fields = $this->post->field_settings;
 
-		if( !empty(  $config['group_by_field']) ) {
-			$this->set_group_by_field($config['group_by_field']);
+		if ( ! empty( $config['group_by_field'] ) ) {
+			$this->set_group_by_field( $config['group_by_field'] );
 		}
-		if( !empty(  $config[ 'fields' ]) ) {
-			$this->set_fields_override( $config[ 'fields' ] );
-		}
-
-		if( !empty( $config[ 'context'] ) ){
-			$this->set_context( $config[ 'context'] );
+		if ( ! empty( $config['fields'] ) ) {
+			$this->set_fields_override( $config['fields'] );
 		}
 
-		if( !empty( $config[ 'limit'] ) ){
-			$this->set_limit( $config[ 'limit'] );
+		if ( ! empty( $config['context'] ) ) {
+			$this->set_context( $config['context'] );
 		}
 
-		if( !empty( $config[ 'future_events_only'] ) ){
-			$this->set_future_events_only( $config[ 'future_events_only'] );
+		if ( ! empty( $config['limit'] ) ) {
+			$this->set_limit( $config['limit'] );
 		}
 
-		if( !empty(  $config[ 'filter' ] ) ) {
+		if ( ! empty( $config['future_events_only'] ) ) {
+			$this->set_future_events_only( $config['future_events_only'] );
+		}
 
-			$class = "\OpenClub\\" . $config[ 'filter' ];
-			if( !class_exists( $class ) ) {
+		if ( ! empty( $config['filter'] ) ) {
+
+			$class = "\OpenClub\\" . $config['filter'];
+			if ( ! class_exists( $class ) ) {
 				throw new \Exception( $class . ' does not exist, check the value passed in $config[ \'filter\' ]' );
 			}
 
@@ -126,8 +126,9 @@ class Data_Set_Input {
 
 	public function set_group_by_field( $group_by_field ) {
 
-		if( empty( $group_by_field ) ) {
+		if ( empty( $group_by_field ) ) {
 			openclub_csv_log_cli( 'set_group_by_field() called with an empty value' );
+
 			return;
 		}
 
@@ -150,13 +151,15 @@ class Data_Set_Input {
 
 	public function set_fields_override( $overridden_fields ) {
 
-		if( empty($overridden_fields )) return false;
+		if ( empty( $overridden_fields ) ) {
+			return false;
+		}
 
-		$fields = explode( ',' , $overridden_fields );
+		$fields = explode( ',', $overridden_fields );
 
-		foreach( $fields as $field_name ) {
-			if( !array_key_exists( $field_name, $this->raw_display_fields ) ) {
-				throw new \Exception('Field override: ' . $field_name . ' is invalid. Check the shortcode' );
+		foreach ( $fields as $field_name ) {
+			if ( ! array_key_exists( $field_name, $this->raw_display_fields ) ) {
+				throw new \Exception( 'Field override: ' . $field_name . ' is invalid. Check the shortcode' );
 			}
 		}
 		$this->overridden_fields = $overridden_fields;
@@ -166,11 +169,11 @@ class Data_Set_Input {
 	 * @return array
 	 */
 	public function get_overridden_fields() {
-		return explode( ',' , $this->overridden_fields );
+		return explode( ',', $this->overridden_fields );
 	}
 
 	public function has_overridden_fields() {
-		return !empty( $this->overridden_fields );
+		return ! empty( $this->overridden_fields );
 	}
 
 	/**
@@ -199,14 +202,14 @@ class Data_Set_Input {
 	 */
 	public function set_limit( $limit ) {
 
-		if( $limit === false ) {
+		if ( $limit === false ) {
 			return;
 		}
 
-		if( (int) $limit != $limit ) {
+		if ( (int) $limit != $limit ) {
 			throw new \Exception( '$limit must be passed as an integer' );
 		}
-		if( $limit <= 0 ){
+		if ( $limit <= 0 ) {
 			throw new \Exception( '$limit must be greater than zero' );
 		}
 
@@ -218,7 +221,7 @@ class Data_Set_Input {
 	 */
 	public function is_show_future_events_only() {
 
-		if( $this->future_events_only == "yes" ) {
+		if ( $this->future_events_only == "yes" ) {
 			return true;
 		}
 	}
@@ -230,8 +233,8 @@ class Data_Set_Input {
 	 */
 	public function set_future_events_only( $future_events_only ) {
 
-		if(!empty( $future_events_only ) && $future_events_only != "yes" ) {
-			throw new \Exception('$future_events_only can be "yes" or must not be set');
+		if ( ! empty( $future_events_only ) && $future_events_only != "yes" ) {
+			throw new \Exception( '$future_events_only can be "yes" or must not be set' );
 		}
 		$this->future_events_only = $future_events_only;
 	}
