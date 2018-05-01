@@ -17,10 +17,6 @@ class DateField extends Base_Field implements Field {
 	 */
 	private $timestamp = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	private $datetime;
 
 	public function __construct( $data, Data_Set_Input $input ) {
 		parent::__construct( $data, $input );
@@ -48,6 +44,16 @@ class DateField extends Base_Field implements Field {
 		}
 
 		/**
+		 * @var \DateTime
+		 */
+		$datetime  = $this->get_date_time_object( $value );
+		$this->timestamp = $datetime->getTimestamp();
+
+	}
+
+	private function get_date_time_object( $value ) {
+
+		/**
 		 * @var $datetime DateTime
 		 */
 		if ( ! $datetime = \DateTime::createFromFormat( $this->data['input_format'], $value ) ) {
@@ -73,9 +79,7 @@ class DateField extends Base_Field implements Field {
 			throw new Field_Exception( 'Date field validation failed, format is valid, invalid date. Got: ' . $value );
 		}
 
-		$this->datetime  = $datetime;
-		$this->timestamp = $datetime->getTimestamp();
-
+		return $datetime;
 	}
 
 	/**
@@ -94,8 +98,13 @@ class DateField extends Base_Field implements Field {
 	 */
 	public function format_value( $value ) {
 
+		/**
+		 * @var \DateTime
+		 */
+		$datetime  = $this->get_date_time_object( $value );
+
 		if ( ! empty( $this->data['output_format'] ) ) {
-			return $this->datetime->format( $this->data['output_format'] );
+			return $datetime->format( $this->data['output_format'] );
 		}
 
 		return $value;
