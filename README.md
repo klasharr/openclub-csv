@@ -125,6 +125,7 @@ foreach ( $output_data->get_rows() as $row ) {
 ### Can I use it?
 Not yet, work still to do:
 
+- on security
 - code improvements and cleanup
 - much more testing
 - unit tests
