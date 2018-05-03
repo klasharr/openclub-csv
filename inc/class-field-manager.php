@@ -76,6 +76,10 @@ class Field_Manager {
 				throw new \Exception( 'Field ' . $field_name . ' has no defined type, check fields setting.' );
 			}
 
+			if( $field_name !== esc_html( $field_name ) ) {
+				throw new \Exception( 'Field ' . esc_html( $field_name ) . ' has invalid characters.' );
+			}
+
 			$config['field_name'] = $field_name;
 
 			if ( $this->field_is_displayed( $field_name, $config ) ) {
@@ -87,7 +91,7 @@ class Field_Manager {
 
 			$className = ucwords( $config['type'] ) . 'Field';
 
-			$this->fields[ $field_name ] = $o = Factory::get_field( $className, $config, $this->input );
+			$this->fields[ $field_name ] = Factory::get_field( $className, $config, $this->input );
 
 		}
 	}
@@ -136,12 +140,9 @@ class Field_Manager {
 	}
 
 	public function get_all_registered_fields() {
-		$out = array();
-		foreach ( $this->fields as $fieldName => $field ) {
-			$out[] = $fieldName;
-		}
 
-		return $out;
+		return array_keys( $this->fields );
+
 	}
 
 

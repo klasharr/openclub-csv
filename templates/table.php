@@ -1,17 +1,16 @@
 <!-- openclub-csv -->
 <?php
-
-if ( $data->config['error_messages'] == 'yes' && $data->output_data->get_errors() ) : ?>
+if ( 'yes' === $data->config['error_messages'] && $data->output_data->get_errors() ) : ?>
 	<div class='openclub_csv_error'>
-		<h3><?php echo __( 'Errors', 'openclub_csv' ); ?></h3>
+		<h3><?php esc_html_e( 'Errors', 'openclub_csv' ); ?></h3>
 		<p class='openclub_csv'>
-			<?php foreach ( $data->output_data->get_errors() as $line_number => $error ) { ?>
-				Line: <?php echo ( $line_number + 1 ) . ' ' . $error ?>
-				<br/>
-			<?php } ?>
+			<?php foreach ( $data->output_data->get_errors() as $line_number => $error ) {
+				echo esc_html__( 'Line', 'openclub_csv' ) . ':' . esc_html( ( $line_number + 1 ) . ' ' . $error ) . '<br/>';
+			} ?>
 		</p>
 	</div>
 <?php endif; ?>
+
 <table class='openclub_csv'>
 	<tr>
 		<th>
@@ -20,11 +19,10 @@ if ( $data->config['error_messages'] == 'yes' && $data->output_data->get_errors(
 	<?php
 
 	foreach ( $data->output_data->get_rows() as $row ) {
-		if ( $row['error'] == 0 || ( $row['error'] == 1 && $data->config['error_lines'] == 'yes' ) ) {
-			echo "<tr  class='" . $row['class'] . "'>";
+		if ( 0 === $row['error'] || ( 1 === $row['error']  && 'yes' === $data->config['error_lines'] ) ) {
+			echo "<tr  class='" . esc_attr( $row['class'] ) . "'>";
 			foreach ( $row['data'] as $fieldname => $values ) {
-
-				echo '<td>' . $values['formatted_value'] . '</td>';
+				echo '<td>' . esc_html( $values['formatted_value'] ) . '</td>';
 			}
 			echo "</tr>\n";
 		}

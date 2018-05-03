@@ -18,8 +18,8 @@ define( 'OPENCLUB_DEFAULT_FILTER_PRIORITY', 10 );
 
 if ( class_exists( 'WP_CLI' ) ) {
 
-	require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-openclub.php' );
-	$command = new OpenClub\CLI\OpenClub;
+	require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-cli-command.php' );
+	$command = new OpenClub\CLI_Command;
 	WP_CLI::add_command( 'openclub', $command );
 
 }
@@ -54,18 +54,6 @@ function openclub_importer_post_types_init() {
 
 add_action( 'init', 'openclub_importer_post_types_init' );
 
-add_action( 'fm_post_openclub-csv', function () {
-
-	$fm = new Fieldmanager_TextArea( array(
-		'name'       => 'fields',
-		'attributes' => array(
-			'rows' => 10,
-			'cols' => 80,
-		),
-	) );
-	$fm->add_meta_box( 'CSV field descriptions', array( 'openclub-csv' ) );
-} );
-
 
 function openclub_importer_disable_wysiwyg( $default ) {
 
@@ -73,7 +61,7 @@ function openclub_importer_disable_wysiwyg( $default ) {
 
 	if ( in_array( get_post_type( $post ), array(
 		'openclub-csv',
-	) ) ) {
+	), true ) ) {
 		return false;
 	}
 
@@ -121,7 +109,7 @@ function openclub_csv_view_content_page( $content ) {
 	 */
 	global $post;
 
-	if ( is_singular() && in_array( get_post_type( $post ), array( 'openclub-csv' ) ) ) {
+	if ( is_singular() && in_array( get_post_type( $post ), array( 'openclub-csv' ), true ) ) {
 
 		return OpenClub\CSV_Display::get_html(
 			OpenClub\CSV_Display::get_config( array( 'post_id' => $post->ID ) )

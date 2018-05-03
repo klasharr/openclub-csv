@@ -97,26 +97,26 @@ add_shortcode( 'ssc_safety_teams', function( $config ){
 
 ### Example CLI command using the API
 
-See [here](https://github.com/klasharr/openclub-csv/blob/master/cli/class-openclub.php). The minimum looks like this:
+See [here](https://github.com/klasharr/openclub-csv/blob/master/cli/class-openclub.php). The minimum with no error handling looks like this:
 
 ```
 /**
-		 * @var $input \OpenClub\Data_Set_Input
-		 */
-		$input = \OpenClub\Factory::get_data_input_object(
-			array(
-				'post_id' => $this->post_id,
-			)
-		);
+ * @var $input \OpenClub\Data_Set_Input
+ */
+$input = \OpenClub\Factory::get_data_input_object(
+    array(
+        'post_id' => $this->post_id,
+    )
+);
 
-		/**
-		 * @var $output \OpenClub\Output_Data
-		 */
-		$output_data = \OpenClub\Factory::get_output_data( $input );
+/**
+ * @var $output_data \OpenClub\Output_Data
+ */
+$output_data = \OpenClub\Factory::get_output_data( $input );
 
-		foreach ( $output_data->get_rows() as $row ) {
-			WP_CLI::log( CSV_Display::get_csv_row( $row ) );
-		}
+foreach ( $output_data->get_rows() as $row ) {
+    WP_CLI::log( CSV_Display::get_csv_row( $row ) );
+}
 ```
 
 

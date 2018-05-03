@@ -6,15 +6,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once( 'class-field-manager.php' );
-require_once( 'class-null-filter.php' );
-require_once( 'class-dto.php' );
-require_once( 'class-parser.php' );
-require_once( 'class-data-set.php' );
-require_once( 'class-data-set-input.php' );
-require_once( 'class-template-loader.php' );
-require_once( 'class-output-data.php' );
-require_once( 'class-csv-display.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-field-manager.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-null-filter.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-dto.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-parser.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-data-set.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-data-set-input.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-template-loader.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-output-data.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-display.php' );
 
 class Factory {
 

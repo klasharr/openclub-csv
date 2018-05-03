@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once( 'interface-filter.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/interface-filter.php' );
 
 class Null_Filter implements Filter {
 

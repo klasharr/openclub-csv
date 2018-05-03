@@ -27,9 +27,9 @@ class CSV_Display {
 		$out = array();
 		foreach($row['data'] as $field_name => $values ){
 			if( $formatted_value ) {
-				$out[] = $row['data'][$field_name]['formatted_value'];
+				$out[] = $values['formatted_value'];
 			} else {
-				$out[] = $row['data'][$field_name]['value'];
+				$out[] = $values['value'];
 			}
 		}
 		
@@ -134,7 +134,7 @@ class CSV_Display {
 
 	private static function set_default_display_template( $config ) {
 
-		if ( ! empty( $config['group_by_field'] ) && $config['display'] == 'table' ) {
+		if ( ! empty( $config['group_by_field'] ) && 'table' === $config['display'] ) {
 			$config['display'] = 'grouped_list';
 		}
 

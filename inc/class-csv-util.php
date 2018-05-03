@@ -27,13 +27,13 @@ class CSV_Util {
 			);
 		}
 
-		if ( $post->post_type != 'openclub-csv' ) {
+		if ( 'openclub-csv' !== $post->post_type  ) {
 			throw new \Exception (
 				sprintf( '$post_id %d does not return a post object of post type openclub-csv.', $post_id )
 			);
 		}
 
-		if ( $post->status == 'auto-draft' ) {
+		if ( 'auto-draft' === $post->status ) {
 			throw new \Exception (
 				sprintf( '$post_id %d returns an openclub-csv post type auto-draft.', $post_id )
 			);

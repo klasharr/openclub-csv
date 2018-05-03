@@ -1,19 +1,20 @@
 <?php
 
-namespace OpenClub\CLI;
+namespace OpenClub;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use OpenClub\CSV_Display;
+use \OpenClub\CSV_Display;
 use \OpenClub\Factory;
 use \OpenClub\CSV_Util;
 use \WP_CLI;
 
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-cli-base.php' );
 
-Class OpenClub {
+Class CLI_Command extends CLI_Base {
 
 	/**
 	 * @todo standardize error validation output.

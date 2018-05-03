@@ -74,7 +74,6 @@ class Output_Data {
 		if ( $this->input->has_overridden_fields() ) {
 			return $this->input->get_overridden_fields();
 		}
-
 		return $this->header_fields;
 	}
 
@@ -107,7 +106,7 @@ class Output_Data {
 
 			foreach ( $this->data_set->get_rows() as $grouped_field_value => $rows ) {
 
-				if ( strtolower( $this->input->get_group_by_field() ) == 'date' &&
+				if ( 'date' === strtolower( $this->input->get_group_by_field() ) &&
 				     ( $this->input->is_show_future_events_only() && $grouped_field_value < time() )
 				) {
 					continue;
@@ -160,9 +159,9 @@ class Output_Data {
 		foreach ( $field_names as $field_name ) {
 
 			$tmp[ $field_name ] = array(
-				'value'           => $dto->get_value( $field_name ),
-				'formatted_value' => $this->field_manager->get_field( $field_name )->format_value(
-					$dto->get_value( $field_name )
+				'value'           => esc_html( $dto->get_value( $field_name ) ),
+				'formatted_value' => esc_html( 
+					$this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) )
 				),
 				'display_default' => $this->field_manager->get_field( $field_name )->is_displayed(),
 			);

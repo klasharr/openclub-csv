@@ -7,8 +7,10 @@ use OpenClub\Data_Set_Input;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 };
-require_once( 'class-base.php' );
-require_once( 'interface-field.php' );
+
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/fields/class-base.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/fields/interface-field.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/fields/exception-field.php' );
 
 class DateField extends Base_Field implements Field {
 

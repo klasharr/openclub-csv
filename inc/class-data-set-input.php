@@ -2,7 +2,7 @@
 
 namespace OpenClub;
 
-require_once( 'class-csv-util.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
 
 class Data_Set_Input {
 
@@ -221,7 +221,7 @@ class Data_Set_Input {
 	 */
 	public function is_show_future_events_only() {
 
-		if ( $this->future_events_only == "yes" ) {
+		if ( 'yes' === $this->future_events_only ) {
 			return true;
 		}
 	}
@@ -233,7 +233,7 @@ class Data_Set_Input {
 	 */
 	public function set_future_events_only( $future_events_only ) {
 
-		if ( ! empty( $future_events_only ) && $future_events_only != "yes" ) {
+		if ( ! empty( $future_events_only ) && "yes" !== $future_events_only ) {
 			throw new \Exception( '$future_events_only can be "yes" or must not be set' );
 		}
 		$this->future_events_only = $future_events_only;

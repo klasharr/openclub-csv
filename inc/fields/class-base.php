@@ -8,9 +8,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
-require_once( 'class-base.php' );
-require_once( 'interface-field.php' );
-require_once( 'exception-field.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/fields/class-base.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/fields/interface-field.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/fields/exception-field.php' );
 
 abstract class Base_Field implements Field {
 
@@ -59,9 +59,20 @@ abstract class Base_Field implements Field {
 			throw new Field_Exception( 'options is not an array' );
 		}
 
+		if( $this->type !== esc_html( $this->type ) ) {
+			throw new \Exception( 'Field Name ' . $this->field_name . ' type : ' .
+			                      esc_html( $this->type ) . ' has invalid characters.' );
+		}
 
 		if ( isset( $this->data['options'] ) ) {
 			$this->options = explode( ',', $this->data['options'] );
+
+			foreach( $this->options as $option ) {
+				if( $option !== esc_html( $option ) ) {
+					throw new \Exception( 'Field Name ' . $this->field_name . ' option : ' .
+					                      esc_html( $option ) . ' has invalid characters.' );
+				}
+			}
 		}
 
 		if ( ! empty( $this->data['required'] ) ) {

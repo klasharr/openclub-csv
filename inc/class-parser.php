@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use OpenClub\Fields\Field_Exception;
 
-require_once( 'class-factory.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-factory.php' );
 
 
 class Parser {
@@ -142,7 +142,7 @@ class Parser {
 			$error_message        = '';
 			$has_validation_error = false;
 
-			if ( $line_number == 0 ) {
+			if ( 0 === $line_number ) {
 				$this->set_header_field_names_and_count_from_csv( $data_line );
 				$line_number ++;
 				continue;
@@ -154,7 +154,7 @@ class Parser {
 
 			$data_array = explode( ",", $data_line );
 
-			if ( count( $data_array ) != $this->header_field_names_count ) {
+			if ( count( $data_array ) !== $this->header_field_names_count ) {
 				throw new \Exception(
 					sprintf( 'Post %d, line %d column count mismatch, expected %d columns.  Header columns are: %s. Data is: %s.',
 						$this->input->get_post()->ID,
@@ -249,7 +249,9 @@ class Parser {
 			throw new \Exception( 'There\'s an empty column, please remove from the CSV.' );
 		}
 
-		if ( ! $field = $this->field_manager->get_field( $field_name ) ) {
+		$field = $this->field_manager->get_field( $field_name );
+
+		if( !$field ) {
 			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the column name against the field setting in \'fields\' to see that they match.' );
 		}
 

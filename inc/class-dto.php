@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once( 'class-dto.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-dto.php' );
 
 class DTO {
 
@@ -78,7 +78,7 @@ class DTO {
 	}
 
 	public function get_value( $key ) {
-		return $this->data[ $key ];
+		return esc_html( $this->data[ $key ] );
 	}
 
 }
