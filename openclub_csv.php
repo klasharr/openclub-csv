@@ -74,6 +74,8 @@ add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
  * Example usage:
  * [openclub_display_csv post_id=311 error_lines="yes" error_messages="yes"  display="safety_teams" group_by_field="Team"]
  *
+ * [openclub_display_csv post_id=1545 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Duty Date" filter="SSC_Empty_Duties" future_events_only="yes" limit="10"]
+ *
  * @see \OpenClub\CSV_Display::get_config()
  *
  *
@@ -97,6 +99,10 @@ add_action( 'wp_head', function () {
 
 		table.openclub_csv th {
 			background-color: #EFEFEF;
+		}
+
+		tr.bold td {
+			font-weight: bold;
 		}
 	</style>
 	<?php

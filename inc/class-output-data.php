@@ -106,7 +106,7 @@ class Output_Data {
 
 			foreach ( $this->data_set->get_rows() as $grouped_field_value => $rows ) {
 
-				if ( 'date' === strtolower( $this->input->get_group_by_field() ) &&
+				if ( 'date' === $this->field_manager->get_field_type( $this->input->get_group_by_field() ) &&
 				     ( $this->input->is_show_future_events_only() && $grouped_field_value < time() )
 				) {
 					continue;

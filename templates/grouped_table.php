@@ -14,7 +14,7 @@ if ( 'yes' === $data->config['error_messages'] && $data->output_data->get_errors
 	<table class='openclub_csv'>
 	<tr>
 		<th>
-			<?php echo implode( '</th><th>', esc_html( $data->output_data->get_header_fields() ) ); ?>
+			<?php echo implode( '</th><th>', $data->output_data->get_header_fields()  ); ?>
 	</tr>
 <?php
 
