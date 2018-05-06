@@ -54,6 +54,10 @@ class Data_Set_Input {
 	 */
 	public function __construct( $config ) {
 
+		if( empty( $config['post_id'] ) ) {
+			throw new \Exception( '$post_id was not passed' );
+		}
+
 		if ( ! is_numeric( $config['post_id'] ) ) {
 			throw new \Exception( '$post_id is not numeric' );
 		}

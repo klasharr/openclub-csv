@@ -61,8 +61,14 @@ class Output_Data {
 		return $this->header_fields;
 	}
 
-	public function get_rows() {
-		return $this->rows;
+	public function get_rows( $key = null ) {
+		if( empty( $key ) ) return $this->rows;
+
+		if( !empty($key) && !isset( $this->rows[ $key ] ) ) {
+			throw new \Exception( 'Trying to retrieve data on a non existent key ' . (string) $key );
+		}
+
+		return $this->rows[ $key ];
 	}
 
 	public function get_errors() {
@@ -173,5 +179,9 @@ class Output_Data {
 			'error'         => $dto->has_validation_error() ? 1 : 0,
 			'error_message' => $dto->has_validation_error() ? $errors[ $line_number ] : '',
 		);
+	}
+
+	public function set_rows( array $data ){
+		$this->rows = $data;
 	}
 }

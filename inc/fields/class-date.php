@@ -27,7 +27,7 @@ class DateField extends Base_Field implements Field {
 			throw new Field_Exception( 'Date field chosen but no input format specified, check the field description.' );
 		}
 
-		$date_pattern = '/^[djmn]\/[djmn]\/[Yy]$/';
+		$date_pattern = '/^[djmn][\/\s]?[djSmn][\/\s]?[YyM]$/';
 
 		if ( ! preg_match( $date_pattern, $this->data['input_format'] ) ) {
 			throw new Field_Exception( 'Invalid input_format specified' );
