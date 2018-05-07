@@ -11,7 +11,16 @@ A WordPress plugin which allows you to use CSV data as a data source and display
  - field display rules, data sorting, limit, grouping and basic date time rules e.g. only show data > current timestamp
  - early and late filters to alter data based on your own rules.
 
-### Example CSV content stored in post content:
+
+
+## Installation
+
+Put this plugin in your WordPress plugins directory and enable. You will see a new CSV menu item in wp-admin, this lets you manage the CSV custom post types.
+
+## Example Usage
+
+
+Add a new CSV content item, the main content area will contain the CSV file content including header line e.g.
 
 ```
 Day,Date,Event,Time,Team,Note,IsJunior
@@ -23,7 +32,8 @@ Sat,3/31/18,The Opener,1400,3,,
 Sun,4/1/18,Spring Series 1 of 10 - Spring Berthing starts,1100,4,,
 ```
 
-### Example CSV field rules, stored in a meta field:
+Then add a custom field calls `fields` which contains the header field rules. The rules force validation on the CSV data and enforce default field display. This can be overwritten later. For the above CSV content the fields might look like this:
+
 
 ```
 [Day]
@@ -61,11 +71,100 @@ options = 1
 display = false
 ```
 
-### Example shortcode:
+## Viewing the content
+
+View the CSV post types as you would any other piece of content in WordPress, each has a permalink defined:
+
+`/openclub-csv/<your slug>/`
+
+
+### Shortcodes
+
+Also display the content via a configurable shortcode for example:
+
+Default view the same as the CSV page view.
+```
+[openclub_display_csv post_id=1361]
+```
+
+Overriding the display field defaults, this will display the columns Date and Event only.
+```
+[openclub_display_csv post_id=1361 fields="Date,Event"]
+```
+
+Grouping on the date field and filtering for future events only.
+```
+[openclub_display_csv post_id=1361 group_by_field="Date" future_events_only="yes"  display="grouped_date_table" limit="3"]
+```
+
+
+
+#### Fields configuration explained
+
+The fields content is basically content in the [PHP ini format](http://php.net/manual/en/function.parse-ini-file.php) and is parsed internally by `parse_ini_file()`. Each CSV column will have a field name, and this field is described in the fields ini configuration. So far there are three field types; date, string and int. Others will follow.
+
+1. Date
 
 ```
-[openclub_display_csv post_id=1361 error_lines="yes" error_messages="yes" group_by_field="Date" future_events_only="yes"  display="grouped_date_table" limit="3"]
+[CSV Field Name]
+type = date
+input_format = m/d/y
+output_format = d/m/Y
 ```
+
+`output_format` is optional, `input_format` is required. The format corresponds to [PHP date formatting rules](http://php.net/manual/en/function.date.php). The currently supported date pattern can be seen [here](https://github.com/klasharr/openclub-csv/blob/master/inc/fields/class-date.php#L30).
+
+```
+$date_pattern = '/^[djmn][\/\s]?[djSmn][\/\s]?[YyM]$/';
+```
+
+2. String
+
+```
+[CSV Field Name]
+type = string
+max-length = 60
+required = true
+```
+
+This is a basic field currently with a max length validation.
+
+
+3. Int
+
+```
+[CSV Field Name]
+type = int
+```
+
+Validates only if the data is numeric.
+
+#### Extra rules for all fields
+
+1. Options
+
+```
+options = 1100,1030,1830,1900,1400,1800,0830,TBA,0930
+```
+
+If data exists, it must be one of the defined options.
+
+
+2. Required
+```
+required = true
+```
+Is the field required?
+
+3. Display
+
+```
+display = false
+```
+
+This controls the default display setting for a field and it can be overridden in your shortcodes. This is useful if you want to suppress display of certain fields.
+
+
 
 ### Examples in production use:
 
@@ -118,8 +217,6 @@ foreach ( $output_data->get_rows() as $row ) {
     WP_CLI::log( CSV_Display::get_csv_row( $row ) );
 }
 ```
-
-
 
 
 ### Can I use it?
