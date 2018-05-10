@@ -106,7 +106,7 @@ The fields content is basically content in the [PHP ini format](http://php.net/m
 1. Date
 
 ```
-[CSV Field Name]
+[<CSV field name>]
 type = date
 input_format = m/d/y
 output_format = d/m/Y
@@ -121,10 +121,9 @@ $date_pattern = '/^[djmn][\/\s]?[djSmn][\/\s]?[YyM]$/';
 2. String
 
 ```
-[CSV Field Name]
+[<CSV field name>]
 type = string
 max-length = 60
-required = true
 ```
 
 This is a basic field currently with a max length validation.
@@ -133,7 +132,7 @@ This is a basic field currently with a max length validation.
 3. Int
 
 ```
-[CSV Field Name]
+[<CSV field name>]
 type = int
 ```
 
