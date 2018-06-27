@@ -13,7 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'OPENCLUB_CSV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+if( !defined( 'OPENCLUB_CSV_PLUGIN_DIR' ) ) {
+	define( 'OPENCLUB_CSV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+
 define( 'OPENCLUB_DEFAULT_FILTER_PRIORITY', 10 );
 
 if ( class_exists( 'WP_CLI' ) ) {

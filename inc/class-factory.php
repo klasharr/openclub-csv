@@ -15,6 +15,7 @@ require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-data-set-input.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-template-loader.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-output-data.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-display.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/interface-filter.php' );
 
 class Factory {
 
