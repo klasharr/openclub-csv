@@ -251,7 +251,7 @@ class Parser {
 
 		$field = $this->field_manager->get_field( $field_name );
 
-		if( !$field ) {
+		if ( ! $field ) {
 			throw new \Exception( 'A validator for ' . $field_name . ' does not exist, check the column name against the field setting in \'fields\' to see that they match.' );
 		}
 

@@ -12,8 +12,8 @@ use \WP_CLI;
 
 abstract class CLI_Base {
 
-	public function foo(){
-		WP_CLI::log('foo');
+	public function foo() {
+		WP_CLI::log( 'foo' );
 	}
 
 }

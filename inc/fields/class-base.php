@@ -59,7 +59,7 @@ abstract class Base_Field implements Field {
 			throw new Field_Exception( 'options is not an array' );
 		}
 
-		if( $this->type !== esc_html( $this->type ) ) {
+		if ( $this->type !== esc_html( $this->type ) ) {
 			throw new \Exception( 'Field Name ' . $this->field_name . ' type : ' .
 			                      esc_html( $this->type ) . ' has invalid characters.' );
 		}
@@ -67,8 +67,8 @@ abstract class Base_Field implements Field {
 		if ( isset( $this->data['options'] ) ) {
 			$this->options = explode( ',', $this->data['options'] );
 
-			foreach( $this->options as $option ) {
-				if( $option !== esc_html( $option ) ) {
+			foreach ( $this->options as $option ) {
+				if ( $option !== esc_html( $option ) ) {
 					throw new \Exception( 'Field Name ' . $this->field_name . ' option : ' .
 					                      esc_html( $option ) . ' has invalid characters.' );
 				}

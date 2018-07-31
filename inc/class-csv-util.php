@@ -27,7 +27,7 @@ class CSV_Util {
 			);
 		}
 
-		if ( 'openclub-csv' !== $post->post_type  ) {
+		if ( 'openclub-csv' !== $post->post_type ) {
 			throw new \Exception (
 				sprintf( '$post_id %d does not return a post object of post type openclub-csv.', $post_id )
 			);

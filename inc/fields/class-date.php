@@ -48,7 +48,7 @@ class DateField extends Base_Field implements Field {
 		/**
 		 * @var \DateTime
 		 */
-		$datetime  = $this->get_date_time_object( $value );
+		$datetime        = $this->get_date_time_object( $value );
 		$this->timestamp = $datetime->getTimestamp();
 
 	}
@@ -103,7 +103,7 @@ class DateField extends Base_Field implements Field {
 		/**
 		 * @var \DateTime
 		 */
-		$datetime  = $this->get_date_time_object( $value );
+		$datetime = $this->get_date_time_object( $value );
 
 		if ( ! empty( $this->data['output_format'] ) ) {
 			return $datetime->format( $this->data['output_format'] );

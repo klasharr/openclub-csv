@@ -62,9 +62,11 @@ class Output_Data {
 	}
 
 	public function get_rows( $key = null ) {
-		if( empty( $key ) ) return $this->rows;
+		if ( empty( $key ) ) {
+			return $this->rows;
+		}
 
-		if( !empty($key) && !isset( $this->rows[ $key ] ) ) {
+		if ( ! empty( $key ) && ! isset( $this->rows[ $key ] ) ) {
 			throw new \Exception( 'Trying to retrieve data on a non existent key ' . (string) $key );
 		}
 
@@ -80,6 +82,7 @@ class Output_Data {
 		if ( $this->input->has_overridden_fields() ) {
 			return $this->input->get_overridden_fields();
 		}
+
 		return $this->header_fields;
 	}
 
@@ -166,7 +169,7 @@ class Output_Data {
 
 			$tmp[ $field_name ] = array(
 				'value'           => esc_html( $dto->get_value( $field_name ) ),
-				'formatted_value' => esc_html( 
+				'formatted_value' => esc_html(
 					$this->field_manager->get_field( $field_name )->format_value( $dto->get_value( $field_name ) )
 				),
 				'display_default' => $this->field_manager->get_field( $field_name )->is_displayed(),
@@ -181,7 +184,7 @@ class Output_Data {
 		);
 	}
 
-	public function set_rows( array $data ){
+	public function set_rows( array $data ) {
 		$this->rows = $data;
 	}
 }

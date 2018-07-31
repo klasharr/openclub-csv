@@ -76,7 +76,7 @@ class Field_Manager {
 				throw new \Exception( 'Field ' . $field_name . ' has no defined type, check fields setting.' );
 			}
 
-			if( $field_name !== esc_html( $field_name ) ) {
+			if ( $field_name !== esc_html( $field_name ) ) {
 				throw new \Exception( 'Field ' . esc_html( $field_name ) . ' has invalid characters.' );
 			}
 

@@ -68,7 +68,7 @@ class Data_Set {
 
 			if ( 'date' === $field_manager->get_field_type( $row_meta['group_by_field'] ) ) {
 
-				$date_field = $field_manager->get_field( $row_meta['group_by_field'] );
+				$date_field                                                                                   = $field_manager->get_field( $row_meta['group_by_field'] );
 				$this->rows[ $date_field->get_timestamp( $dto->get_value( $row_meta['group_by_field'] ) ) ][] = $dto;
 
 			} else {
