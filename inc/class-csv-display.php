@@ -165,7 +165,11 @@ class CSV_Display {
 			return;
 		}
 
-		if ( ! empty( $config['future_events_only'] ) && $config['future_events_only'] == "yes" ) {
+		if( empty( $config['future_events_only'] )) {
+			return;
+		}
+
+		if ( $config['future_events_only'] == "yes" ) {
 
 			$data['current'] = sprintf( esc_html__( 'Showing future %s only', 'openclub_csv' ), $name );
 			$data['other']   = sprintf( '<a href="%s" rel="nofollow">%s</a>',
@@ -173,7 +177,7 @@ class CSV_Display {
 				esc_html__( 'Show all', 'openclub_csv' )
 			);
 
-		} elseif ( ! empty( $config['future_events_only'] ) && $config['future_events_only'] == "no" ) {
+		} elseif ( $config['future_events_only'] == "no" ) {
 
 			$data['other']   = sprintf( '<a href="%s" rel="nofollow">%s</a>',
 				esc_url( get_the_permalink() . add_query_arg( 'feo', '2' ) ),
@@ -239,6 +243,9 @@ class CSV_Display {
 			$msg = 'Template file ' . $path . ' does not exist.';
 
 			return new \WP_Error( 1020, $msg );
+		}
+		if( OPENCLUB_CSV_LOG_TEMPLATE_FILES_LOADED ) {
+			error_log( $path );
 		}
 	}
 

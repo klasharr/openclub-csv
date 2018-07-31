@@ -34,9 +34,8 @@ echo \OpenClub\CSV_Display::get_past_future_toggle_links( $data->config ); ?>
 	/**
 	 * @todo smarter way to check for the lack of the group_by_field field. This will cause an endless loop
 	 */
-	if ( ! $data->config['group_by_field'] ) {
-		esc_html_e( 'No group by field', 'openclub_csv' );
-
+	if ( empty( $data->config['group_by_field'] ) ) {
+		echo '<p class="openclub_csv_error">Error: ' . esc_html__( 'No group by field', 'openclub_csv' ) .'</p>';
 		return;
 	}
 

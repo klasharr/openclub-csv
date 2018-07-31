@@ -18,6 +18,7 @@ if ( ! defined( 'OPENCLUB_CSV_PLUGIN_DIR' ) ) {
 }
 
 define( 'OPENCLUB_DEFAULT_FILTER_PRIORITY', 10 );
+define( 'OPENCLUB_CSV_LOG_TEMPLATE_FILES_LOADED', false );
 
 if ( class_exists( 'WP_CLI' ) ) {
 
