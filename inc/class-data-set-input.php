@@ -54,7 +54,7 @@ class Data_Set_Input {
 	 */
 	public function __construct( $config ) {
 
-		if( empty( $config['post_id'] ) ) {
+		if ( empty( $config['post_id'] ) ) {
 			throw new \Exception( '$post_id was not passed' );
 		}
 
@@ -237,8 +237,8 @@ class Data_Set_Input {
 	 */
 	public function set_future_events_only( $future_events_only ) {
 
-		if ( ! empty( $future_events_only ) && "yes" !== $future_events_only ) {
-			throw new \Exception( '$future_events_only can be "yes" or must not be set' );
+		if ( ! empty( $future_events_only ) && ! in_array( $future_events_only, array( "yes", "no" ) ) ) {
+			throw new \Exception( '$future_events_only can be "yes", "no" or must not be set' );
 		}
 		$this->future_events_only = $future_events_only;
 	}

@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if( !defined( 'OPENCLUB_CSV_PLUGIN_DIR' ) ) {
+if ( ! defined( 'OPENCLUB_CSV_PLUGIN_DIR' ) ) {
 	define( 'OPENCLUB_CSV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
@@ -58,6 +58,13 @@ function openclub_importer_post_types_init() {
 add_action( 'init', 'openclub_importer_post_types_init' );
 
 
+/**
+ * Disable the wysiwyg editor for this the openclub-csv custom post type
+ *
+ * @param $default
+ *
+ * @return bool
+ */
 function openclub_importer_disable_wysiwyg( $default ) {
 
 	global $post;
@@ -74,13 +81,30 @@ function openclub_importer_disable_wysiwyg( $default ) {
 add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
 
 /**
- * Example usage:
- * [openclub_display_csv post_id=311 error_lines="yes" error_messages="yes"  display="safety_teams" group_by_field="Team"]
+ * Default shortcode display
  *
- * [openclub_display_csv post_id=1545 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Duty Date" filter="SSC_Empty_Duties" future_events_only="yes" limit="10"]
+ * Example usage:
+ *
+ * [openclub_display_csv post_id=102]
+ *
+ * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="safety_teams" group_by_field="Team"]
+ *
+ * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Duty Date" future_events_only="yes" limit="10"]
+ *
+ * 'future_events_only' will only be active if these two settings are also set:
+ *
+ *      group_by_field="Date"
+ *      display="grouped_table".
+ *
+ * The group_by_field must be of type Date.
+ *
+ * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Date" filter="SSC_Safety_Team" future_events_only="yes" limit="10"]
+ *
+ * filter="SSC_Safety_Team" will run each row through a filter the rows before display. In this case the filter is from another plugin, see an example filter here:
+ *
+ * openclub-csv/inc/class-null-filter.php
  *
  * @see \OpenClub\CSV_Display::get_config()
- *
  *
  */
 add_shortcode( 'openclub_display_csv', function ( $config ) {
@@ -89,6 +113,8 @@ add_shortcode( 'openclub_display_csv', function ( $config ) {
 		OpenClub\CSV_Display::get_config(),
 		$config
 	);
+
+	$config = openclub_csv_get_future_events_only_query_value( $config );
 
 	return OpenClub\CSV_Display::get_html( $config );
 } );
@@ -123,7 +149,6 @@ function openclub_csv_view_content_page( $content ) {
 		return OpenClub\CSV_Display::get_html(
 			OpenClub\CSV_Display::get_config( array( 'post_id' => $post->ID ) )
 		);
-
 	}
 
 	return $content;
@@ -160,3 +185,28 @@ function openclub_csv_log_cli( $message ) {
 		\WP_CLI::log( $message );
 	}
 }
+
+function openclub_add_custom_query_var( $vars ) {
+	$vars[] = "feo";
+
+	return $vars;
+}
+
+add_filter( 'query_vars', 'openclub_add_custom_query_var' );
+
+
+function openclub_csv_get_future_events_only_query_value( array $config ) {
+
+	$future_events_only = get_query_var( 'feo' );
+
+	if ( isset( $future_events_only ) &&
+	     in_array( (int) $future_events_only, array( 1, 2 ) )
+	) {
+		$config['future_events_only'] = ( 2 == $future_events_only ? "yes" : "no" );
+	}
+
+	return $config;
+}
+
+
+

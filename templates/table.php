@@ -1,5 +1,12 @@
 <!-- openclub-csv -->
 <?php
+
+if ( $data->config['display_config'] ) {
+	echo "<pre>";
+	print_r( $data->config );
+	echo "</pre>";
+}
+
 if ( 'yes' === $data->config['error_messages'] && $data->output_data->get_errors() ) : ?>
 	<div class='openclub_csv_error'>
 		<h3><?php esc_html_e( 'Errors', 'openclub_csv' ); ?></h3>
@@ -19,7 +26,7 @@ if ( 'yes' === $data->config['error_messages'] && $data->output_data->get_errors
 	<?php
 
 	foreach ( $data->output_data->get_rows() as $row ) {
-		if ( 0 === $row['error'] || ( 1 === $row['error']  && 'yes' === $data->config['error_lines'] ) ) {
+		if ( 0 === $row['error'] || ( 1 === $row['error'] && 'yes' === $data->config['error_lines'] ) ) {
 			echo "<tr  class='" . esc_attr( $row['class'] ) . "'>";
 			foreach ( $row['data'] as $fieldname => $values ) {
 				echo '<td>' . esc_html( $values['formatted_value'] ) . '</td>';
