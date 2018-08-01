@@ -1,28 +1,10 @@
-<!-- Openclub-programme -->
-<?php
-
-if ( $data->config['display_config'] ) {
-	echo "<pre>";
-	print_r( $data->config );
-	echo "</pre>";
-}
-
-if ( 'yes' === $data->config['error_messages'] && $data->output_data->get_errors() ) : ?>
-	<div class='openclub_csv_error'>
-		<h3><?php esc_html_e( 'Errors', 'openclub_csv' ); ?></h3>
-		<p class='openclub_csv'>
-			<?php foreach ( $data->output_data->get_errors() as $line_number => $error ) {
-				echo esc_html__( 'Line', 'openclub_csv' ) . ':' . esc_html( ( $line_number + 1 ) . ' ' . $error ) . '<br/>';
-			} ?>
-		</p>
-	</div>
-<?php endif;
+<!-- openclub-csv -->
+<?php echo \OpenClub\CSV_Display::template_output( $data, 'error_header' );
 
 /**
  * @see default template wp-content/plugins/openclub-csv/templates/future_past_toggle.php
  */
 echo \OpenClub\CSV_Display::get_past_future_toggle_links( $data->config ); ?>
-
 
 <table class='openclub_csv'>
 	<tr>
@@ -31,9 +13,6 @@ echo \OpenClub\CSV_Display::get_past_future_toggle_links( $data->config ); ?>
 	</tr>
 	<?php
 
-	/**
-	 * @todo smarter way to check for the lack of the group_by_field field. This will cause an endless loop
-	 */
 	if ( empty( $data->config['group_by_field'] ) ) {
 		echo '<p class="openclub_csv_error">Error: ' . esc_html__( 'No group by field', 'openclub_csv' ) .'</p>';
 		return;

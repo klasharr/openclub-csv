@@ -206,7 +206,7 @@ class CSV_Display {
 	 *
 	 * @return string
 	 */
-	public static function template_output( array $data, $template_file = 'default', $plugin_directory_path = null ) {
+	public static function template_output( $data, $template_file = 'default', $plugin_directory_path = null ) {
 
 		/**
 		 * @var $o \WP_Error | boolean

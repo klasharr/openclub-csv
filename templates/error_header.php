@@ -1,5 +1,11 @@
 <?php
 
+if ( $data->config['display_config'] ) {
+	echo "<pre>";
+	print_r( $data->config );
+	echo "</pre>";
+}
+
 if ( 'yes' === $data->config['error_messages'] && $data->output_data->get_errors() ) : ?>
 	<div class='openclub_csv_error'>
 		<h3><?php esc_html_e( 'Errors', 'openclub_csv' ); ?></h3>

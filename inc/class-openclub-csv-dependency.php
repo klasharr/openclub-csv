@@ -1,5 +1,7 @@
 <?php
 
+// Version 1.0
+
 if ( ! class_exists( 'Openclub_CSV_Dependency' ) ) {
 
 	class Openclub_CSV_Dependency {
