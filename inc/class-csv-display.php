@@ -173,14 +173,14 @@ class CSV_Display {
 
 			$data['current'] = sprintf( esc_html__( 'Showing future %s only', 'openclub_csv' ), $name );
 			$data['other']   = sprintf( '<a href="%s" rel="nofollow">%s</a>',
-				esc_url( get_the_permalink() . add_query_arg( 'feo', '1' ) ),
+				add_query_arg( 'feo', '1' ),
 				esc_html__( 'Show all', 'openclub_csv' )
 			);
 
 		} elseif ( $config['future_events_only'] == "no" ) {
 
 			$data['other']   = sprintf( '<a href="%s" rel="nofollow">%s</a>',
-				esc_url( get_the_permalink() . add_query_arg( 'feo', '2' ) ),
+				add_query_arg( 'feo', '2' ),
 				sprintf( esc_html__( 'Hide past %s', 'openclub_csv' ), $name )
 			);
 			$data['current'] = sprintf( esc_html__( 'Showing all %s', 'openclub_csv' ), $name );
