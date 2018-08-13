@@ -108,7 +108,9 @@ add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
  * @see \OpenClub\CSV_Display::get_config()
  *
  */
-add_shortcode( 'openclub_display_csv', function ( $config ) {
+add_shortcode( 'openclub_display_csv', 'get_openclub_display_csv_shortcode' );
+
+function get_openclub_display_csv_shortcode( $config ) {
 
 	$config = shortcode_atts(
 		OpenClub\CSV_Display::get_config(),
@@ -118,7 +120,7 @@ add_shortcode( 'openclub_display_csv', function ( $config ) {
 	$config = openclub_csv_get_future_events_only_query_value( $config );
 
 	return OpenClub\CSV_Display::get_html( $config );
-} );
+}
 
 add_action( 'wp_head', function () {
 	?>
@@ -208,6 +210,8 @@ function openclub_csv_get_future_events_only_query_value( array $config ) {
 
 	return $config;
 }
+
+
 
 
 

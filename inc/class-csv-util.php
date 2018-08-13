@@ -33,14 +33,21 @@ class CSV_Util {
 			);
 		}
 
-		if ( 'auto-draft' === $post->status ) {
+		if ( 'auto-draft' === $post->post_status ) {
 			throw new \Exception (
 				sprintf( '$post_id %d returns an openclub-csv post type auto-draft.', $post_id )
 			);
 		}
 
 		if ( $fields = get_post_meta( $post_id, 'fields', true ) ) {
+
 			$post->field_settings = parse_ini_string( $fields, true );
+
+			if( empty( $post->field_settings ) ) {
+				throw new \Exception (
+					sprintf( '$post_id %d has ini fields but they do not parse', $post_id )
+				);
+			}
 		} else {
 			throw new \Exception (
 				sprintf( '$post_id %d does not have a fields post meta set.', $post_id )

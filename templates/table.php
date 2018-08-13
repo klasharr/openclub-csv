@@ -1,6 +1,4 @@
-<!-- openclub-csv -->
 <?php echo \OpenClub\CSV_Display::template_output( $data, 'error_header' ); ?>
-
 <table class='openclub_csv'>
 	<tr>
 		<th>
@@ -10,9 +8,9 @@
 
 	foreach ( $data->output_data->get_rows() as $row ) {
 		if ( 0 === $row['error'] || ( 1 === $row['error'] && 'yes' === $data->config['error_lines'] ) ) {
-			echo "<tr  class='" . esc_attr( $row['class'] ) . "'>";
+			echo "<tr  class='" . esc_attr( $row['class'] ) . "'>\n";
 			foreach ( $row['data'] as $fieldname => $values ) {
-				echo '<td>' . esc_html( $values['formatted_value'] ) . '</td>';
+				echo "\t<td>" . esc_html( $values['formatted_value'] ) . "</td>\n";
 			}
 			echo "</tr>\n";
 		}
