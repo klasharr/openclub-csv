@@ -103,8 +103,14 @@ class CSVDisplayTest extends Base {
 			'invalid_string_option',
 			'validation_failure',
 			'valid_content',
-			'invalid_heading_column'
+			'invalid_heading_column',
+			'invalid_int',
+			'valid_date_conversion',
+			'invalid_date',
+			'invalid_output_date_format',
+			'invalid_input_date_format',
 		);
+
 
 		foreach ( $test_data_samples as $letter ) {
 

@@ -26,7 +26,9 @@ class IntField extends Base_Field implements Field {
 
 	private function is_valid_int( $value ) {
 
-		return is_numeric( $value ) ? true : false;
+		if(! empty( $value ) && ! is_numeric( $value ) ) {
+			throw new Field_Exception( 'Field must be an integer.' );
+		}
 	}
 
 }

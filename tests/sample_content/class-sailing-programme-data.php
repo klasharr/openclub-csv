@@ -15,6 +15,12 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 			'invalid_heading_column'         => $this->test_data_invalid_heading_column(),
 			'csv_row_column_mismatch' => $this->test_data_csv_row_column_mismatch(),
 			'valid_shortcode_table_template' => $this->test_f_data(),
+			'invalid_int'           => $this->test_data_invalid_integer(),
+			'valid_date_conversion'   => $this->test_data_date_format_conversion_valid(),
+			'invalid_date'   => $this->test_data_invalid_date(),
+			'invalid_output_date_format'   => $this->test_data_invalid_output_date_format(),
+			'invalid_input_date_format'   => $this->test_data_invalid_input_date_format(),
+
 		);
 	}
 
@@ -384,5 +390,195 @@ FIELDS;
 		return $out;
 
 	}
+
+	function test_data_invalid_integer(){
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Day,Number
+Sat,1
+Sat,s
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+2 Field validation error line: 1 Field must be an integer.
+Day,Number
+Sat,1
+Sat,s
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Day]
+type = string
+
+[Number]
+type = int
+
+FIELDS;
+
+		return $out;
+
+
+	}
+
+	function test_data_date_format_conversion_valid() {
+
+		// d	Day of the month, 2 digits with leading zeros	01 to 31
+		// j	Day of the month without leading zeros	1 to 31
+		// n	Numeric representation of a month, without leading zeros	1 through 12
+		// m	Numeric representation of a month, with leading zeros	01 through 12
+		// Y	A full numeric representation of a year, 4 digits	Examples: 1999 or 2003
+		// y	A two digit representation of a year	Examples: 99 or 03
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Date
+23/3/18
+3/12/18
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+Date
+23/03/2018
+03/12/2018
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Date]
+type = date
+input_format = j/n/y
+output_format = d/m/Y
+
+FIELDS;
+
+		return $out;
+
+	}
+
+	function test_data_invalid_date() {
+
+
+		// d	Day of the month, 2 digits with leading zeros	01 to 31
+		// j	Day of the month without leading zeros	1 to 31
+		// n	Numeric representation of a month, without leading zeros	1 through 12
+		// m	Numeric representation of a month, with leading zeros	01 through 12
+		// Y	A full numeric representation of a year, 4 digits	Examples: 1999 or 2003
+		// y	A two digit representation of a year	Examples: 99 or 03
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Date
+23/3/18
+3/17/18
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+<p class="openclub_csv_error">Error: : [Warning] Date field validation failed, parsed date is invalid:3/17/18</p>
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Date]
+type = date
+input_format = j/n/y
+output_format = d/m/Y
+
+FIELDS;
+
+		return $out;
+	}
+
+
+	function test_data_invalid_output_date_format() {
+
+
+		// d	Day of the month, 2 digits with leading zeros	01 to 31
+		// j	Day of the month without leading zeros	1 to 31
+		// n	Numeric representation of a month, without leading zeros	1 through 12
+		// m	Numeric representation of a month, with leading zeros	01 through 12
+		// Y	A full numeric representation of a year, 4 digits	Examples: 1999 or 2003
+		// y	A two digit representation of a year	Examples: 99 or 03
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Date
+23/3/18
+3/17/18
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+<p class="openclub_csv_error">Error: : Invalid output_format specified</p>
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Date]
+type = date
+input_format = j/n/y
+output_format = d/m/V
+
+FIELDS;
+
+		return $out;
+	}
+
+
+
+	function test_data_invalid_input_date_format() {
+
+
+		// d	Day of the month, 2 digits with leading zeros	01 to 31
+		// j	Day of the month without leading zeros	1 to 31
+		// n	Numeric representation of a month, without leading zeros	1 through 12
+		// m	Numeric representation of a month, with leading zeros	01 through 12
+		// Y	A full numeric representation of a year, 4 digits	Examples: 1999 or 2003
+		// y	A two digit representation of a year	Examples: 99 or 03
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Date
+23/3/18
+3/17/18
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+<p class="openclub_csv_error">Error: : Invalid input_format specified</p>
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Date]
+type = date
+input_format = j/n/V
+output_format = d/m/y
+
+FIELDS;
+
+		return $out;
+	}
+
+
 
 }
