@@ -1,5 +1,9 @@
 # openclub-csv
 
+
+[![Build Status](https://travis-ci.org/klasharr/openclub-csv.svg?branch=master)](https://travis-ci.org/klasharr/openclub-csv)
+
+
 A WordPress plugin which allows you to use CSV data as a data source and display it on your website.
 
  - store CSV data in a new custom post type and use this as a data source
