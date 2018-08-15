@@ -20,12 +20,25 @@ class CSV_Display {
 	 */
 	public static function get_csv_row( array $row, $formatted_value = true ) {
 
+		if( !isset($row['data'])) {
+			throw new \Exception('$row does not have any data.');
+		}
+
 		if ( empty( $row['data'] ) ) {
 			return __( 'empty', 'openclub_csv' );
 		}
 
 		$out = array();
 		foreach ( $row['data'] as $field_name => $values ) {
+
+			if( !isset($values['formatted_value'])) {
+				throw new \Exception('The key formatted_value does not exist.');
+			}
+
+			if( !isset($values['value'])) {
+				throw new \Exception('The key value does not exist.');
+			}
+
 			if ( $formatted_value ) {
 				$out[] = $values['formatted_value'];
 			} else {

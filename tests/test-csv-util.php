@@ -9,10 +9,9 @@
  * @package Openclub_Csv
  */
 
-class CSVUtilTest extends WP_UnitTestCase {
+class CSV_Util_Test extends WP_UnitTestCase {
 
 	public static function wpSetUpBeforeClass( WP_UnitTest_Factory $factory ) {
-
 	}
 
 	function test_assert_get_csv_post_with_non_int_id_will_throw_exception() {
@@ -91,7 +90,7 @@ class CSVUtilTest extends WP_UnitTestCase {
 			)
 		);
 
-		$field_values = self::get_fields();
+		$field_values = $this->get_fields();
 
 		update_post_meta( $post->ID, 'fields', $field_values );
 		$post->field_settings = parse_ini_string( $field_values, true );
@@ -100,7 +99,7 @@ class CSVUtilTest extends WP_UnitTestCase {
 	}
 
 
-	public static function get_fields() {
+	private function get_fields() {
 
 		return  <<<FIELDS
 [Date]
