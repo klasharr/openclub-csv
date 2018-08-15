@@ -9,16 +9,16 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 	function set_input_and_output_samples() {
 
 		$this->input_and_output_samples = array(
-			'a'         => $this->test_a_data(),
-			'b'         => $this->test_b_data(),
-			'c'         => $this->test_c_data(),
-			'd'         => $this->test_d_data(),
-			'e'         => $this->test_e_data(),
-			'shortcode' => $this->test_f_data(),
+			'invalid_string_option' => $this->test_data_invalid_string_option(),
+			'validation_failure'    => $this->test_data_validation_failure(),
+			'valid_content'         => $this->test_data_valid_content(),
+			'invalid_heading_column'         => $this->test_data_invalid_heading_column(),
+			'csv_row_column_mismatch' => $this->test_data_csv_row_column_mismatch(),
+			'valid_shortcode_table_template' => $this->test_f_data(),
 		);
 	}
 
-	function test_a_data() {
+	function test_data_invalid_string_option() {
 
 		$out = array();
 
@@ -80,7 +80,7 @@ FIELDS;
 	}
 
 
-	function test_b_data() {
+	function test_data_validation_failure() {
 
 		$out = array();
 
@@ -142,7 +142,7 @@ FIELDS;
 
 	}
 
-	function test_c_data() {
+	function test_data_valid_content() {
 
 		$out = array();
 
@@ -204,7 +204,7 @@ FIELDS;
 	}
 
 
-	function test_d_data() {
+	function test_data_invalid_heading_column() {
 
 		$out = array();
 
@@ -249,7 +249,7 @@ FIELDS;
 	 *
 	 * @see \CSVDisplayTest::test_post_content_with_column_mismatch_outputs_correct_data_to_csv_rows_template_file()
 	 */
-	function test_e_data() {
+	function test_data_csv_row_column_mismatch() {
 
 		$out = array();
 

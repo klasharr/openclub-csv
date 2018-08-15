@@ -99,7 +99,12 @@ class CSVDisplayTest extends Base {
 
 	function test_post_content_outputs_correct_data_to_csv_rows_template_file() {
 
-		$test_data_samples = array( 'a', 'b', 'c', 'd' );
+		$test_data_samples = array(
+			'invalid_string_option',
+			'validation_failure',
+			'valid_content',
+			'invalid_heading_column'
+		);
 
 		foreach ( $test_data_samples as $letter ) {
 
@@ -124,7 +129,7 @@ class CSVDisplayTest extends Base {
 	 */
 	function test_post_content_with_column_mismatch_outputs_correct_data_to_csv_rows_template_file() {
 
-		$test_data = new Sailing_Programme_Data( 'e' );
+		$test_data = new Sailing_Programme_Data( 'csv_row_column_mismatch' );
 		$post      = $this->get_test_post_object( $test_data );
 
 		$config            = $test_data->get( 'config' );

@@ -35,10 +35,18 @@ class OpenClubCSVTest extends Base {
 
 		add_shortcode( 'openclub_display_csv', 'get_openclub_display_csv_shortcode' );
 
-		$test_data = new Sailing_Programme_Data( 'shortcode' );
+		$test_data = new Sailing_Programme_Data( 'valid_shortcode_table_template' );
 		$post      = $this->get_test_post_object( $test_data );
 
 		$this->assertEquals( do_shortcode( '[openclub_display_csv post_id=' . $post->ID . ']' ), $test_data->get( 'html_output' ) );
+	}
+
+
+	function test_adding_robots_override_appends_disallow() {
+
+		$output = 'foo';
+		$this->assertEquals( openclub_csv_robots_override( $output ), "fooDisallow: /openclub_csv/\n" );
+
 	}
 
 

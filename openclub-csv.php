@@ -163,7 +163,6 @@ add_filter( 'the_content', 'openclub_csv_view_content_page' );
 function openclub_csv_robots_override( $output ) {
 
 	$output .= "Disallow: /openclub_csv/\n";
-
 	return $output;
 }
 
