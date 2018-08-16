@@ -112,9 +112,9 @@ class CSVDisplayTest extends Base {
 		);
 
 
-		foreach ( $test_data_samples as $letter ) {
+		foreach ( $test_data_samples as $key ) {
 
-			$test_data = new Sailing_Programme_Data( $letter );
+			$test_data = new Sailing_Programme_Data( $key );
 
 			$post = $this->get_test_post_object( $test_data );
 
