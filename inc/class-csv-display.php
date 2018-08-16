@@ -110,6 +110,8 @@ class CSV_Display {
 	}
 
 	/**
+	 * @todo move this to the input class.
+	 *
 	 * @param array $config
 	 *
 	 * post_id              - the post of type openclub-csv
@@ -143,7 +145,7 @@ class CSV_Display {
 			$config
 		);
 
-		// @todo, currently this will affect everything.
+		// @todo, currently this will affect everything, figure out a way around it, or leave it.
 		//apply_filters( 'openclub_csv_get_config', $config );
 
 		return $config;

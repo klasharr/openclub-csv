@@ -36,4 +36,22 @@ class Base extends \WP_UnitTestCase {
 
 	}
 
+	protected function get_default_config() {
+
+		return array(
+			'post_id'                 => null,
+			'error_messages'          => "yes",
+			'error_lines'             => "yes",
+			'future_events_only'      => null,
+			'display'                 => 'table', // default template file table.php
+			'fields'                  => null,
+			'group_by_field'          => null,
+			'context'                 => null,
+			'limit'                   => false,
+			'filter'                  => null,
+			'show_future_past_toggle' => null,
+			'display_config'          => false,
+		);
+	}
+
 }

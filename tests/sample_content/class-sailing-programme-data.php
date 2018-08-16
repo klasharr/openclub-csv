@@ -24,6 +24,13 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 		);
 	}
 
+	/**
+	 * @param $array
+	 */
+	function set( $key, $value ) {
+		$this->input_and_output_samples[ $key ] = $value;
+	}
+
 	function test_data_invalid_string_option() {
 
 		$out = array();
