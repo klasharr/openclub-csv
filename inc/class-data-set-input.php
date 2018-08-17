@@ -64,7 +64,7 @@ class Data_Set_Input {
 
 		$this->post_id            = $config['post_id'];
 		$this->post               = CSV_Util::get_csv_post( $this->post_id );
-		$this->raw_display_fields = $this->post->field_settings;
+		//$this->raw_display_fields = $this->post->field_settings;
 
 		if ( ! empty( $config['group_by_field'] ) ) {
 			$this->set_group_by_field( $config['group_by_field'] );
@@ -87,9 +87,11 @@ class Data_Set_Input {
 
 		if ( ! empty( $config['filter'] ) ) {
 
+			// This needs to be here rather than in the factory as this is simplest for plugins
+			// extending this one.
 			$class = "\OpenClub\\" . $config['filter'];
 			if ( ! class_exists( $class ) ) {
-				throw new \Exception( $class . ' does not exist, check the value passed in $config[ \'filter\' ]' );
+				throw new \Exception( 'Filter class ' . $class . ' does not exist, check the value passed in $config[ \'filter\' ]' );
 			}
 
 			$this->set_filter( new $class() );
@@ -131,13 +133,21 @@ class Data_Set_Input {
 	public function set_group_by_field( $group_by_field ) {
 
 		if ( empty( $group_by_field ) ) {
-			openclub_csv_log_cli( 'set_group_by_field() called with an empty value' );
+			throw new \Exception( 'set_group_by_field() called with an empty value' );
 
 			return;
 		}
 
 		if ( empty( trim( $group_by_field ) ) ) {
 			throw new \Exception( 'set_group_by_field called with invalid value, likely an empty space' );
+		}
+
+		if( !array_key_exists( $group_by_field, $this->post->field_settings ) ) {
+			throw new \Exception( 'set_group_by_field called with invalid field.' );
+		}
+
+		if( $this->post->field_settings[ $group_by_field ][ 'type' ] != 'date' ) {
+			throw new \Exception( 'group_by_field can currently only be of type date, change the fields setting or remove the group by.' );
 		}
 
 		$this->group_by_field = $group_by_field;
@@ -162,8 +172,8 @@ class Data_Set_Input {
 		$fields = explode( ',', $overridden_fields );
 
 		foreach ( $fields as $field_name ) {
-			if ( ! array_key_exists( $field_name, $this->raw_display_fields ) ) {
-				throw new \Exception( 'Field override: ' . $field_name . ' is invalid. Check the shortcode' );
+			if ( ! array_key_exists( $field_name, $this->post->field_settings ) ) {
+				throw new \Exception( 'Field override error: field ' . $field_name . ' does not exist. Check the config.' );
 			}
 		}
 		$this->overridden_fields = $overridden_fields;
@@ -173,6 +183,11 @@ class Data_Set_Input {
 	 * @return array
 	 */
 	public function get_overridden_fields() {
+
+		if( empty( $this->overridden_fields ) ) {
+			return array();
+		}
+
 		return explode( ',', $this->overridden_fields );
 	}
 
@@ -202,19 +217,16 @@ class Data_Set_Input {
 	}
 
 	/**
-	 * @param mixed int|bool $limit
+	 * @param mixed int|null $limit
 	 */
 	public function set_limit( $limit ) {
 
-		if ( $limit === false ) {
+		if ( $limit === null ) {
 			return;
 		}
 
-		if ( (int) $limit != $limit ) {
-			throw new \Exception( '$limit must be passed as an integer' );
-		}
 		if ( $limit <= 0 ) {
-			throw new \Exception( '$limit must be greater than zero' );
+			throw new \Exception( '$limit must be an integer and greater than zero.' );
 		}
 
 		$this->limit = (int) $limit;
@@ -228,6 +240,7 @@ class Data_Set_Input {
 		if ( 'yes' === $this->future_events_only ) {
 			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -238,8 +251,23 @@ class Data_Set_Input {
 	public function set_future_events_only( $future_events_only ) {
 
 		if ( ! empty( $future_events_only ) && ! in_array( $future_events_only, array( "yes", "no" ) ) ) {
-			throw new \Exception( '$future_events_only can be "yes", "no" or must not be set' );
+			throw new \Exception( '$future_events_only can be "yes", "no" or must not be set.' );
 		}
 		$this->future_events_only = $future_events_only;
+	}
+
+	public function get_set_config() {
+
+		return array(
+			'post' => $this->get_post(),
+			'post_id' => $this->get_post_id(),
+			'filter' => $this->get_filter(),
+			'group_by_field' => $this->get_group_by_field(),
+			'overridden_fields' => $this->get_overridden_fields(),
+			'context' => $this->get_context(),
+			'limit' => $this->get_limit(),
+			'future_events_only' => $this->is_show_future_events_only(),
+ 		);
+
 	}
 }

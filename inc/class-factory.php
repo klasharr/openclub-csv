@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-field-manager.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-null-filter.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-has-description-filter.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-dto.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-parser.php' );
 require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-data-set.php' );

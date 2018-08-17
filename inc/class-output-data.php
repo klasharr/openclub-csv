@@ -96,7 +96,7 @@ class Output_Data {
 		$errors         = $this->get_errors();
 		$group_by_field = null;
 
-		$limit       = false;
+		$limit       = null;
 		$line_number = 0;
 
 		$field_names = $this->field_manager->get_display_field_names();
@@ -115,9 +115,12 @@ class Output_Data {
 
 			foreach ( $this->data_set->get_rows() as $grouped_field_value => $rows ) {
 
+				// @todo is this the right place for this check and data alteration?
+				
 				if ( 'date' === $this->field_manager->get_field_type( $this->input->get_group_by_field() ) &&
 				     ( $this->input->is_show_future_events_only() && $grouped_field_value < time() )
 				) {
+
 					continue;
 				}
 

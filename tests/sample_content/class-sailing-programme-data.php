@@ -20,7 +20,8 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 			'invalid_date'   => $this->test_data_invalid_date(),
 			'invalid_output_date_format'   => $this->test_data_invalid_output_date_format(),
 			'invalid_input_date_format'   => $this->test_data_invalid_input_date_format(),
-
+			'active_filter_will_filter_content' => $this->test_data_active_filter_will_filter_content(),
+			'date_field_not_of_type_date' => $this->test_data_date_field_not_type_date(),
 		);
 	}
 
@@ -588,4 +589,76 @@ FIELDS;
 
 
 
+	function test_data_active_filter_will_filter_content() {
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Description,Event
+a,b
+,b
+a,b
+,f
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+Description,Event
+a,b
+a,b
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+			'filter'  => 'Empty_Description',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Description]
+type = string
+
+[Event]
+type = string
+
+FIELDS;
+
+		return $out;
+	}
+
+	function test_data_date_field_not_type_date() {
+
+
+			// d	Day of the month, 2 digits with leading zeros	01 to 31
+			// j	Day of the month without leading zeros	1 to 31
+			// n	Numeric representation of a month, without leading zeros	1 through 12
+			// m	Numeric representation of a month, with leading zeros	01 through 12
+			// Y	A full numeric representation of a year, 4 digits	Examples: 1999 or 2003
+			// y	A two digit representation of a year	Examples: 99 or 03
+
+			$out = array();
+
+			$out['post_content'] = <<<CONTENT
+Date
+23/3/18
+3/17/18
+CONTENT;
+
+			$out['html_output'] = <<<ROWS
+
+ROWS;
+
+			$out['config'] = array(
+				'display' => 'csv_rows',
+				'group_by_field' => 'Date',
+			);
+
+			$out['fields'] = <<<FIELDS
+[Date]
+type = string
+input_format = j/n/V
+output_format = d/m/y
+
+FIELDS;
+
+			return $out;
+		}
 }

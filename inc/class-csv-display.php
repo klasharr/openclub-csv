@@ -20,12 +20,12 @@ class CSV_Display {
 	 */
 	public static function get_csv_row( array $row, $formatted_value = true ) {
 
-		if( !isset($row['data'])) {
-			throw new \Exception('$row does not have any data.');
+		if( !isset( $row['data'] ) ) {
+			throw new \Exception('$row does not have any data, the group_by_field will not work for a non grouped display template.');
 		}
 
 		if ( empty( $row['data'] ) ) {
-			return __( 'empty', 'openclub_csv' );
+			return __( 'empty row', 'openclub_csv' );
 		}
 
 		$out = array();
@@ -137,10 +137,10 @@ class CSV_Display {
 				'fields'                  => null,
 				'group_by_field'          => null,
 				'context'                 => null,
-				'limit'                   => false,
+				'limit'                   => null,
 				'filter'                  => null,
 				'show_future_past_toggle' => null,
-				'display_config'          => false,
+				'display_config'          => null,
 			),
 			$config
 		);
