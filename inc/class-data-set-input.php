@@ -43,9 +43,14 @@ class Data_Set_Input {
 
 
 	/**
-	 * @var bool
+	 * @var int
 	 */
-	private $future_events_only;
+	private $future_items_only;
+
+	/**
+	 * @var array
+	 */
+	private $config;
 
 	/**
 	 * @param $post_id int
@@ -81,8 +86,53 @@ class Data_Set_Input {
 			$this->set_limit( $config['limit'] );
 		}
 
-		if ( ! empty( $config['future_events_only'] ) ) {
-			$this->set_future_events_only( $config['future_events_only'] );
+
+		if( !empty( $config['error_lines'] ) && !in_array($config['error_lines'], array( 'yes', 'no', 1, 0 ) ) ) {
+			throw new \Exception( 'error_lines must be yes, no, 1, 0 or not set. The default is yes.' );
+		}
+
+		if( !empty( $config['error_messages'] ) && !in_array($config['error_messages'], array( 'yes', 'no', 1, 0 ) ) ) {
+
+			throw new \Exception( 'error_messages must be yes, no, 1 or 0 or not set. The default is yes.' );
+		}
+
+		// @todo tidy up
+		if( in_array( $config['error_messages'], array( 'yes', 1 ) ) ) {
+			$config['error_messages'] = true;
+		} elseif( in_array( $config['error_messages'], array( 'no', 0 ) )) {
+			$config['error_messages'] = false;
+		}
+
+		if( in_array( $config['error_lines'], array( 'yes', 1 ) ) ) {
+			$config['error_lines'] = true;
+		} elseif( in_array( $config['error_lines'], array( 'no', 0 ) )) {
+			$config['error_lines'] = false;
+		}
+
+		if( in_array( $config['display_config'], array( 'yes', 1 ) ) ) {
+			$config['display_config'] = true;
+		} elseif( in_array( $config['display_config'], array( 'no', 0 ) )) {
+			$config['display_config'] = false;
+		}
+
+		if ( ! empty( $config['future_items_only'] ) && ! in_array( $config['future_items_only'], array( "yes", "no", 1, 2 ) ) ) {
+			throw new \Exception( '$config[\'future_items_only\'] can be "yes", "no", 1, 2 or must not be set.' );
+		}
+
+		// @todo tidy up
+		if ( ! empty( $config['future_items_only'] ) ) {
+			switch( $config['future_items_only'] ) {
+				case 2:
+				case 'yes':
+					$config['future_items_only'] = true;
+					break;
+				case 1:
+				case 'no':
+					$config['future_items_only'] = false;
+					break;
+			}
+		} else {
+			$config['future_items_only'] = false;
 		}
 
 		if ( ! empty( $config['filter'] ) ) {
@@ -96,7 +146,21 @@ class Data_Set_Input {
 
 			$this->set_filter( new $class() );
 		}
+
+		$this->config = $config;
+
 	}
+
+
+	public function get_config( $key = null ) {
+
+		if( !empty( $key ) ) {
+			return $this->config[ $key ];
+		}
+
+		return $this->config;
+	}
+
 
 	/**
 	 * @param Filter $filter
@@ -145,11 +209,7 @@ class Data_Set_Input {
 		if( !array_key_exists( $group_by_field, $this->post->field_settings ) ) {
 			throw new \Exception( 'set_group_by_field called with invalid field.' );
 		}
-
-		if( $this->post->field_settings[ $group_by_field ][ 'type' ] != 'date' ) {
-			throw new \Exception( 'group_by_field can currently only be of type date, change the fields setting or remove the group by.' );
-		}
-
+		
 		$this->group_by_field = $group_by_field;
 	}
 
@@ -235,26 +295,11 @@ class Data_Set_Input {
 	/**
 	 * @return bool
 	 */
-	public function is_show_future_events_only() {
+	public function is_show_future_items_only() {
 
-		if ( 'yes' === $this->future_events_only ) {
-			return true;
-		}
-		return false;
+		return $this->config[ 'future_items_only' ];
 	}
 
-	/**
-	 * @param $future_events_only int
-	 *
-	 * @throws \Exception
-	 */
-	public function set_future_events_only( $future_events_only ) {
-
-		if ( ! empty( $future_events_only ) && ! in_array( $future_events_only, array( "yes", "no" ) ) ) {
-			throw new \Exception( '$future_events_only can be "yes", "no" or must not be set.' );
-		}
-		$this->future_events_only = $future_events_only;
-	}
 
 	public function get_set_config() {
 
@@ -266,7 +311,9 @@ class Data_Set_Input {
 			'overridden_fields' => $this->get_overridden_fields(),
 			'context' => $this->get_context(),
 			'limit' => $this->get_limit(),
-			'future_events_only' => $this->is_show_future_events_only(),
+			'future_items_only' => $this->config[ 'future_items_only' ],
+			'error_messages' => $this->config[ 'error_messages' ],
+			'error_lines' => $this->config[ 'error_lines' ],
  		);
 
 	}

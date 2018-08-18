@@ -125,6 +125,9 @@ class CSVDisplayTest extends Base {
 				\OpenClub\CSV_Display::get_config( $config )
 			);
 
+			//echo "\n".$s ."\n";
+			//echo "\n" . $test_data->get( 'html_output' ) . "\n";
+
 			$this->assertSame( $test_data->get( 'html_output' ), trim( $s ) );
 		}
 
@@ -165,4 +168,24 @@ class CSVDisplayTest extends Base {
 			trim( $s ) );
 
 	}
+
+	function test_grouped_rows_displays_correctly() {
+
+		$test_data = new Sailing_Programme_Data( 'test_data_grouped_rows' );
+		$post      = $this->get_test_post_object( $test_data );
+
+		$config            = $test_data->get( 'config' );
+		$config['post_id'] = $post->ID;
+
+		$s = \OpenClub\CSV_Display::get_html(
+			\OpenClub\CSV_Display::get_config( $config )
+		);
+
+		$this->assertSame( sprintf(
+			$test_data->get( 'html_output' ), $post->ID ),
+			trim( $s ) );
+
+	}
+
+
 }

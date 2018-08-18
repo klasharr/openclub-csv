@@ -126,15 +126,15 @@ class CSVDataSetInput extends Base {
 
 	}
 
-	public function test_constructor_setting_future_events_only_with_invalid_value_will_throw_exception() {
+	public function test_constructor_setting_future_items_only_with_invalid_value_will_throw_exception() {
 
 		$post = $this->get_valid_post();
 
 		$config            = $this->get_default_config();
 		$config['post_id'] = $post->ID;
 
-		$config['future_events_only'] = 's';
-		$this->setExpectedException( 'Exception', '$future_events_only can be "yes", "no" or must not be set.' );
+		$config['future_items_only'] = 's';
+		$this->setExpectedException( 'Exception', '$config[\'future_items_only\'] can be "yes", "no", 1, 2 or must not be set.' );
 		$o = new \OpenClub\Data_Set_Input( $config );
 
 	}
@@ -170,7 +170,9 @@ class CSVDataSetInput extends Base {
 			'overridden_fields'  => array(),
 			'context'            => null,
 			'limit'              => null,
-			'future_events_only' => null,
+			'future_items_only' => false,
+			'error_messages' => 1,
+			'error_lines' => 1,
 		);
 
 		$this->assertEquals( $set_config, $test_config_data );
@@ -186,7 +188,9 @@ class CSVDataSetInput extends Base {
 		$config['fields']             = 'Fare,Event,Date';
 		$config['context']            = 'my_context';
 		$config['limit']              = 10;
-		$config['future_events_only'] = 'yes';
+		$config['future_items_only']  = 'yes';
+		$config['error_messages']     = 'yes';
+		$config['error_lines']        = 'yes';
 		$o                            = new \OpenClub\Data_Set_Input( $config );
 
 		$set_config = $o->get_set_config();
@@ -199,7 +203,9 @@ class CSVDataSetInput extends Base {
 			'overridden_fields'  => explode( ',', 'Fare,Event,Date' ),
 			'context'            => 'my_context',
 			'limit'              => 10,
-			'future_events_only' => true,
+			'error_messages'     => 1,
+			'error_lines'        => 1,
+			'future_items_only' => true,
 		);
 
 		$this->assertEquals( $set_config, $test_config_data );
@@ -291,7 +297,7 @@ class CSVDataSetInput extends Base {
 		$this->assertFalse( $o->has_group_by_field() );
 	}
 
-	public function test_is_show_future_events_only_returns_true_if_set(){
+	public function test_is_show_future_items_only_returns_true_if_set(){
 
 		$post = $this->get_valid_post();
 
@@ -299,15 +305,15 @@ class CSVDataSetInput extends Base {
 			$this->get_default_config(
 				array(
 					'post_id' => $post->ID,
-					'future_events_only' => 'yes'
+					'future_items_only' => 'yes'
 				)
 			)
 		);
 
-		$this->assertTrue( $o->is_show_future_events_only() );
+		$this->assertTrue( $o->is_show_future_items_only() );
 	}
 
-	public function test_is_show_future_events_only_returns_false_if_not_set(){
+	public function test_is_show_future_items_only_returns_false_if_not_set(){
 
 		$post = $this->get_valid_post();
 
@@ -318,22 +324,41 @@ class CSVDataSetInput extends Base {
 				)
 			)
 		);
-
-		$this->assertFalse( $o->is_show_future_events_only() );
+		$this->assertFalse( $o->is_show_future_items_only() );
 	}
 
-	public function test_grouping_on_non_date_type_field_throws_exception(){
+	public function test_error_lines_variations_are_set_properly_to_the_config(){
 
-		$test_data = new Sailing_Programme_Data( 'date_field_not_of_type_date' );
-		$post      = $this->get_test_post_object( $test_data );
+		$variations = array(
+			//'yes' => true,
+			//1 => true,
+			//'no' => false,
+			0 => false,
+		);
 
-		$config            = $test_data->get( 'config' );
-		$config['post_id'] = $post->ID;
+		$post = $this->get_valid_post();
 
-		$this->setExpectedException( 'Exception', 'group_by_field can currently only be of type date, change the fields setting or remove the group by.' );
+		foreach( $variations as $key => $value ) {
 
-		$o = new \OpenClub\Data_Set_Input( $config );
+			echo $key.$value;
+
+			$o = new \OpenClub\Data_Set_Input(
+				$this->get_default_config(
+					array(
+						'post_id' => $post->ID,
+						'error_lines' => $key,
+					)
+				)
+			);
+
+			var_dump($key);
+
+			//var_dump($o->get_config( 'error_lines' ));
+			$this->assertEquals( $value, $o->get_config( 'error_lines' ) );
+
+		}
 
 	}
+
 
 }

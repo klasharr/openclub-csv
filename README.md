@@ -98,7 +98,7 @@ Overriding the display field defaults, this will display the columns Date and Ev
 
 Grouping on the date field and filtering for future events only.
 ```
-[openclub_display_csv post_id=1361 group_by_field="Date" future_events_only="yes"  display="grouped_date_table" limit="3"]
+[openclub_display_csv post_id=1361 group_by_field="Date" future_items_only="yes"  display="grouped_date_table" limit="3"]
 ```
 
 

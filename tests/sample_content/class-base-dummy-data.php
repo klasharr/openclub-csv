@@ -27,7 +27,7 @@ abstract class Base_Dummy_Data {
 		}
 
 		if( empty( $this->input_and_output_samples[ $test_data_key ] ) ) {
-			throw new \Exception( 'Data key ' . $test_data_key . ' has not been set' );
+			throw new \Exception( 'Data key ' . $test_data_key . ' has not been set. See \Sailing_Programme_Data::set_input_and_output_samples()' );
 		}
 
 	}

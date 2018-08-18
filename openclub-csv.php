@@ -90,16 +90,16 @@ add_filter( 'user_can_richedit', 'openclub_importer_disable_wysiwyg' );
  *
  * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="safety_teams" group_by_field="Team"]
  *
- * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Duty Date" future_events_only="yes" limit="10"]
+ * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Duty Date" future_items_only="yes" limit="10"]
  *
- * 'future_events_only' will only be active if these two settings are also set:
+ * 'future_items_only' will only be active if these two settings are also set:
  *
  *      group_by_field="Date"
  *      display="grouped_table".
  *
  * The group_by_field must be of type Date.
  *
- * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Date" filter="SSC_Safety_Team" future_events_only="yes" limit="10"]
+ * [openclub_display_csv post_id=102 error_lines="yes" error_messages="yes" display="grouped_table" group_by_field="Date" filter="SSC_Safety_Team" future_items_only="yes" limit="10"]
  *
  * filter="SSC_Safety_Team" will run each row through a filter the rows before display. In this case the filter is from another plugin, see an example filter here:
  *
@@ -117,7 +117,7 @@ function get_openclub_display_csv_shortcode( $config ) {
 		$config
 	);
 
-	$config = openclub_csv_get_future_events_only_query_value( $config );
+	$config = openclub_csv_get_future_items_only_query_value( $config );
 
 	return OpenClub\CSV_Display::get_html( $config );
 }
@@ -189,7 +189,7 @@ function openclub_csv_log_cli( $message ) {
 }
 
 function openclub_add_custom_query_var( $vars ) {
-	$vars[] = "feo";
+	$vars[] = "fio";
 
 	return $vars;
 }
@@ -197,14 +197,14 @@ function openclub_add_custom_query_var( $vars ) {
 add_filter( 'query_vars', 'openclub_add_custom_query_var' );
 
 
-function openclub_csv_get_future_events_only_query_value( array $config ) {
+function openclub_csv_get_future_items_only_query_value( array $config ) {
 
-	$future_events_only = get_query_var( 'feo' );
+	$future_items_only = get_query_var( 'fio' );
 
-	if ( isset( $future_events_only ) &&
-	     in_array( (int) $future_events_only, array( 1, 2 ) )
+	if ( isset( $future_items_only ) &&
+	     in_array( (int) $future_items_only, array( 1, 2 ) )
 	) {
-		$config['future_events_only'] = ( 2 == $future_events_only ? "yes" : "no" );
+		$config['future_items_only'] = ( 2 == $future_items_only ? "yes" : "no" );
 	}
 
 	return $config;

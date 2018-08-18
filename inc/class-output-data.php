@@ -118,7 +118,7 @@ class Output_Data {
 				// @todo is this the right place for this check and data alteration?
 				
 				if ( 'date' === $this->field_manager->get_field_type( $this->input->get_group_by_field() ) &&
-				     ( $this->input->is_show_future_events_only() && $grouped_field_value < time() )
+				     ( $this->input->is_show_future_items_only() == 2 && $grouped_field_value < time() )
 				) {
 
 					continue;
@@ -143,6 +143,7 @@ class Output_Data {
 
 		} else {
 
+			// $todo we could add date filtering for future events here too.
 			/** @var DTO $dto */
 			foreach ( $this->data_set->get_rows() as $dto ) {
 

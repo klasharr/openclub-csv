@@ -22,6 +22,7 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 			'invalid_input_date_format'   => $this->test_data_invalid_input_date_format(),
 			'active_filter_will_filter_content' => $this->test_data_active_filter_will_filter_content(),
 			'date_field_not_of_type_date' => $this->test_data_date_field_not_type_date(),
+			'test_data_grouped_rows' => $this->test_data_grouped_rows(),
 		);
 	}
 
@@ -49,12 +50,12 @@ CONTENT;
 Day,Date,Event,Time,Team,Note,Junior
 Sat,09/03/2018,Winter Fun Sailing,1100,,,
 Sat,24/03/2018,New Members Induction,1100,,,
-Spn,25/03/2018,BST STARTS - CLOCKS FORWARD 1 HOUR,,,,
 Sun,25/03/2018,Boat move and beach clean,1100,,,
 ROWS;
 
 		$out['config'] = array(
 			'display' => 'csv_rows',
+			'error_lines' => 'no',
 		);
 
 		$out['fields'] = <<<FIELDS
@@ -315,6 +316,7 @@ Sun,3/25/18,Boat move and beach clean,1100,,,
 CONTENT;
 
 		$out['html_output'] = <<<ROWS
+<!-- openclub_csv table.php template -->
 <table class='openclub_csv'>
 	<tr>
 		<th>
@@ -610,6 +612,7 @@ ROWS;
 		$out['config'] = array(
 			'display' => 'csv_rows',
 			'filter'  => 'Empty_Description',
+			'error_lines' => "no",
 		);
 
 		$out['fields'] = <<<FIELDS
@@ -661,4 +664,53 @@ FIELDS;
 
 			return $out;
 		}
+
+	function test_data_grouped_rows() {
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+columnA,columnB
+a,123
+b,456
+c,678
+a,dfg
+b,erw
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+a
+columnA,columnB
+a,123
+a,dfg
+----------------------------------------
+b
+columnA,columnB
+b,456
+b,erw
+----------------------------------------
+c
+columnA,columnB
+c,678
+----------------------------------------
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+			'group_by_field' => 'columnA',
+		);
+
+		$out['fields'] = <<<FIELDS
+[columnA]
+type = string
+
+[columnB]
+type = string
+
+FIELDS;
+
+		return $out;
+
+
+	}
 }

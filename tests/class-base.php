@@ -69,7 +69,7 @@ FIELDS;
 				'post_id'                 => null,
 				'error_messages'          => "yes",
 				'error_lines'             => "yes",
-				'future_events_only'      => null, // "yes" or "no"
+				'future_items_only'       => null, // "yes" or "no"
 				'display'                 => 'table', // default template file table.php
 				'fields'                  => null, // must exist as fields in the csv header column
 				'group_by_field'          => null, // must be a field in csv header column

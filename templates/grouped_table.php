@@ -1,5 +1,7 @@
-<!-- openclub-csv -->
-<?php echo \OpenClub\CSV_Display::template_output( $data, 'error_header' );
+<?php
+
+echo \OpenClub\CSV_Display::template_output( $data, 'config_output' );
+echo \OpenClub\CSV_Display::template_output( $data, 'error_header' );
 
 /**
  * @see default template wp-content/plugins/openclub-csv/templates/future_past_toggle.php
@@ -22,7 +24,7 @@ echo \OpenClub\CSV_Display::get_past_future_toggle_links( $data->config ); ?>
 
 		foreach ( $grouped_rows as $row ) {
 
-			if ( 0 === $row['error'] || ( 1 === $row['error'] && 'yes' === $data->config['error_lines'] ) ) {
+			if ( 0 === $row['error'] || ( 1 === $row['error'] && $data->config['error_lines'] ) ) {
 				echo "<tr  class='" . esc_attr( $row['class'] ) . "'>";
 				foreach ( $row['data'] as $fieldname => $values ) {
 					echo '<td>' . esc_html( $values['formatted_value'] ) . '</td>';

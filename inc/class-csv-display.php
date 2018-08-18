@@ -6,6 +6,8 @@ namespace OpenClub;
 class CSV_Display {
 
 	/**
+	 * Return a single CSV line.
+	 *
 	 * @param array $row
 	 *  Array(
 	 *      [value] =>
@@ -67,8 +69,6 @@ class CSV_Display {
 
 		try {
 
-			$config = self::set_default_display_template( $config );
-
 			/**
 			 * @var $input \OpenClub\Data_Set_Input
 			 */
@@ -92,9 +92,9 @@ class CSV_Display {
 				$out .= self::template_output(
 					array(
 						'output_data' => $output_data,
-						'config'      => $config
+						'config'      => $input->get_config(),
 					),
-					$config['display'],
+					$input->get_config( 'display' ),
 					$plugin_directory_path  // defaults to OPENCLUB_CSV_PLUGIN_DIR
 				);
 
@@ -115,9 +115,9 @@ class CSV_Display {
 	 * @param array $config
 	 *
 	 * post_id              - the post of type openclub-csv
-	 * error_messages       - "yes" / "no"
+	 * error_messages       - "yes" / "no" / 1 / 0
 	 * error_lines          -  "yes" / "no"
-	 * future_events_only   - "yes" if grouping on a date field display events only in the future
+	 * future_items_only   - "yes" if grouping on a date field display events only in the future
 	 * display              - the template name with .php ending. Placed in the theme or plugin templates directory.
 	 *                          Theme templates take precedence over plugin templates
 	 * fields               - choose which fields to display and order, overrides fields settings
@@ -132,7 +132,7 @@ class CSV_Display {
 				'post_id'                 => null,
 				'error_messages'          => "yes",
 				'error_lines'             => "yes",
-				'future_events_only'      => null,
+				'future_items_only'      => null,
 				'display'                 => 'table', // default template file table.php
 				'fields'                  => null,
 				'group_by_field'          => null,
@@ -147,16 +147,6 @@ class CSV_Display {
 
 		// @todo, currently this will affect everything, figure out a way around it, or leave it.
 		//apply_filters( 'openclub_csv_get_config', $config );
-
-		return $config;
-
-	}
-
-	private static function set_default_display_template( $config ) {
-
-		if ( ! empty( $config['group_by_field'] ) && 'table' === $config['display'] ) {
-			$config['display'] = 'grouped_list';
-		}
 
 		return $config;
 
@@ -180,22 +170,18 @@ class CSV_Display {
 			return;
 		}
 
-		if( empty( $config['future_events_only'] )) {
-			return;
-		}
-
-		if ( $config['future_events_only'] == "yes" ) {
+		if ( $config['future_items_only'] ) {
 
 			$data['current'] = sprintf( esc_html__( 'Showing future %s only', 'openclub_csv' ), $name );
 			$data['other']   = sprintf( '<a href="%s" rel="nofollow">%s</a>',
-				add_query_arg( 'feo', '1' ),
+				add_query_arg( 'fio', '1' ),
 				esc_html__( 'Show all', 'openclub_csv' )
 			);
 
-		} elseif ( $config['future_events_only'] == "no" ) {
+		} elseif ( !$config['future_items_only'] ) {
 
 			$data['other']   = sprintf( '<a href="%s" rel="nofollow">%s</a>',
-				add_query_arg( 'feo', '2' ),
+				add_query_arg( 'fio', '2' ),
 				sprintf( esc_html__( 'Hide past %s', 'openclub_csv' ), $name )
 			);
 			$data['current'] = sprintf( esc_html__( 'Showing all %s', 'openclub_csv' ), $name );
@@ -221,7 +207,7 @@ class CSV_Display {
 	 *
 	 * @return string
 	 */
-	public static function template_output( $data, $template_file = 'default', $plugin_directory_path = null ) {
+	public static function template_output( $data, $template_file = 'csv_rows', $plugin_directory_path = null ) {
 
 		/**
 		 * @var $o \WP_Error | boolean
@@ -262,6 +248,17 @@ class CSV_Display {
 		if( OPENCLUB_CSV_LOG_TEMPLATE_FILES_LOADED ) {
 			error_log( $path );
 		}
+	}
+
+	public static function br() {
+
+		if( empty( $_SERVER['REQUEST_URI'] ) ) {
+			return PHP_EOL;
+		} else {
+			return "<br/>\n";
+		}
+
+
 	}
 
 }

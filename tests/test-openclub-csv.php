@@ -26,7 +26,7 @@ class OpenClubCSVTest extends Base {
 
 		$default = array( 'a', 'b', );
 		$vars    = openclub_add_custom_query_var( $default );
-		$this->assertEqualSets( $vars, array( 'b', 'feo', 'a' ) );
+		$this->assertEqualSets( $vars, array( 'b', 'fio', 'a' ) );
 
 	}
 
