@@ -223,10 +223,8 @@ foreach ( $output_data->get_rows() as $row ) {
 
 
 ### Can I use it?
-Not yet, work still to do:
+Nearly, I'm not far off publishing on wordpress.org now. The incoming work is:
 
-- on security
-- code improvements and cleanup
-- much more testing
-- unit tests
+- on security revie
+- more unit tests
 - inline and wiki documentation
