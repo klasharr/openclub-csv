@@ -48,34 +48,67 @@ class Data_Set_Input {
 	private $future_items_only;
 
 	/**
-	 * @var array
+	 * @var string
 	 */
-	private $config;
+	private $error_lines = false;
+
+	/**
+	 * @var string
+	 */
+	private $error_messages = false;
+
+	/**
+	 * @var string
+	 */
+	private $display;
+
+	/**
+	 * @var boolean
+	 */
+	private $init_called;
+
+	public function __construct( $config = false) {
+
+		if( !empty( $config ) && !is_array( $config ) ) {
+			throw new \Exception( 'If set, $config must be an array.' );
+		}
+
+		if( !empty( $config ) ) {
+			$this->init( $config );
+		}
+
+	}
 
 	/**
 	 * @param $post_id int
 	 *
 	 * @throws \Exception
 	 */
-	public function __construct( $config ) {
+	public function init( $config ) {
 
-		if ( empty( $config['post_id'] ) ) {
-			throw new \Exception( '$post_id was not passed' );
+		if( $this->get_init_has_been_called() ) {
+			throw new \Exception( 'init has been called already' );
 		}
 
-		if ( ! is_numeric( $config['post_id'] ) ) {
-			throw new \Exception( '$post_id is not numeric' );
+		$this->post = $this->get_post_object( $config );
+		$this->post_id = $this->post->ID;
+
+		if( ! empty( $config['error_messages'] )) {
+			$this->set_error_messages( $config[ 'error_messages'] );
 		}
 
-		$this->post_id            = $config['post_id'];
-		$this->post               = CSV_Util::get_csv_post( $this->post_id );
-		//$this->raw_display_fields = $this->post->field_settings;
+		if( ! empty( $config['error_lines'] )) {
+			$this->set_error_lines( $config[ 'error_lines'] );
+		}
+
+		if( !empty( $config['future_items_only'] ) ) {
+			$this->set_future_items_value( $config['future_items_only'] );
+		}
+
+		$this->set_display( $config[ 'display' ] );
 
 		if ( ! empty( $config['group_by_field'] ) ) {
 			$this->set_group_by_field( $config['group_by_field'] );
-		}
-		if ( ! empty( $config['fields'] ) ) {
-			$this->set_fields_override( $config['fields'] );
 		}
 
 		if ( ! empty( $config['context'] ) ) {
@@ -86,88 +119,150 @@ class Data_Set_Input {
 			$this->set_limit( $config['limit'] );
 		}
 
-
-		if( !empty( $config['error_lines'] ) && !in_array($config['error_lines'], array( 'yes', 'no', 1, 0 ) ) ) {
-			throw new \Exception( 'error_lines must be yes, no, 1, 0 or not set. The default is yes.' );
+		if ( ! empty( $config['fields'] ) ) {
+			$this->set_fields_override( $config['fields'] );
 		}
 
-		if( !empty( $config['error_messages'] ) && !in_array($config['error_messages'], array( 'yes', 'no', 1, 0 ) ) ) {
-
-			throw new \Exception( 'error_messages must be yes, no, 1 or 0 or not set. The default is yes.' );
+		if( ! empty( $config['filter'] )) {
+			$this->set_filter( $config[ 'filter'] );
 		}
 
-		// @todo tidy up
-		if( in_array( $config['error_messages'], array( 'yes', 1 ) ) ) {
-			$config['error_messages'] = true;
-		} elseif( in_array( $config['error_messages'], array( 'no', 0 ) )) {
-			$config['error_messages'] = false;
+		if( ! empty( $config['show_future_past_toggle'] )) {
+			$this->set_show_future_past_toggle( $config['show_future_past_toggle'] );
 		}
 
-		if( in_array( $config['error_lines'], array( 'yes', 1 ) ) ) {
-			$config['error_lines'] = true;
-		} elseif( in_array( $config['error_lines'], array( 'no', 0 ) )) {
-			$config['error_lines'] = false;
+		if( ! empty( $config['display_config'] )) {
+			$this->set_display_configuration_settings( $config['display_config'] );
 		}
 
-		if( in_array( $config['display_config'], array( 'yes', 1 ) ) ) {
-			$config['display_config'] = true;
-		} elseif( in_array( $config['display_config'], array( 'no', 0 ) )) {
-			$config['display_config'] = false;
-		}
-
-		if ( ! empty( $config['future_items_only'] ) && ! in_array( $config['future_items_only'], array( "yes", "no", 1, 2 ) ) ) {
-			throw new \Exception( '$config[\'future_items_only\'] can be "yes", "no", 1, 2 or must not be set.' );
-		}
-
-		// @todo tidy up
-		if ( ! empty( $config['future_items_only'] ) ) {
-			switch( $config['future_items_only'] ) {
-				case 2:
-				case 'yes':
-					$config['future_items_only'] = true;
-					break;
-				case 1:
-				case 'no':
-					$config['future_items_only'] = false;
-					break;
-			}
-		} else {
-			$config['future_items_only'] = false;
-		}
-
-		if ( ! empty( $config['filter'] ) ) {
-
-			// This needs to be here rather than in the factory as this is simplest for plugins
-			// extending this one.
-			$class = "\OpenClub\\" . $config['filter'];
-			if ( ! class_exists( $class ) ) {
-				throw new \Exception( 'Filter class ' . $class . ' does not exist, check the value passed in $config[ \'filter\' ]' );
-			}
-
-			$this->set_filter( new $class() );
-		}
-
-		$this->config = $config;
+		$this->init_called = true;
 
 	}
 
+	public function get_init_has_been_called(){
+		return $this->init_called;
+	}
 
-	public function get_config( $key = null ) {
 
-		if( !empty( $key ) ) {
-			return $this->config[ $key ];
+	private function set_display( $display ) {
+
+		if( empty( $display ) ) {
+			throw  new \Exception( 'display cannot be empty ' );
+		}
+		$this->display = $display;
+	}
+
+	private function get_display() {
+		return $this->display;
+	}
+
+	private function set_show_future_past_toggle( $show_future_past_toggle ) {
+		$this->show_future_past_toggle = $this->get_boolean_from_config_value( $show_future_past_toggle );
+	}
+
+	private function get_show_future_past_toggle() {
+		return $this->show_future_past_toggle;
+	}
+
+	private function set_display_configuration_settings( $display_config ) {
+		$this->display_config = $this->get_boolean_from_config_value( $display_config );
+	}
+
+	private function get_display_configuration_settings() {
+		return $this->display_config;
+	}
+
+
+	private function set_error_messages( $error_messages ) {
+
+		if( !empty( $error_messages ) && !in_array( $error_messages, array( 'yes', 'no' ) ) ) {
+			throw new \Exception( 'error_messages must be yes, no or not set. The default is yes.' );
 		}
 
-		return $this->config;
+		$this->error_messages = $this->get_boolean_from_config_value( $error_messages );
+	}
+
+	public function get_error_messages() {
+		return $this->error_messages;
+	}
+
+	private function set_error_lines( $error_lines ) {
+
+		if( !empty( $error_lines ) && !in_array( $error_lines, array( 'yes', 'no' ) ) ) {
+			throw new \Exception( 'error_lines must be yes, no or not set. The default is yes.' );
+		}
+
+		$this->error_lines = $this->get_boolean_from_config_value( $error_lines );
+	}
+
+	public function get_error_lines() {
+		return $this->error_lines;
+	}
+
+	private function get_post_object( array $config ) {
+
+		if ( empty( $config['post_id'] ) ) {
+			throw new \Exception( '$post_id was not passed' );
+		}
+
+		if ( ! is_numeric( $config['post_id'] ) ) {
+			throw new \Exception( '$post_id is not numeric' );
+		}
+
+		return CSV_Util::get_csv_post( $config['post_id'] );
+
+	}
+
+	private function set_future_items_value( $value ) {
+		
+		if ( ! empty( $value ) && ! in_array( $value, array( "yes", "no", 1, 2 ) ) ) {
+			throw new \Exception( '$config[\'future_items_only\'] can be "yes", "no", 1, 2 or must not be set.' );
+		}
+
+
+		if ( ! empty( $value )  ) {
+
+			switch( $value ) {
+				case 2:
+				case 'yes':
+					$this->future_items_only = true;
+					return;
+				case 1:
+				case 'no':
+					$this->future_items_only = false;
+					return;
+			}
+		}
+		$this->future_items_only = false;
+	}
+
+	public function get_future_items_value(){
+
+		return $this->future_items_only;
+	}
+
+	private function get_boolean_from_config_value( $value ) {
+
+		if( empty( $value ) ) {
+			return false;
+		}
+
+		if( !in_array( $value, array( 'yes', 'no' ) ) ) {
+			throw new \Exception( 'get_boolean_from_config_value() called with ' .$value . ', expected yes or no' );
+		}
+
+		return $value === 'yes' ? true: false;
+
 	}
 
 
 	/**
 	 * @param Filter $filter
 	 */
-	public function set_filter( Filter $filter ) {
+	public function set_filter_object( Filter $filter ) {
 
 		$this->filter = $filter;
+
 	}
 
 	/**
@@ -176,6 +271,7 @@ class Data_Set_Input {
 	public function get_post() {
 
 		return $this->post;
+
 	}
 
 	public function get_filter() {
@@ -185,7 +281,27 @@ class Data_Set_Input {
 		}
 
 		return $this->filter;
+
 	}
+
+
+	public function set_filter( $filter ){
+
+		if ( ! empty( $filter ) ) {
+
+			// This needs to be here rather than in the factory as this is simplest for plugins
+			// extending this one.
+			$class = "\OpenClub\\" . $filter;
+			if ( ! class_exists( $class ) ) {
+				throw new \Exception( 'Filter class ' . $class . ' does not exist, check the value passed in $config[ \'filter\' ]' );
+			}
+
+			$this->set_filter_object( new $class() );
+		}
+
+	}
+
+
 
 	/**
 	 * @return int
@@ -194,7 +310,7 @@ class Data_Set_Input {
 		return $this->post_id;
 	}
 
-	public function set_group_by_field( $group_by_field ) {
+	private function set_group_by_field( $group_by_field ) {
 
 		if ( empty( $group_by_field ) ) {
 			throw new \Exception( 'set_group_by_field() called with an empty value' );
@@ -242,7 +358,7 @@ class Data_Set_Input {
 	/**
 	 * @return array
 	 */
-	public function get_overridden_fields() {
+	public function get_fields_override() {
 
 		if( empty( $this->overridden_fields ) ) {
 			return array();
@@ -265,7 +381,7 @@ class Data_Set_Input {
 	/**
 	 * @param mixed $context
 	 */
-	public function set_context( $context ) {
+	private function set_context( $context ) {
 		$this->context = $context;
 	}
 
@@ -285,11 +401,13 @@ class Data_Set_Input {
 			return;
 		}
 
-		if ( $limit <= 0 ) {
+		$limit = $limit;
+
+		if ( (int) $limit <= 0 ) {
 			throw new \Exception( '$limit must be an integer and greater than zero.' );
 		}
 
-		$this->limit = (int) $limit;
+		$this->limit = $limit;
 	}
 
 	/**
@@ -301,20 +419,26 @@ class Data_Set_Input {
 	}
 
 
-	public function get_set_config() {
+	public function get_config( $key = null ) {
 
-		return array(
+		$config = array(
 			'post' => $this->get_post(),
 			'post_id' => $this->get_post_id(),
 			'filter' => $this->get_filter(),
 			'group_by_field' => $this->get_group_by_field(),
-			'overridden_fields' => $this->get_overridden_fields(),
+			'overridden_fields' => $this->get_fields_override(),
 			'context' => $this->get_context(),
 			'limit' => $this->get_limit(),
-			'future_items_only' => $this->config[ 'future_items_only' ],
-			'error_messages' => $this->config[ 'error_messages' ],
-			'error_lines' => $this->config[ 'error_lines' ],
+			'future_items_only' => $this->get_future_items_value(),
+			'error_messages' => $this->get_error_messages(),
+			'error_lines' => $this->error_lines(),
  		);
+
+		if( !empty( $key ) ) {
+			return $config[ $key ];
+		}
+
+		return $config;
 
 	}
 }

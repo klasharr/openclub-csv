@@ -80,7 +80,7 @@ class Output_Data {
 	public function get_header_fields() {
 
 		if ( $this->input->has_overridden_fields() ) {
-			return $this->input->get_overridden_fields();
+			return $this->input->get_fields_override();
 		}
 
 		return $this->header_fields;
@@ -102,7 +102,7 @@ class Output_Data {
 		$field_names = $this->field_manager->get_display_field_names();
 
 		if ( $this->input->has_overridden_fields() ) {
-			$field_names = $this->input->get_overridden_fields();
+			$field_names = $this->input->get_fields_override();
 		}
 
 		$limit = $this->input->get_limit();

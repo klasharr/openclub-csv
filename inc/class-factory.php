@@ -83,8 +83,8 @@ class Factory {
 	/**
 	 * @return Data_Set_Input
 	 */
-	public static function get_data_input_object( $post_id ) {
-		return new Data_Set_Input( $post_id );
+	public static function get_data_input_object( $config = null ) {
+		return new Data_Set_Input( $config );
 	}
 
 	public static function get_template_loader() {

@@ -82,4 +82,11 @@ FIELDS;
 		);
 	}
 
+	protected function get_valid_test_config(){
+
+		$post = $this->get_valid_post();
+		$config = $this->get_default_config( array( 'post_id' => $post->ID ));
+		return $config;
+	}
+
 }
