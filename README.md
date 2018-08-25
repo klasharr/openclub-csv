@@ -3,16 +3,16 @@
 
 [![Build Status](https://travis-ci.org/klasharr/openclub-csv.svg?branch=master)](https://travis-ci.org/klasharr/openclub-csv)
 
+This is a WordPress plugin which allows you to use CSV data as a data source and display it on your website or process it. Some features:
 
-A WordPress plugin which allows you to use CSV data as a data source and display it on your website.
-
- - store CSV data in a new custom post type and use this as a data source
- - apply validation and display rules to the CSV data fields, e.g. one input date format, a different output date format
- - set of basic table and list templates with overriding and custom template creation/usage in plugins or your theme
- - API to easily make shortcodes using optionally custom templates
- - filter API e.g. filter out data based on the value of a field
- - WP_CLI API to write scripts using CSV data
- - field display rules, data sorting, limit, grouping and basic date time rules e.g. only show data > current timestamp
+ - it stores CSV data in a new custom post type which is used as a data source
+ - applies validation and display rules to the CSV data fields
+ - has set of basic table and list templates which you can override or add to with your own templates in your own plugins
+ - API to make shortcodes using built in or custom templates
+ - API to make CLI commands working with CSV data
+ - filter API to create filters to exlude data based on rules
+ - WP_CLI API to write scripts and process CSV data
+ - field display rules, data sorting, limit, grouping, basic time based functionality
  - early and late filters to alter data based on your own rules.
 
 
@@ -81,6 +81,8 @@ View the CSV post types as you would any other piece of content in WordPress, ea
 
 `/openclub-csv/<your slug>/`
 
+Or most usefully via shortcodes.
+
 
 ### Shortcodes
 
@@ -96,16 +98,26 @@ Overriding the display field defaults, this will display the columns Date and Ev
 [openclub_display_csv post_id=1361 fields="Date,Event"]
 ```
 
-Grouping on the date field and filtering for future events only.
+Grouping on the date field and filtering for future events only with a display limit.
 ```
-[openclub_display_csv post_id=1361 group_by_field="Date" future_items_only="yes"  display="grouped_date_table" limit="3"]
+[openclub_display_csv post_id=1361 group_by_field="Date" future_items_only="yes" limit="3"]
 ```
 
+Selecting a different output template
+```
+[openclub_display_csv post_id=1361 display="grouped_date_table"]
+```
 
+Display the config for this data source and dislay
+```
+[openclub_display_csv post_id=1361 display="grouped_date_table" display_config="yes"]
+```
 
 #### Fields configuration explained
 
-The fields content is basically content in the [PHP ini format](http://php.net/manual/en/function.parse-ini-file.php) and is parsed internally by `parse_ini_file()`. Each CSV column will have a field name, and this field is described in the fields ini configuration. So far there are three field types; date, string and int. Others will follow.
+The fields content is basically content in the [PHP ini format](http://php.net/manual/en/function.parse-ini-file.php) and this is parsed internally by `parse_ini_file()`. Each CSV column will have a field name, and this field is described in the fields ini configuration. So far there are three field types; date, string and int. Others will follow.
+
+The basic rules are that the field name must correspond to the CSV header line field name and type must be present, currently types available are `date`,`int` and `string`.
 
 1. Date
 
@@ -177,7 +189,7 @@ This controls the default display setting for a field and it can be overridden i
 - [http://www.swanagesailingclub.org.uk/safety-teams-2018/](http://www.swanagesailingclub.org.uk/safety-teams-2018/) - another custom template
 
 
-### Example shortcode implementation
+### Example shortcode implementation extending the API
 
 Taken from another plugin using the API, see more [here](https://github.com/klasharr/ssc/blob/master/inc/shortcodes.php).
 
