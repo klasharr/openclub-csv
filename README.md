@@ -172,16 +172,16 @@ If data exists, it must be one of the defined options.
 
 2. Required
 ```
-required = [yes|no]
+required = [true|false]
 ```
 Is the field required?
+
 
 3. Display
 
 ```
-display = [yes|no]
+display = [true|false]
 ```
-
 
 This controls the default display setting for a field and it can be overridden in your shortcodes. This is useful if you want to suppress display of certain fields.
 
@@ -190,8 +190,6 @@ This controls the default display setting for a field and it can be overridden i
 ```
 max-length = [int]
 ```
-
-
 
 
 ### Examples in production use:
