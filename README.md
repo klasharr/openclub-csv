@@ -117,7 +117,12 @@ Display the config for this data source and dislay
 
 The fields content is basically content in the [PHP ini format](http://php.net/manual/en/function.parse-ini-file.php) and this is parsed internally by `parse_ini_file()`. Each CSV column will have a field name, and this field is described in the fields ini configuration. So far there are three field types; date, string and int. Others will follow.
 
-The basic rules are that the field name must correspond to the CSV header line field name and type must be present, currently types available are `date`,`int` and `string`.
+The minimum field rules are that:
+
+1. the field name must correspond to the CSV header line field name 
+2. type must be present, currently types available are `date`,`int` and `string`.
+
+Everything else is optional. Below I explain the same fields definition from above.
 
 1. Date
 
@@ -154,7 +159,7 @@ type = int
 
 Validates only if the data is numeric.
 
-#### Extra rules for all fields
+#### Optioanl rules for all field types
 
 1. Options
 
@@ -167,17 +172,25 @@ If data exists, it must be one of the defined options.
 
 2. Required
 ```
-required = true
+required = [yes|no]
 ```
 Is the field required?
 
 3. Display
 
 ```
-display = false
+display = [yes|no]
 ```
 
+
 This controls the default display setting for a field and it can be overridden in your shortcodes. This is useful if you want to suppress display of certain fields.
+
+4. Max field length
+
+```
+max-length = [int]
+```
+
 
 
 
