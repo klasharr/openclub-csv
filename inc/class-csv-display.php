@@ -257,8 +257,6 @@ class CSV_Display {
 		} else {
 			return "<br/>\n";
 		}
-
-
 	}
 
 }

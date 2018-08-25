@@ -17,7 +17,11 @@ if ( $data->config['display_config'] ) {
 			$value = 'true';
 		}
 
-		echo $key . ' = ' . $value .  \OpenClub\CSV_Display::br();
+		if( is_object( $value ) ) {
+			echo $key . ' = object ' .  \OpenClub\CSV_Display::br();
+		} else {
+			echo $key . ' = ' . $value .  \OpenClub\CSV_Display::br();
+		}
 	}
 	echo '----------------------------------' . \OpenClub\CSV_Display::br();
 }

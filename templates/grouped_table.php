@@ -10,8 +10,7 @@ echo \OpenClub\CSV_Display::get_past_future_toggle_links( $data->config ); ?>
 
 <table class='openclub_csv'>
 	<tr>
-		<th>
-			<?php echo implode( '</th><th>', $data->output_data->get_header_fields() ); ?>
+		<th><?php echo implode( '</th><th>', $data->output_data->get_header_fields() ); ?></th>
 	</tr>
 	<?php
 

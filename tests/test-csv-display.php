@@ -108,7 +108,8 @@ class CSVDisplayTest extends Base {
 			'valid_date_conversion',
 			'invalid_date',
 			'invalid_output_date_format',
-			'invalid_input_date_format',
+			'invalid_input_date_format', 
+			'test_data_future_events_displays_future_events_only',
 		);
 
 
@@ -124,6 +125,7 @@ class CSVDisplayTest extends Base {
 			$s = \OpenClub\CSV_Display::get_html(
 				\OpenClub\CSV_Display::get_config( $config )
 			);
+
 
 			//echo "\n".$s ."\n";
 			//echo "\n" . $test_data->get( 'html_output' ) . "\n";

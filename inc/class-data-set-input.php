@@ -39,7 +39,7 @@ class Data_Set_Input {
 	/**
 	 * @var int
 	 */
-	private $limit;
+	private $limit = false;
 
 
 	/**
@@ -63,28 +63,43 @@ class Data_Set_Input {
 	private $display;
 
 	/**
+	 * @var bool
+	 */
+	private $show_future_past_toggle = false;
+
+
+	/**
+	 * @var bool
+	 */
+	private $display_config = false;
+
+	/**
 	 * @var boolean
 	 */
-	private $init_called;
+	private $init_called = false;
 
+	/**
+	 * Data_Set_Input constructor.
+	 *
+	 * @param bool $config array
+	 */
 	public function __construct( $config = false) {
 
-		if( !empty( $config ) && !is_array( $config ) ) {
-			throw new \Exception( 'If set, $config must be an array.' );
-		}
-
-		if( !empty( $config ) ) {
+	if( !empty( $config ) ) {
 			$this->init( $config );
 		}
-
 	}
 
 	/**
-	 * @param $post_id int
+	 * @param $config array
 	 *
 	 * @throws \Exception
 	 */
 	public function init( $config ) {
+
+		if( !empty( $config ) && !is_array( $config ) ) {
+			throw new \Exception( 'If set, $config must be an array.' );
+		}
 
 		if( $this->get_init_has_been_called() ) {
 			throw new \Exception( 'init has been called already' );
@@ -132,7 +147,7 @@ class Data_Set_Input {
 		}
 
 		if( ! empty( $config['display_config'] )) {
-			$this->set_display_configuration_settings( $config['display_config'] );
+			$this->set_display_configuration_setting( $config['display_config'] );
 		}
 
 		$this->init_called = true;
@@ -146,13 +161,17 @@ class Data_Set_Input {
 
 	private function set_display( $display ) {
 
+		if( trim( $display ) != $display ) {
+			throw  new \Exception( 'display cannot have empty spaces at the beginning or end.' );
+		}
+
 		if( empty( $display ) ) {
-			throw  new \Exception( 'display cannot be empty ' );
+			throw  new \Exception( 'display cannot be empty.' );
 		}
 		$this->display = $display;
 	}
 
-	private function get_display() {
+	public function get_display() {
 		return $this->display;
 	}
 
@@ -160,15 +179,15 @@ class Data_Set_Input {
 		$this->show_future_past_toggle = $this->get_boolean_from_config_value( $show_future_past_toggle );
 	}
 
-	private function get_show_future_past_toggle() {
+	public function get_show_future_past_toggle() {
 		return $this->show_future_past_toggle;
 	}
 
-	private function set_display_configuration_settings( $display_config ) {
+	private function set_display_configuration_setting( $display_config ) {
 		$this->display_config = $this->get_boolean_from_config_value( $display_config );
 	}
 
-	private function get_display_configuration_settings() {
+	public function get_show_display_config_setting() {
 		return $this->display_config;
 	}
 
@@ -219,6 +238,10 @@ class Data_Set_Input {
 			throw new \Exception( '$config[\'future_items_only\'] can be "yes", "no", 1, 2 or must not be set.' );
 		}
 
+		if( !in_array( $value, array( 'no', 'yes' ) ) && $value !== (int) $value ) {
+			$this->future_items_only = false;
+			return;
+		}
 
 		if ( ! empty( $value )  ) {
 
@@ -233,10 +256,10 @@ class Data_Set_Input {
 					return;
 			}
 		}
-		$this->future_items_only = false;
+
 	}
 
-	public function get_future_items_value(){
+	public function get_future_items(){
 
 		return $this->future_items_only;
 	}
@@ -415,7 +438,7 @@ class Data_Set_Input {
 	 */
 	public function is_show_future_items_only() {
 
-		return $this->config[ 'future_items_only' ];
+		return $this->future_items_only;
 	}
 
 
@@ -427,12 +450,19 @@ class Data_Set_Input {
 			'filter' => $this->get_filter(),
 			'group_by_field' => $this->get_group_by_field(),
 			'overridden_fields' => $this->get_fields_override(),
+			'display' => $this->get_display(),
 			'context' => $this->get_context(),
 			'limit' => $this->get_limit(),
-			'future_items_only' => $this->get_future_items_value(),
+			'future_items_only' => $this->is_show_future_items_only(),
 			'error_messages' => $this->get_error_messages(),
-			'error_lines' => $this->error_lines(),
+			'error_lines' => $this->get_error_lines(),
+			'show_future_past_toggle' => $this->get_show_future_past_toggle(),
+			'display_config' => $this->get_show_display_config_setting(),
  		);
+		
+		if( !empty( $key ) && !array_key_exists( $key, $config ) ) {
+			throw new \Exception( 'Attempt to retrieve invalid config key.' );
+		}
 
 		if( !empty( $key ) ) {
 			return $config[ $key ];

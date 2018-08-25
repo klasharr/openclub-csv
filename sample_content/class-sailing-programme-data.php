@@ -14,7 +14,6 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 			'valid_content'         => $this->test_data_valid_content(),
 			'invalid_heading_column'         => $this->test_data_invalid_heading_column(),
 			'csv_row_column_mismatch' => $this->test_data_csv_row_column_mismatch(),
-			'valid_shortcode_table_template' => $this->test_f_data(),
 			'invalid_int'           => $this->test_data_invalid_integer(),
 			'valid_date_conversion'   => $this->test_data_date_format_conversion_valid(),
 			'invalid_date'   => $this->test_data_invalid_date(),
@@ -23,6 +22,7 @@ class Sailing_Programme_Data extends Base_Dummy_Data {
 			'active_filter_will_filter_content' => $this->test_data_active_filter_will_filter_content(),
 			'date_field_not_of_type_date' => $this->test_data_date_field_not_type_date(),
 			'test_data_grouped_rows' => $this->test_data_grouped_rows(),
+			'test_data_future_events_displays_future_events_only' => $this->test_data_future_events_displays_future_events_only(),
 		);
 	}
 
@@ -298,108 +298,7 @@ FIELDS;
 	}
 
 
-	/**
-	 * Shortcode data
-	 *
-	 * @return array
-	 */
-	function test_f_data() {
 
-		$out = array();
-
-		$out['post_content'] = <<<CONTENT
-Day,Date,Event,Time,Team,Note,Junior
-Sat,3/18/18,Winter Fun Sailing,1100,,,
-Sat,3/24/18,New Members Induction,1100,,,
-Sun,3/25/18,BST STARTS - CLOCKS FORWARD 1 HOUR,,,,
-Sun,3/25/18,Boat move and beach clean,1100,,,
-CONTENT;
-
-		$out['html_output'] = <<<ROWS
-<!-- openclub_csv table.php template -->
-<table class='openclub_csv'>
-	<tr>
-		<th>
-			Day</th><th>Date</th><th>Event</th><th>Time</th><th>Team</th><th>Note</th><th>Junior	</tr>
-	<tr  class=''>
-	<td>Sat</td>
-	<td>18/03/18</td>
-	<td>Winter Fun Sailing</td>
-	<td>1100</td>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-<tr  class=''>
-	<td>Sat</td>
-	<td>24/03/18</td>
-	<td>New Members Induction</td>
-	<td>1100</td>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-<tr  class=''>
-	<td>Sun</td>
-	<td>25/03/18</td>
-	<td>BST STARTS - CLOCKS FORWARD 1 HOUR</td>
-	<td></td>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-<tr  class=''>
-	<td>Sun</td>
-	<td>25/03/18</td>
-	<td>Boat move and beach clean</td>
-	<td>1100</td>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-</table>
-ROWS;
-
-		$out['config'] = array(
-			'display' => 'csv_rows',
-		);
-
-		$out['fields'] = <<<FIELDS
-[Day]
-type = string
-options = Sat,Sun,Thu,Tue,Mon,Fri
-
-
-[Date]
-type = date
-input_format = m/d/y
-output_format = d/m/y
-
-[Event]
-type = string
-max-length = 60
-required = true
-
-[Time]
-type = string
-options = 1100,1030,1830,1900,1400,1800,0830,TBA,0930
-
-[Team]
-type = string
-options = A,B,C,D,E,F,G,H,J,1,2,3,4,5,6,7,8,9
-
-[Note]
-type = string
-max-length = 45
-
-[Junior]
-type = int
-options = 1
-FIELDS;
-
-		return $out;
-
-	}
 
 	function test_data_invalid_integer(){
 
@@ -712,5 +611,43 @@ FIELDS;
 		return $out;
 
 
+	}
+
+	function test_data_future_events_displays_future_events_only() {
+
+		$out = array();
+
+		$out['post_content'] = <<<CONTENT
+Date
+3/9/18
+3/24/18
+3/25/30
+3/26/30
+CONTENT;
+
+		$out['html_output'] = <<<ROWS
+<table class='openclub_csv'>
+	<tr>
+		<th>Date</th>
+	</tr>
+	<tr  class=''><td>25/03/2030</td></tr>
+<tr  class=''><td>26/03/2030</td></tr>
+</table>
+ROWS;
+
+		$out['config'] = array(
+			'display' => 'csv_rows',
+			'future_items_only' => 'yes',
+			'group_by_field' => 'Date',
+			'display' => 'grouped_table',
+		);
+
+		$out['fields'] = <<<FIELDS
+[Date]
+type = date
+input_format = n/j/y
+output_format = d/m/Y
+FIELDS;
+		return $out;
 	}
 }
