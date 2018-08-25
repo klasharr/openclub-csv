@@ -167,7 +167,7 @@ Validates only if the data is numeric.
 options = 1100,1030,1830,1900,1400,1800,0830,TBA,0930
 ```
 
-If data exists, it must be one of the defined options.
+If data exists, it must be one of the defined options. The values above are examples.
 
 
 2. Required
