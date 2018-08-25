@@ -7,7 +7,7 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
 
  - it stores CSV data in a new custom post type which is used as a data source
  - applies validation and display rules to the CSV data fields
- - has set of basic table and list templates which you can override or add to with your own templates in your own plugins
+ - has a set of basic table and list templates which you can override or add to with your own templates in your own plugins
  - API to make shortcodes using built in or custom templates
  - API to make CLI commands working with CSV data
  - filter API to create filters to exlude data based on rules
