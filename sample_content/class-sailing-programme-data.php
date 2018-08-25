@@ -232,7 +232,7 @@ Sun,3/25/18,Boat move and beach clean
 CONTENT;
 
 		$out['html_output'] = <<<ROWS
-<p class="openclub_csv_error">Error: : Validator Extra does not exists, check the column name.</p>
+<p class="openclub_csv_error">Error: : Field Extra does not exist, check the column name.</p>
 ROWS;
 
 		$out['config'] = array(

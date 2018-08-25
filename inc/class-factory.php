@@ -39,8 +39,8 @@ class Factory {
 	 *
 	 * @return Field_Manager
 	 */
-	public static function get_field_manager( Data_Set_Input $input ) {
-		return new Field_Manager( $input );
+	public static function get_field_manager() {
+		return new Field_Manager();
 	}
 
 	public static function get_null_filter() {
@@ -74,6 +74,8 @@ class Factory {
 	public static function get_data_set( \WP_Post $post ) {
 
 		$data_set                     = new Data_Set( $post );
+
+		// @todo this looks unused.
 		self::$data_sets[ $post->ID ] = $data_set;
 
 		return $data_set;

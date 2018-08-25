@@ -76,13 +76,15 @@ class Parser {
 		}
 
 		$this->data_set      = Factory::get_data_set( $this->input->get_post() );
-		$this->field_manager = Factory::get_field_manager( $this->input );
-		$this->set_group_by_field( $input->get_group_by_field() );
+
+		$this->field_manager = Factory::get_field_manager();
+		$this->field_manager->init( $this->input );
+
+		$this->set_group_by_field( $input->get_config( 'group_by_field') );
 
 	}
 
-
-	public function set_group_by_field( $field ) {
+	private function set_group_by_field( $field ) {
 
 		if ( ! empty( $field ) && ! $this->field_manager->get_field( $field, true ) ) {
 			throw new \Exception( 'Trying to group on field: ' . $field . ' which does not exist' );
@@ -103,7 +105,7 @@ class Parser {
 
 		foreach ( $csv_header_field_names as $cvs_field_name ) {
 			if ( ! $this->field_manager->get_field( trim( $cvs_field_name ) ) ) {
-				throw new \Exception( 'Field name in CSV header is invalid, can not parse data.' );
+				throw new \Exception( 'Field name in CSV header is invalid. It must correspond to a setting in fields.' );
 			}
 		}
 

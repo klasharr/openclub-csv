@@ -31,7 +31,9 @@ class Field_Manager {
 	/**
 	 * @param \WP_Post $post
 	 */
-	public function __construct( Data_Set_Input $input ) {
+	public function __construct() {}
+
+	public function init(  Data_Set_Input $input  ) {
 
 		$this->post  = $input->get_post();
 		$this->input = $input;
@@ -40,7 +42,7 @@ class Field_Manager {
 			return;
 		}
 
-		$this->get_field_objects( $this->post->field_settings );
+		$this->populate_field_objects_array( $this->post->field_settings );
 
 		if ( ! $this->have_fields_to_display ) {
 			if ( ! class_exists( 'WP_CLI' ) ) {
@@ -58,7 +60,7 @@ class Field_Manager {
 	 *
 	 * @throws \Exception
 	 */
-	private function field_is_displayed( $field_name, $config ) {
+	public function field_display_is_true( $config ) {
 
 		if ( isset( $config['display'] ) && ! $config['display'] ) {
 			return false;
@@ -68,22 +70,16 @@ class Field_Manager {
 
 	}
 
-	private function get_field_objects( array $field_settings ) {
+	private function populate_field_objects_array( array $field_settings ) {
 
 		foreach ( $field_settings as $field_name => $config ) {
 
-			if ( empty( $config['type'] ) ) {
-				throw new \Exception( 'Field ' . $field_name . ' has no defined type, check fields setting.' );
-			}
-
-			if ( $field_name !== esc_html( $field_name ) ) {
-				throw new \Exception( 'Field ' . esc_html( $field_name ) . ' has invalid characters.' );
-			}
+			$this->validate_single_field_setting( $field_name, $config );
 
 			$config['field_name'] = $field_name;
 
-			if ( $this->field_is_displayed( $field_name, $config ) ) {
-				$this->have_fields_to_display = true;
+			if ( $this->field_display_is_true( $config ) ) {
+				$this->have_fields_to_display =    true;
 				$config['display_field']      = true;
 			} else {
 				$config['display_field'] = false;
@@ -94,6 +90,28 @@ class Field_Manager {
 			$this->fields[ $field_name ] = Factory::get_field( $className, $config, $this->input );
 
 		}
+	}
+
+	public function validate_single_field_setting( $field_name, array $config ) {
+
+		if( empty( trim( $field_name ) ) ) {
+			throw new \Exception( 'You must set a field name.' );
+		}
+
+		if ( empty( $config['type'] ) ) {
+			throw new \Exception( 'Field ' . $field_name . ' has no defined type, check fields setting.' );
+		}
+
+		if ( $field_name !== esc_html( $field_name ) ) {
+			throw new \Exception( 'Field ' . esc_html( $field_name ) . ' has invalid characters.' );
+		}
+
+		$file = OPENCLUB_CSV_PLUGIN_DIR . 'inc/fields/class-' . strtolower( $config['type'] ) . '.php';
+
+		if ( ! file_exists( $file ) ) {
+			throw new \Exception( $file . ' does not exist. Check the type setting in fields.' );
+		}
+		return true;
 	}
 
 
@@ -121,7 +139,7 @@ class Field_Manager {
 		}
 
 		if ( ! isset( $this->fields[ $key ] ) ) {
-			throw new \Exception( 'Validator ' . $key . ' does not exists, check the column name.' );
+			throw new \Exception( 'Field ' . $key . ' does not exist, check the column name.' );
 		}
 
 	}
@@ -131,18 +149,15 @@ class Field_Manager {
 		if ( ! $this->has_fields() ) {
 			throw new \Exception( 'The fields have not been set.' );
 		}
-
 		if ( ! isset( $this->fields[ $key ] ) ) {
 			throw new \Exception( 'Field ' . $key . ' does not exist, check the column name.' );
 		}
-
 		return $this->fields[ $key ]->getType();
 	}
 
 	public function get_all_registered_fields() {
 
 		return array_keys( $this->fields );
-
 	}
 
 
@@ -155,9 +170,6 @@ class Field_Manager {
 				$out[] = $fieldName;
 			}
 		}
-
 		return $out;
 	}
-
-
 }

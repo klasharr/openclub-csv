@@ -36,17 +36,29 @@ class Base extends \WP_UnitTestCase {
 
 	}
 
-	protected function get_valid_post() {
+	protected function get_valid_post( $post_content = array() ) {
 
-		$post = self::factory()->post->create_and_get( array(
-				'post_title' => 'foo',
-				'post_type'  => 'openclub-csv',
-			)
-		);
+		$post_content = array_replace( array(
+			'post_title' => 'foo',
+			'post_type'  => 'openclub-csv',
+		), $post_content );
+		
+		$post = self::factory()->post->create_and_get( $post_content );
+
+		/**
+		 *  d    Day of the month, 2 digits with leading zeros    01 to 31
+		 *  j    Day of the month without leading zeros    1 to 31
+		 *  n    Numeric representation of a month, without leading zeros    1 through 12
+		 *  m    Numeric representation of a month, with leading zeros    01 through 12
+		 *  Y    A full numeric representation of a year, 4 digits    Examples: 1999 or 2003
+		 *  y    A two digit representation of a year    Examples: 99 or 03
+		 */
 
 		$fields = <<<FIELDS
 [Date]
 type = date
+input_format = j/n/y
+output_format = d/m/Y
 
 [Event]
 type = string
@@ -58,6 +70,7 @@ FIELDS;
 
 		update_post_meta( $post->ID, 'fields', $fields );
 		$post->field_settings = parse_ini_string( $fields, true );
+
 		return $post;
 
 	}
@@ -78,15 +91,32 @@ FIELDS;
 				'filter'                  => null, // string
 				'show_future_past_toggle' => null, // yes
 				'display_config'          => null, // yes
-			) , $array
+			), $array
 		);
 	}
 
-	protected function get_valid_test_config(){
+	protected function get_valid_test_config() {
 
-		$post = $this->get_valid_post();
-		$config = $this->get_default_config( array( 'post_id' => $post->ID ));
+		$post   = $this->get_valid_post();
+		$config = $this->get_default_config( array( 'post_id' => $post->ID ) );
+
 		return $config;
 	}
+	
 
+	/**
+	 * @return array
+	 * @see /openclub-csv/inc/fields
+	 */
+	protected function get_field_examples() {
+
+		return array(
+			'field_a' => array(
+				'type' => 'date',
+				'input_format' => 'n/j/y',
+			),
+			'field_b' => array( 'type' => 'string' ),
+			'field_c' => array( 'type' => 'int' ),
+		);
+	}
 }
