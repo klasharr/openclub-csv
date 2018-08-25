@@ -105,7 +105,7 @@ class Parser {
 
 		foreach ( $csv_header_field_names as $cvs_field_name ) {
 			if ( ! $this->field_manager->get_field( trim( $cvs_field_name ) ) ) {
-				throw new \Exception( 'Field name in CSV header is invalid, can not parse data.' );
+				throw new \Exception( 'Field name in CSV header is invalid. It must correspond to a setting in fields.' );
 			}
 		}
 
