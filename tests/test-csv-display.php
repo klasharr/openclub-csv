@@ -53,7 +53,7 @@ class CSVDisplayTest extends Base {
 	function test_csv_row_with_empty_data_array_returns_empty_string() {
 
 		$data = array( 'data' => array() );
-		$this->assertEquals( \OpenClub\CSV_Display::get_csv_row( $data, false ), 'empty' );
+		$this->assertEquals( \OpenClub\CSV_Display::get_csv_row( $data, false ), 'empty row' );
 	}
 
 	function test_get_csv_row_with_no_formatted_value_throws_exception() {
@@ -108,7 +108,8 @@ class CSVDisplayTest extends Base {
 			'valid_date_conversion',
 			'invalid_date',
 			'invalid_output_date_format',
-			'invalid_input_date_format',
+			'invalid_input_date_format', 
+			'test_data_future_events_displays_future_events_only',
 		);
 
 
@@ -125,14 +126,15 @@ class CSVDisplayTest extends Base {
 				\OpenClub\CSV_Display::get_config( $config )
 			);
 
+
+			//echo "\n".$s ."\n";
+			//echo "\n" . $test_data->get( 'html_output' ) . "\n";
+
 			$this->assertSame( $test_data->get( 'html_output' ), trim( $s ) );
 		}
 
 	}
 
-	/**
-	 * @see OpenClubCSV\TestData\Sailing_Programme::test_e_data();
-	 */
 	function test_post_content_with_column_mismatch_outputs_correct_data_to_csv_rows_template_file() {
 
 		$test_data = new Sailing_Programme_Data( 'csv_row_column_mismatch' );
@@ -150,5 +152,42 @@ class CSVDisplayTest extends Base {
 			trim( $s ) );
 
 	}
+
+	function test_post_content_with_active_filter_removes_row() {
+
+		$test_data = new Sailing_Programme_Data( 'active_filter_will_filter_content' );
+		$post      = $this->get_test_post_object( $test_data );
+
+		$config            = $test_data->get( 'config' );
+		$config['post_id'] = $post->ID;
+
+		$s = \OpenClub\CSV_Display::get_html(
+			\OpenClub\CSV_Display::get_config( $config )
+		);
+
+		$this->assertSame( sprintf(
+			$test_data->get( 'html_output' ), $post->ID ),
+			trim( $s ) );
+
+	}
+
+	function test_grouped_rows_displays_correctly() {
+
+		$test_data = new Sailing_Programme_Data( 'test_data_grouped_rows' );
+		$post      = $this->get_test_post_object( $test_data );
+
+		$config            = $test_data->get( 'config' );
+		$config['post_id'] = $post->ID;
+
+		$s = \OpenClub\CSV_Display::get_html(
+			\OpenClub\CSV_Display::get_config( $config )
+		);
+
+		$this->assertSame( sprintf(
+			$test_data->get( 'html_output' ), $post->ID ),
+			trim( $s ) );
+
+	}
+
 
 }

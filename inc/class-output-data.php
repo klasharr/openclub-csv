@@ -80,7 +80,7 @@ class Output_Data {
 	public function get_header_fields() {
 
 		if ( $this->input->has_overridden_fields() ) {
-			return $this->input->get_overridden_fields();
+			return $this->input->get_fields_override();
 		}
 
 		return $this->header_fields;
@@ -96,13 +96,13 @@ class Output_Data {
 		$errors         = $this->get_errors();
 		$group_by_field = null;
 
-		$limit       = false;
+		$limit       = null;
 		$line_number = 0;
 
 		$field_names = $this->field_manager->get_display_field_names();
 
 		if ( $this->input->has_overridden_fields() ) {
-			$field_names = $this->input->get_overridden_fields();
+			$field_names = $this->input->get_fields_override();
 		}
 
 		$limit = $this->input->get_limit();
@@ -115,9 +115,12 @@ class Output_Data {
 
 			foreach ( $this->data_set->get_rows() as $grouped_field_value => $rows ) {
 
+				// @todo is this the right place for this check and data alteration?
+				
 				if ( 'date' === $this->field_manager->get_field_type( $this->input->get_group_by_field() ) &&
-				     ( $this->input->is_show_future_events_only() && $grouped_field_value < time() )
+				     ( $this->input->is_show_future_items_only() && $grouped_field_value < time() )
 				) {
+
 					continue;
 				}
 
@@ -140,6 +143,7 @@ class Output_Data {
 
 		} else {
 
+			// $todo we could add date filtering for future events here too.
 			/** @var DTO $dto */
 			foreach ( $this->data_set->get_rows() as $dto ) {
 
