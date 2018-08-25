@@ -147,7 +147,7 @@ type = string
 max-length = 60
 ```
 
-This is a basic field currently with a max length validation.
+This is a basic field in this example with an optional max length validation.
 
 
 3. Int
