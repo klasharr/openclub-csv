@@ -120,7 +120,7 @@ Display the config for this data source and dislay
 [openclub_display_csv post_id=1361 display="grouped_date_table" display_config="yes"]
 ```
 
-#### Fields configuration explained
+## Fields configuration explained
 
 The fields content is basically content in the [PHP ini format](http://php.net/manual/en/function.parse-ini-file.php) and this is parsed internally by `parse_ini_file()`. Each CSV column will have a field name, and this field is described in the fields ini configuration. So far there are three field types; date, string and int. Others will follow.
 
@@ -166,7 +166,7 @@ type = int
 
 Validates only if the data is numeric.
 
-#### Optioanl rules for all field types
+### Optional rules for all field types
 
 1. Options
 
@@ -219,7 +219,7 @@ add_shortcode( 'ssc_safety_teams', function( $config ){
 
 ```
 
-### Example CLI command using the API
+## Example CLI command using the API
 
 See [here](https://github.com/klasharr/openclub-csv/blob/master/cli/class-openclub.php). The minimum with no error handling looks like this:
 
@@ -244,7 +244,7 @@ foreach ( $output_data->get_rows() as $row ) {
 ```
 
 
-### Can I use it?
+## Can I use it?
 Nearly, I'm not far off publishing on wordpress.org now. The incoming work is:
 
 - on security review
