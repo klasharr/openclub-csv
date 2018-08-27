@@ -7,6 +7,7 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
 
  - it stores CSV data in a new custom post type which is used as a data source
  - applies validation and display rules to the CSV data fields
+ - display the CSV data via shortcodes
  - has a set of basic table and list templates which you can override or add to with your own templates in your own plugins
  - API to make shortcodes using built in or custom templates
  - API to make CLI commands working with CSV data
@@ -15,6 +16,12 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
  - field display rules, data sorting, limit, grouping, basic time based functionality
  - early and late filters to alter data based on your own rules.
 
+### Examples in production use:
+
+- [http://www.swanagesailingclub.org.uk/](http://www.swanagesailingclub.org.uk/) - the 'Next Sailing Events' panel
+- [http://www.swanagesailingclub.org.uk/social-events/](http://www.swanagesailingclub.org.uk/social-events/) - default table display
+- [http://www.swanagesailingclub.org.uk/sailing-programme/2018/](http://www.swanagesailingclub.org.uk/sailing-programme/2018/) - default table display
+- [http://www.swanagesailingclub.org.uk/safety-teams-2018/](http://www.swanagesailingclub.org.uk/safety-teams-2018/) - using a custom display template
 
 
 ## Installation
@@ -190,14 +197,6 @@ This controls the default display setting for a field and it can be overridden i
 ```
 max-length = [int]
 ```
-
-
-### Examples in production use:
-
-- [http://www.swanagesailingclub.org.uk/](http://www.swanagesailingclub.org.uk/) - the 'Next Sailing Events' panel
-- [http://www.swanagesailingclub.org.uk/social-events/](http://www.swanagesailingclub.org.uk/social-events/) - showing default table display
-- [http://www.swanagesailingclub.org.uk/sailing-programme/2018/](http://www.swanagesailingclub.org.uk/sailing-programme/2018/) - using a custom plugin template
-- [http://www.swanagesailingclub.org.uk/safety-teams-2018/](http://www.swanagesailingclub.org.uk/safety-teams-2018/) - another custom template
 
 
 ### Example shortcode implementation extending the API
