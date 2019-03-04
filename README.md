@@ -120,11 +120,6 @@ Display the config for this data source and dislay
 [openclub_display_csv post_id=1361 display="grouped_date_table" display_config="yes"]
 ```
 
-Display using template file safety_teams.php in the template directory for the plugin SSC_PLUGIN_DIR, passing in the context sc_safety_teams_shortcode.
-```
-[openclub_display_csv post_id=1365 error_lines="yes" error_messages="yes" display="safety_teams" 
-group_by_field="Team" plugin_template_dir='SSC_PLUGIN_DIR' context='ssc_safety_teams_shortcode']
-```
 
 ## Fields configuration explained
 
@@ -255,9 +250,10 @@ foreach ( $output_data->get_rows() as $row ) {
 2. Place the template file in a template directory in your plugin e.g. `MY_PLUGIN_DIR/templates/data_display.csv`
 3. Set the shortcode config to use your plugin templates directory and your template file e.g.
 
+Example:
+
 ```
-[openclub_display_csv post_id=1365 display="data_display" plugin_template_dir='MY_PLUGIN_DIR' 
-context='ssc_safety_teams_shortcode']
+[openclub_display_csv post_id=1365 display="data_display" plugin_template_dir='MY_PLUGIN_DIR']
 ```
 
 ## How to pass the data for the shortcode through a data filter
@@ -297,7 +293,18 @@ function my_plugin_short_code_filter( \OpenClub\Output_Data $data, \OpenClub\Dat
 
 ```
 
+Example:
 
+The following shortcode example sets:
+
+- template file = `data_display.php`
+- template file location = `MY_PLUGIN_DIR/templates/data_display.php` (rather than openclub_csv's template directory)
+- data filter function, assumes the data filter has been set and context switch is `ssc_safety_teams_shortcode`
+
+```
+[openclub_display_csv post_id=1365 display="data_display" plugin_template_dir='MY_PLUGIN_DIR' 
+context='ssc_safety_teams_shortcode']
+```
 
 ## Can I use it?
 Nearly, I'm not far off publishing on wordpress.org now. The incoming work is:
