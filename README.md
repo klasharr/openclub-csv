@@ -120,6 +120,12 @@ Display the config for this data source and dislay
 [openclub_display_csv post_id=1361 display="grouped_date_table" display_config="yes"]
 ```
 
+Display using template file safety_teams.php in the template directory for the plugin SSC_PLUGIN_DIR, passing in the context sc_safety_teams_shortcode.
+```
+[openclub_display_csv post_id=1365 error_lines="yes" error_messages="yes" display="safety_teams" 
+group_by_field="Team" plugin_template_dir='SSC_PLUGIN_DIR' context='ssc_safety_teams_shortcode']
+```
+
 ## Fields configuration explained
 
 The fields content is basically content in the [PHP ini format](http://php.net/manual/en/function.parse-ini-file.php) and this is parsed internally by `parse_ini_file()`. Each CSV column will have a field name, and this field is described in the fields ini configuration. So far there are three field types; date, string and int. Others will follow.
@@ -199,7 +205,7 @@ max-length = [int]
 ```
 
 
-### Example shortcode implementation extending the API
+### Example shortcode implementation using the API
 
 Taken from another plugin using the API, see more [here](https://github.com/klasharr/ssc/blob/master/inc/shortcodes.php).
 
@@ -243,10 +249,58 @@ foreach ( $output_data->get_rows() as $row ) {
 }
 ```
 
+## How to use a template file in your own plugin and make the shortcode use that
+
+1. Define the root directory for your plugin and assign to a constant e.g. `MY_PLUGIN_DIR`
+2. Place the template file in a template directory in your plugin e.g. `MY_PLUGIN_DIR/templates/data_display.csv`
+3. Set the shortcode config to use your plugin templates directory and your template file e.g.
+
+```
+[openclub_display_csv post_id=1365 display="data_display" plugin_template_dir='MY_PLUGIN_DIR' 
+context='ssc_safety_teams_shortcode']
+```
+
+## How to pass the data for the shortcode through a data filter
+
+1. Set up the dependency to the openclub_csv in own plugin by copying [https://github.com/klasharr/openclub-csv/blob/master/inc/class-openclub-csv-dependency.php](https://github.com/klasharr/openclub-csv/blob/master/inc/class-openclub-csv-dependency.php) into your plugin file
+
+2. Require it in your plugin by adding this code to your plugin root file
+
+```
+// ======================== Dependency check =======================
+require_once( 'inc/class-openclub-csv-dependency.php' );
+if(! Openclub_CSV_Dependency::check( __FILE__ ) ){
+	return;
+}
+```
+
+3. Add the filter to your plugin
+
+`add_filter( 'openclub_csv_display_data', 'my_plugin_short_code_filter', 10, 2 );`
+
+4. Add the filter function. Note: you must add the context check otherwise the filter will affect all shortcodes e.g.
+
+```
+function my_plugin_short_code_filter( \OpenClub\Output_Data $data, \OpenClub\Data_Set_Input $input ) {
+
+     if ( 'my_shortcode_context' === $input->get_context() ) {
+
+           // Get the data
+
+           $tmp = $data->get_rows()
+
+           // alter it then set it back
+
+           $data->set_rows( $tmp );
+     }
+}
+
+```
+
+
 
 ## Can I use it?
 Nearly, I'm not far off publishing on wordpress.org now. The incoming work is:
 
-- on security review
-- more unit tests
+- a security review, running it through WordPress.com VIP's PHPCS, double checking security escaping
 - inline and wiki documentation
