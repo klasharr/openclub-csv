@@ -103,6 +103,7 @@ class CSVDataSetInput extends Base {
 			'error_lines'             => true,
 			'show_future_past_toggle' => false,
 			'display_config'          => false,
+			'plugin_template_dir'     => false,
 		);
 
 		$this->assertEquals( $retrieved_config, $this->csv_data_input->get_config() );
@@ -125,6 +126,7 @@ class CSVDataSetInput extends Base {
 		$config['filter']                  = 'Empty_Description';
 		$config['future_items_only']       = 'yes';
 		$config['display_config']          = 'yes';
+		$config['plugin_template_dir']     = 'TEST_DIR';
 
 		$this->csv_data_input->init( $config );
 
@@ -142,6 +144,7 @@ class CSVDataSetInput extends Base {
 			'error_lines'             => false,
 			'show_future_past_toggle' => true,
 			'display_config'          => true,
+			'plugin_template_dir'     => 'TEST_DIR'
 		);
 
 		$this->assertEquals( $retrieved_config, $this->csv_data_input->get_config() );

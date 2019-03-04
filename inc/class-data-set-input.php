@@ -79,6 +79,11 @@ class Data_Set_Input {
 	private $init_called = false;
 
 	/**
+	 * @var string/null
+	 */
+	private $plugin_template_dir = false;
+
+	/**
 	 * Data_Set_Input constructor.
 	 *
 	 * @param bool $config array
@@ -150,12 +155,24 @@ class Data_Set_Input {
 			$this->set_display_configuration_setting( $config['display_config'] );
 		}
 
+		if( !empty( $config[ 'plugin_template_dir' ] ) ) {
+			$this->set_plugin_template_dir( $config[ 'plugin_template_dir' ] );
+		}
+
 		$this->init_called = true;
 
 	}
 
 	public function get_init_has_been_called(){
 		return $this->init_called;
+	}
+
+	private function set_plugin_template_dir( $plugin_template_dir ) {
+		$this->plugin_template_dir = $plugin_template_dir;
+	}
+
+	public function get_plugin_template_dir() {
+		return $this->plugin_template_dir;
 	}
 
 
@@ -458,6 +475,7 @@ class Data_Set_Input {
 			'error_lines' => $this->get_error_lines(),
 			'show_future_past_toggle' => $this->get_show_future_past_toggle(),
 			'display_config' => $this->get_show_display_config_setting(),
+			'plugin_template_dir' => $this->get_plugin_template_dir(),
  		);
 		
 		if( !empty( $key ) && !array_key_exists( $key, $config ) ) {

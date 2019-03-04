@@ -74,6 +74,13 @@ class CSV_Display {
 			 */
 			$input = \OpenClub\Factory::get_data_input_object( $config );
 
+			if( $plugin_directory_path == null && !empty( $input->get_plugin_template_dir() ) ) {
+				if( empty( constant( $input->get_plugin_template_dir() ) ) ) {
+					throw new \Exception( 'Config setting, plugin_template_dir=' . $input->get_plugin_template_dir(). ' is invalid' );
+				}
+				$plugin_directory_path = constant( $input->get_plugin_template_dir() );
+			}
+
 			/**
 			 * @var $output \OpenClub\Output_Data
 			 */
@@ -141,6 +148,7 @@ class CSV_Display {
 				'filter'                  => null,
 				'show_future_past_toggle' => null,
 				'display_config'          => null,
+				'plugin_template_dir'     => null,
 			),
 			$config
 		);
@@ -258,5 +266,5 @@ class CSV_Display {
 			return "<br/>\n";
 		}
 	}
-
 }
+

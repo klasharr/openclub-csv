@@ -91,6 +91,7 @@ FIELDS;
 				'filter'                  => null, // string
 				'show_future_past_toggle' => null, // yes
 				'display_config'          => null, // yes
+				'plugin_template_dir'     => null,
 			), $array
 		);
 	}
