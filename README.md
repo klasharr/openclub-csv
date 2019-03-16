@@ -14,7 +14,7 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
  - filter API to create filters to exlude display data based on rules
  - WP_CLI API to write scripts and process CSV data
  - field display rules, data sorting, limit, grouping, basic time based functionality
- - filter to alter date data before passing to template files
+ - data filter hook before passing to template files
  
 ### Examples in production use:
 
@@ -118,6 +118,19 @@ Display the config for this data source and dislay
 ```
 [openclub_display_csv post_id=1361 display="grouped_date_table" display_config="yes"]
 ```
+
+Display data using a template file in your own plugin (more details below)
+
+```
+[openclub_display_csv post_id=1365 display="data_display" plugin_template_dir='MY_PLUGIN_DIR' ]
+```
+
+Pass the CSV data through a data filter in your own plugin  (more details below)
+
+```
+[openclub_display_csv post_id=1365 context='ssc_safety_teams_shortcode' ]
+```
+
 
 
 ## Fields configuration explained
@@ -306,7 +319,12 @@ context='ssc_safety_teams_shortcode']
 ```
 
 ## Can I use it?
-Nearly, I'm not far off publishing on wordpress.org now. The incoming work is:
+Yes, I've been working on this and using it in production for three years and am confident it works, is robust and secure. It is aslo stable and has a good unit test suite. I'm not far off publishing on wordpress.org now, remaining tasks are:
 
 - a security review, running it through WordPress.com VIP's PHPCS, double checking security escaping
-- inline and wiki documentation
+- improve inline and wiki documentation
+
+## Tested up to
+
+WordPress 5.1
+Jetpack 7.1
