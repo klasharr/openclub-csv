@@ -21,7 +21,6 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
 - [http://www.swanagesailingclub.org.uk/](http://www.swanagesailingclub.org.uk/) - the 'Next Sailing Events' panel
 - [http://www.swanagesailingclub.org.uk/social-events/](http://www.swanagesailingclub.org.uk/social-events/) - default table display, with future filter and show / hide past item toggle
 - [http://www.swanagesailingclub.org.uk/sailing-programme/2018/](http://www.swanagesailingclub.org.uk/sailing-programme/2018/) - default table display
-- [http://www.swanagesailingclub.org.uk/safety-teams-2018/](http://www.swanagesailingclub.org.uk/safety-teams-2018/) - using a custom display template and grouping on the Team field
 
 
 ## Installation
