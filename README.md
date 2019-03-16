@@ -11,11 +11,11 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
  - has a set of basic table and list templates which you can override or add to with your own templates in your own plugins
  - API to make shortcodes using built in or custom templates
  - API to make CLI commands working with CSV data
- - filter API to create filters to exlude data based on rules
+ - filter API to create filters to exlude display data based on rules
  - WP_CLI API to write scripts and process CSV data
  - field display rules, data sorting, limit, grouping, basic time based functionality
- - early and late filters to alter data based on your own rules.
-
+ - filter to alter date data before passing to template files
+ 
 ### Examples in production use:
 
 - [http://www.swanagesailingclub.org.uk/](http://www.swanagesailingclub.org.uk/) - the 'Next Sailing Events' panel
