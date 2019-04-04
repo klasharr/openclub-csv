@@ -310,12 +310,16 @@ Example:
 The following shortcode example sets:
 
 - template file = `data_display.php`
-- template file location = `MY_PLUGIN_DIR/templates/data_display.php` (rather than openclub_csv's template directory)
+- template file location = `SSC_PLUGIN_DIR.'/templates/safety_teams.php'` (rather than openclub_csv's template directory). This assumes that the plugin code has `SSC_PLUGIN_DIR` defined in code like this:
+
+```
+define( 'SSC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+```
+
 - data filter function, assumes the data filter has been set and context switch is `ssc_safety_teams_shortcode`
 
 ```
-[openclub_display_csv post_id=1365 display="data_display" plugin_template_dir='MY_PLUGIN_DIR' 
-context='ssc_safety_teams_shortcode']
+[openclub_display_csv post_id=1365 error_lines="yes" error_messages="yes"  display="safety_teams" plugin_template_dir="SSC_PLUGIN_DIR" context="ssc_safety_teams_shortcode" group_by_field="Team"]
 ```
 
 ## Can I use it?
