@@ -75,9 +75,6 @@ class Factory {
 
 		$data_set                     = new Data_Set( $post );
 
-		// @todo this looks unused.
-		self::$data_sets[ $post->ID ] = $data_set;
-
 		return $data_set;
 	}
 

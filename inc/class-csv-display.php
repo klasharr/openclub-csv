@@ -139,7 +139,7 @@ class CSV_Display {
 				'post_id'                 => null,
 				'error_messages'          => "yes",
 				'error_lines'             => "yes",
-				'future_items_only'      => null,
+				'future_items_only'       => null,
 				'display'                 => 'table', // default template file table.php
 				'fields'                  => null,
 				'group_by_field'          => null,

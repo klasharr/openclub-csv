@@ -250,7 +250,7 @@ class Data_Set_Input {
 	}
 
 	private function set_future_items_value( $value ) {
-		
+
 		if ( ! empty( $value ) && ! in_array( $value, array( "yes", "no", 1, 2 ) ) ) {
 			throw new \Exception( '$config[\'future_items_only\'] can be "yes", "no", 1, 2 or must not be set.' );
 		}
