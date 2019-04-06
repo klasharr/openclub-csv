@@ -22,7 +22,7 @@ Class CLI_Command extends CLI_Base {
 	 * @throws \Exception
 	 * @throws \OpenClub\Exception
 	 */
-	public function post_content( $args ) {
+	public function list( $args ) {
 
 		try {
 
@@ -30,23 +30,16 @@ Class CLI_Command extends CLI_Base {
 				throw new \Exception( 'The first argument must be a non zero integer value.' );
 			}
 
-			$this->post_id = $args[0];
+			$id = $args[0];
 
-			/**
-			 * @var $input \OpenClub\Data_Set_Input
-			 */
-			$input = \OpenClub\Factory::get_data_input_object(
+			$output_data = $this->get_data(
 				array(
-					'post_id' => $this->post_id,
+					'post_id' => $id,
+					'display' => 'default', // @todo it breaks if this missing, set the default elsewhere.
 				)
 			);
 
-			/**
-			 * @var $output \OpenClub\Output_Data
-			 */
-			$output_data = \OpenClub\Factory::get_output_data( $input );
-
-			WP_CLI::log( sprintf( '====== Retrieving data from post %d =======', $input->get_post_id() ) );
+			WP_CLI::log( sprintf( '====== Retrieving data from ID %d =======', $id ) );
 
 			if ( $errors = $output_data->get_errors() ) {
 				foreach ( $errors as $line_number => $error_message ) {
@@ -61,7 +54,7 @@ Class CLI_Command extends CLI_Base {
 				WP_CLI::log( CSV_Display::get_csv_row( $row ) );
 			}
 
-			WP_CLI::success( '====== Success! ====== ' );
+			WP_CLI::success( '====== Complete! ====== ' );
 
 		} catch ( \Exception $e ) {
 			WP_CLI::error( $e->getMessage() );
@@ -69,5 +62,3 @@ Class CLI_Command extends CLI_Base {
 	}
 
 }
-
-
