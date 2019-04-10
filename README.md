@@ -232,27 +232,55 @@ add_shortcode( 'ssc_safety_teams', function( $config ){
 
 ```
 
-## Example CLI command using the API
+## CLI command to view CSV data from the shell
 
-See [here](https://github.com/klasharr/openclub-csv/blob/master/cli/class-openclub.php). The minimum with no error handling looks like this:
+`wp openclub list <id>`
+
+Where `<id>` is the post ID for an openclub_csv post type.
+
+
+### Write your own command using the API
+
+See an example command here [here](https://github.com/klasharr/openclub-csv/blob/master/cli/class-cli-command.php#L25). 
+
+The minimum with the most basic error handling looks like this:
 
 ```
-/**
- * @var $input \OpenClub\Data_Set_Input
- */
-$input = \OpenClub\Factory::get_data_input_object(
-    array(
-        'post_id' => $this->post_id,
-    )
-);
+<?php
 
-/**
- * @var $output_data \OpenClub\Output_Data
- */
-$output_data = \OpenClub\Factory::get_output_data( $input );
+namespace OpenClub;
 
-foreach ( $output_data->get_rows() as $row ) {
-    WP_CLI::log( CSV_Display::get_csv_row( $row ) );
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+use \WP_CLI;
+
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/inc/class-csv-util.php' );
+require_once( OPENCLUB_CSV_PLUGIN_DIR . '/cli/class-cli-base.php' );
+
+Class CLI_Command extends CLI_Base {
+
+	public function list( $args ) {
+
+		try {
+
+			$output_data = $this->get_data(
+				array(
+					'post_id' => $args[0],
+					'display' => 'default',
+				)
+			);
+
+			foreach ( $output_data->get_rows() as $row ) {
+				WP_CLI::log( CSV_Display::get_csv_row( $row ) );
+			}
+			
+		} catch ( \Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
+		}
+	}
+
 }
 ```
 
