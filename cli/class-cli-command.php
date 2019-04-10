@@ -32,10 +32,9 @@ Class CLI_Command extends CLI_Base {
 
 			$id = $args[0];
 
-			$output_data = $this->get_data(
+			$output_data = CSV_Util::get_output_data_from_config(
 				array(
 					'post_id' => $id,
-					'display' => 'default', // @todo it breaks if this missing, set the default elsewhere.
 				)
 			);
 
@@ -45,7 +44,6 @@ Class CLI_Command extends CLI_Base {
 				foreach ( $errors as $line_number => $error_message ) {
 					WP_CLI::warning( sprintf( 'Error: %d Message: %s', $line_number, $error_message ) );
 				}
-				WP_CLI::error( '====== Aborted with errors! =======' );
 			}
 
 			// Do something with the data here.
@@ -53,8 +51,6 @@ Class CLI_Command extends CLI_Base {
 
 				WP_CLI::log( CSV_Display::get_csv_row( $row ) );
 			}
-
-			WP_CLI::success( '====== Complete! ====== ' );
 
 		} catch ( \Exception $e ) {
 			WP_CLI::error( $e->getMessage() );

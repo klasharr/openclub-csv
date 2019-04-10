@@ -58,5 +58,49 @@ class CSV_Util {
 
 	}
 
+	/**
+	 * @param array $config
+	 *
+	 * @return Output_Data
+	 * @throws \Exception
+	 */
+	public static function get_output_data_from_config( array $config ) {
+
+		/**
+		 * @input Data_Set_Input
+		 */
+		$input_obj = Factory::get_data_input_object( $config );
+
+		/**
+		 * $output_data Output_Data
+		 */
+		$output_data = Factory::get_output_data( $input_obj );
+
+		if ( ! $output_data->exists() ) {
+			throw new \Exception( 'No data for $input_obj' );
+		}
+
+		return $output_data;
+	}
+
+	/**
+	 * @param $input
+	 *
+	 * @return Output_Data
+	 * @throws \Exception
+	 */
+	public static function get_output_data_from_input_object( Data_Set_Input $input_obj ){
+
+		/**
+		 * $output_data Output_Data
+		 */
+		$output_data = Factory::get_output_data( $input_obj );
+
+		if ( ! $output_data->exists() ) {
+			throw new \Exception( 'No data for $input_obj' );
+		}
+
+		return $output_data;
+	}
 
 }

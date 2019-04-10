@@ -325,14 +325,6 @@ class CSVDataSetInput extends Base {
 
 // #####################################  Display #####################################
 
-	public function test_init_display_with_empty_string_throws_exception() {
-
-		$this->setExpectedException( 'Exception', 'display cannot be empty.' );
-		$config            = $this->get_valid_test_config();
-		$config['display'] = '';
-		$this->csv_data_input->init( $config );
-	}
-
 	public function test_init_display_with_padded_string_throws_exception() {
 
 		$this->setExpectedException( 'Exception', 'display cannot have empty spaces at the beginning or end.' );

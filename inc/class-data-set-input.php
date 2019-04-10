@@ -125,8 +125,10 @@ class Data_Set_Input {
 			$this->set_future_items_value( $config['future_items_only'] );
 		}
 
-		$this->set_display( $config[ 'display' ] );
-
+		if ( ! empty( $config['display'] ) ) {
+			$this->set_display( $config['display'] );
+		}
+		
 		if ( ! empty( $config['group_by_field'] ) ) {
 			$this->set_group_by_field( $config['group_by_field'] );
 		}
