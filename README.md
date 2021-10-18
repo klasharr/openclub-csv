@@ -356,5 +356,5 @@ Yes, I've been working on this and using it in production for three years and am
 
 ## Tested up to
 
-WordPress 5.1
+WordPress 5.8.1
 Jetpack 7.1
