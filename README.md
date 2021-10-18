@@ -23,6 +23,7 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
 ## Installation
 
 Put this plugin in your WordPress plugins directory and enable. You will see a new CSV menu item in wp-admin, this lets you manage the CSV custom post types.
+After installing the plugin and activating, go to Settings > Permalinks and without changing anything, hit 'Save'. This will flush the permalinks.
 
 ## Example Usage
 
@@ -79,8 +80,6 @@ display = false
 ```
 
 ## Viewing the content
-
-After installing the plugin go to Settings > Permalinks and without changing anything, hit 'Save'. This will flush the permalinks.
 
 View the CSV post types as you would any other piece of content in WordPress, each has a permalink defined:
 
