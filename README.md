@@ -16,12 +16,9 @@ This is a WordPress plugin which allows you to use CSV data as a data source and
  - field display rules, data sorting, limit, grouping, basic time based functionality
  - data filter hook before passing to template files
  
-### Examples in production use:
+### Example in use:
 
-- [http://www.swanagesailingclub.org.uk/](http://www.swanagesailingclub.org.uk/) - the 'Next Sailing Events' panel
-- [http://www.swanagesailingclub.org.uk/social-events/](http://www.swanagesailingclub.org.uk/social-events/) - default table display, with future filter and show / hide past item toggle
-- [http://www.swanagesailingclub.org.uk/sailing-programme/2018/](http://www.swanagesailingclub.org.uk/sailing-programme/2018/) - default table display
-
+- [https://klausharris.de/example-csv/](https://klausharris.de/example-csv/) - Example page using data from this readme.
 
 ## Installation
 
@@ -82,6 +79,8 @@ display = false
 ```
 
 ## Viewing the content
+
+After installing the plugin go to Settings > Permalinks and without changing anything, hit 'Save'. This will flush the permalinks.
 
 View the CSV post types as you would any other piece of content in WordPress, each has a permalink defined:
 
